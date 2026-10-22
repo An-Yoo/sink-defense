@@ -212,7 +212,8 @@
   #tut .tarrow{position:absolute;left:0;top:0}
   #tut .thand{position:absolute;filter:drop-shadow(0 2px 0 rgba(59,47,47,.5))}
   #tut .tbub{position:absolute;left:24px;right:24px;background:#fffdf6;border:3px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink);padding:10px 14px 9px;font-size:15px;font-weight:700;line-height:1.4;pointer-events:auto;display:flex;align-items:flex-end;gap:10px}
-  #tut .tbub .tt{flex:1}#tut .tbub b{color:#e8653f}
+  #tut .tbub .tt{flex:1;word-break:keep-all}#tut .tbub b{color:#e8653f}
+  #tut .tlg{display:flex;flex-direction:column;gap:3px;margin-bottom:4px}#tut .tlg span{display:flex;align-items:center;gap:6px}#tut .tlg svg{flex-shrink:0}
   #tut .tskip{font-size:11px;font-weight:800;opacity:.5;white-space:nowrap;cursor:pointer;padding:2px 0 2px 6px}
   .dim{opacity:.55}
   .rwl{font-size:10px;font-weight:800;opacity:.6;margin-right:-3px;align-self:center}
@@ -3024,6 +3025,17 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     return null;
   }
 
+  // 칸에 실제로 그려지는 표시와 같은 모양
+  const BADGE = {
+    merge: '<svg viewBox="0 0 18 18" width="17" height="17"><circle cx="9" cy="9" r="7.2" fill="#ffd84d" stroke="#3b2f2f" stroke-width="1.6"/><path d="M5.5 10.5L9 7l3.5 3.5" fill="none" stroke="#3b2f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    fresh: '<svg viewBox="0 0 18 18" width="17" height="17"><circle cx="9" cy="9" r="7.2" fill="#a77bf3" stroke="#3b2f2f" stroke-width="1.6"/><text x="9" y="13" text-anchor="middle" font-family="Jua" font-size="11" fill="#fff" stroke="#3b2f2f" stroke-width="2.2" paint-order="stroke">?</text></svg>',
+    known: '<svg viewBox="0 0 18 18" width="17" height="17"><circle cx="9" cy="9" r="7.2" fill="#ffc93c" stroke="#3b2f2f" stroke-width="1.6"/><path d="M7.5 5v3l-2.5 4.5h8L10.5 8V5z" fill="#fff" stroke="#3b2f2f" stroke-width="1.4" stroke-linejoin="round"/></svg>'
+  };
+  function hintCell(G) {
+    const h = G.hints(); let best = null;
+    for (const [i, v] of h) { if (v.recipe) return i; if (v.merge && best == null) best = i; }
+    return best;
+  }
   // when: 이 단계를 보여줄 조건 / done: 다음으로 넘어갈 조건 / target: 강조할 DOM / pair: 손가락으로 보여줄 칸 두 개
   const STEPS = [
     { id: 'summon', when: () => true, done: (G) => G.stats.summons >= 3, target: '#bSummon', text: () => '<b>소환</b>을 눌러 재료를 불러요' },
@@ -3032,11 +3044,15 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     { id: 'wave', when: (G) => G.phase === 'ready', done: (G) => G.phase !== 'ready', target: '#bWave', text: () => '준비됐으면 <b>설거지 시작!</b>' },
     { id: 'hearts', when: (G) => G.phase === 'wave', done: (G, t) => t > 5, target: '#hearts', tap: true, text: () => '재료가 지나가는 그릇을 닦아요. 그릇이 끝까지 가면 <b>하트</b>가 줄어요' },
     { id: 'bulk', opt: true, when: (G) => G.mergePairs() >= 2, done: (G, t) => G.mergePairs() < 2 || t > 7, target: '#bMerge', tap: true, text: () => '합칠 게 많으면 <b>일괄 합성</b> 한 번이면 돼요' },
+    { id: 'hints', opt: true, when: (G) => hintCell(G) != null, done: (G, t) => t > 9, tap: true, cell: hintCell,
+      text: () => `<div class="tlg"><span>${BADGE.merge}같은 재료 짝</span><span>${BADGE.fresh}새 비법 짝</span><span>${BADGE.known}아는 비법 짝</span></div>칸을 <b>탭</b>하면 짝이 점선으로 보여요` },
     { id: 'hybrid', opt: true, when: (G) => !!hybridPair(G), done: (G, t) => G.stats.recipes.length > 0 || (!hybridPair(G) && t > 1), pair: hybridPair, text: () => '서로 다른 <b>3성 재료</b>를 겹치면 <b>살림 비법</b>이 생겨요' }
   ];
 
   // 앞 4단계는 순서대로, 뒤 2단계(opt)는 조건이 맞을 때 한 번씩. 진행은 프로필(tutDone)에 저장돼 판을 나가도 이어진다
-  const doneSet = () => new Set(SD.meta.p.tutDone || []);
+  const OLD = ['summon', 'merge', 'wave', 'hearts', 'bulk', 'hybrid'];
+  const doneSet = () => { const P = SD.meta.p; if (P.tut && !P.tutDone) { P.tutDone = OLD.slice(); SD.meta.save(); } return new Set(P.tutDone || []); };
+  const allDone = () => { const d = doneSet(); return STEPS.every(s => d.has(s.id)); };
   function markDone(id) { const P = SD.meta.p, d = doneSet(); d.add(id); P.tutDone = [...d]; if (STEPS.every(s => d.has(s.id))) P.tut = 1; SD.meta.save(); }
   function pick(G) {
     const d = doneSet();
@@ -3045,7 +3061,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     for (const s of STEPS) if (s.opt && !d.has(s.id) && s.when(G)) return s;
     return null;
   }
-  function finish() { hide(); const P = SD.meta.p; if (P && !P.tut) { P.tut = 1; SD.meta.save(); } }
+  function finish() { hide(); const P = SD.meta.p; if (!P) return; P.tut = 1; P.tutDone = STEPS.map(s => s.id); SD.meta.save(); }
   function hide() { if (el) el.style.display = 'none'; }
   function build() {
     el = document.createElement('div'); el.id = 'tut';
@@ -3067,11 +3083,16 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     const tsel = typeof s.target === 'function' ? s.target(G) : s.target;
     const tn = tsel && $(tsel);
     const pair = s.pair && s.pair(G);
+    const cell = s.cell && s.cell(G);
     let by;
     if (tn && tn.offsetParent !== null) {
       const r = stageRect(tn);
       Object.assign(ring.style, { display: 'block', left: (r.x - 5) + 'px', top: (r.y - 5) + 'px', width: (r.w + 10) + 'px', height: (r.h + 10) + 'px' });
       by = r.y > 420 ? r.y - 74 : r.y + r.h + 14;
+    } else if (cell != null && G.cells[cell]) {
+      const cc = G.cells[cell];
+      Object.assign(ring.style, { display: 'block', left: (cc.x - 6) + 'px', top: (cc.y - 6) + 'px', width: '68px', height: '68px' });
+      by = cc.y > 330 ? cc.y - 120 : cc.y + 70;
     } else ring.style.display = 'none';
     if (pair) {
       const a = G.cells[pair[0]], b = G.cells[pair[1]];
@@ -3091,7 +3112,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   function frame() {
     const now = performance.now(), dt = lastNow ? Math.min(0.25, (now - lastNow) / 1000) : 0; lastNow = now;
     const G = SD.ui && SD.ui.G, P = SD.meta && SD.meta.p;
-    if (!P || P.tut || !G || G.phase === 'end' || $('#modal.show') || $('#lobby').style.display === 'block') { hide(); return; }
+    if (!P || allDone() || !G || G.phase === 'end' || $('#modal.show') || $('#lobby').style.display === 'block') { hide(); return; }
     const s = pick(G);
     if (!s) { hide(); return; }
     if (s !== cur) { cur = s; stepT = 0; }
@@ -3102,7 +3123,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   function raf() { frame(); requestAnimationFrame(raf); }
   requestAnimationFrame(raf);
   setInterval(() => { if (performance.now() - lastNow > 120) frame(); }, 100);
-  SD.tutorial = { reset() { const P = SD.meta.p; delete P.tut; delete P.tutDone; SD.meta.save(); cur = null; }, get step() { return cur && cur.id; } };
+  SD.tutorial = { reset() { const P = SD.meta.p; delete P.tut; delete P.tutDone; SD.meta.save(); cur = null; }, get all() { return STEPS.map(s => s.id); }, get step() { return cur && cur.id; } };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
