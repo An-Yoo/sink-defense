@@ -1092,16 +1092,16 @@
 
   /* ---------- 주방 규칙 ---------- */
   const RULES = {
-    nozzle: { name: '분무 노즐', good: '단일 세척이 그릇 3개를 관통', bad: '위력 -30%' },
-    pump: { name: '대용량 펌프', good: '발사 3갈래', bad: '공격 속도 절반' },
-    gloves: { name: '고무장갑', good: '연마 위력 +60%', bad: '세제 계열 위력 -30%' },
-    presoak: { name: '애벌 불림', good: '불림 지속 2배', bad: '그릇 이동 속도 +10%' },
-    tidy: { name: '주방 정리', good: '모든 유닛 위력 +25%', bad: '빈 조리대 칸 2개 잠김' },
-    smallpack: { name: '소분 포장', good: '소환 비용 -30%', bad: '소환 레벨 최대 3' },
-    hurry: { name: '서두르기', good: '반짝 보상 +40%', bad: '웨이브 사이 쉬는 시간 없음' },
-    recycler: { name: '재활용 달인', good: '재활용 환급 100%', bad: '소환 비용 +3' },
-    rinse: { name: '빨리 헹구기', good: '콤보가 상태를 소모하지 않음', bad: '콤보 위력 -40%' },
-    rag: { name: '기름 먹은 행주', good: '거품 웅덩이·산소 구름 지속 2배', bad: '그릇 이동 속도 +15%' }
+    nozzle: { name: '분무 노즐', good: '단일 세척이 그릇 3개를 관통' },
+    pump: { name: '대용량 펌프', good: '발사 3갈래' },
+    gloves: { name: '고무장갑', good: '연마 위력 +60%' },
+    presoak: { name: '애벌 불림', good: '불림 지속 2배' },
+    tidy: { name: '주방 정리', good: '모든 재료 위력 +25%' },
+    smallpack: { name: '소분 포장', good: '소환 비용 -30%' },
+    hurry: { name: '서두르기', good: '반짝 보상 +40%' },
+    recycler: { name: '재활용 달인', good: '재활용 환급 100%' },
+    rinse: { name: '빨리 헹구기', good: '콤보가 상태를 소모하지 않음' },
+    rag: { name: '기름 먹은 행주', good: '거품 웅덩이·산소 구름 지속 2배' }
   };
   const RULE_ART = { nozzle: 'alcohol', pump: 'dish', gloves: 'steel', presoak: 'hot', tidy: 'sponge', smallpack: 'soda', hurry: 'ice', recycler: 'brush', rinse: 'steam', rag: 'oxy' };
 
@@ -1195,8 +1195,8 @@
     const brOf = (u) => u.recipe ? (DATA.RECIPES[u.recipe].mods || {}) : u.branch ? DATA.BRANCH[u.key][u.branch] : {};
     G.branchOf = brOf;
     const sitIs = (k) => G.phase === 'wave' && G.sit === k;
-    G.summonCost = () => Math.round(DATA.SUMMON_COST * (G.rules.smallpack ? 0.7 : 1)) + (G.rules.recycler ? 3 : 0) + (gst('pricey') ? 2 : 0);
-    G.lvCap = () => G.rules.smallpack ? 3 : 5;
+    G.summonCost = () => Math.round(DATA.SUMMON_COST * (G.rules.smallpack ? 0.7 : 1)) + (gst('pricey') ? 2 : 0);
+    G.lvCap = () => 5;
     G.lvCost = () => G.summonLv >= G.lvCap() ? null : DATA.SUMMON_LV_COST[G.summonLv];
     G.expandCost = () => DATA.EXPAND_COST[G.expandCount] ?? null;
     const units = () => G.cells.filter(c => c.unit);
@@ -1236,9 +1236,7 @@
       if (t === 'window' && (u.key === 'alcohol' || u.key === 'bleach')) m *= winMul;
       if (t === 'rack' && f === 'water') m *= 0.7;
       if (G.rules.tidy) m *= 1.25;
-      if (G.rules.nozzle) m *= 0.7;
       if (G.rules.gloves && scrub) m *= 1.6;
-      if (G.rules.gloves && f === 'soap') m *= 0.7;
       if (f === 'acid') m *= 1 + 0.1 * auraSum('lemon');
       if (scrub) m *= 1 + 0.1 * auraSum('salt');
       if (br.crit && rng() < br.crit) m *= 3;
@@ -1311,7 +1309,7 @@
     function tryCombos(dish, cell, base) {
       if (dish.dead) return;
       const u = cell.unit, sp = specOf(u), br = brOf(u), st = dish.st;
-      const consume = !G.rules.rinse, mul = G.rules.rinse ? 0.6 : 1;
+      const consume = !G.rules.rinse, mul = 1;
       const syn = G.synergy();
       const p = pos(dish);
       const ds = DATA.DISHES[dish.type];
@@ -1446,14 +1444,14 @@
         G.ruleChoices = ch; G.phase = 'choose'; ev('chooseRule', { choices: ch });
         return;
       }
-      G.phase = 'break'; G.breakT = G.rules.hurry || gst('nobreak') ? 0 : DATA.BREAK_TIME;
+      G.phase = 'break'; G.breakT = gst('nobreak') ? 0 : DATA.BREAK_TIME;
     }
     G.pickRule = function (key) {
       if (G.phase !== 'choose' || !G.ruleChoices.includes(key)) return false;
       G.rules[key] = true; G.ruleChoices = null;
-      if (key === 'tidy') { let n = 2; for (let i = G.cells.length - 1; i >= 0 && n > 0; i--) { const c = G.cells[i]; if (!c.locked && !c.unit && !c.pile) { c.locked = true; c.ruleLocked = true; n--; } } }
+      
       if (key === 'smallpack' && G.summonLv > 3) G.summonLv = 3;
-      G.phase = 'break'; G.breakT = G.rules.hurry || gst('nobreak') ? 0 : DATA.BREAK_TIME;
+      G.phase = 'break'; G.breakT = gst('nobreak') ? 0 : DATA.BREAK_TIME;
       ev('rulePicked', { rule: key });
       return true;
     };
@@ -1672,7 +1670,7 @@
       // 보스 오라
       let haste = 1, shieldSrc = [];
       for (const d of G.dishes) { if (d.dead) continue; const ds = DATA.DISHES[d.type]; if (ds.hasteAura) haste = Math.max(haste, ds.hasteAura); if (ds.shieldAura) shieldSrc.push(d); }
-      const speedMul = (G.rules.presoak ? 1.1 : 1) * (G.rules.rag ? 1.15 : 1) * (sitIs('spin') ? 1.3 : 1) * (gst('hurry') ? 1.15 : 1) * haste;
+      const speedMul = (sitIs('spin') ? 1.3 : 1) * (gst('hurry') ? 1.15 : 1) * haste;
       // 기름 범벅: 웨이브 중 10초마다 재료 하나 고장
       if (gst('oily') && G.phase === 'wave') {
         G.oilT -= dt;
@@ -1724,7 +1722,7 @@
           const sp = specOf(u), br = brOf(u);
           const fired = unitAttack(c);
           const haste2 = (waterHaste && fam(u) === 'water') ? 0.87 : 1;
-          u.cd = fired ? sp.cd * DATA.STAR_CD[u.star] * (br.cdMul || 1) * haste2 * (G.rules.pump ? 2 : 1) : 0.1;
+          u.cd = fired ? sp.cd * DATA.STAR_CD[u.star] * (br.cdMul || 1) * haste2 : 0.1;
         }
       }
       G.dishes = G.dishes.filter(d => !d.dead);
@@ -2568,7 +2566,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   }
   function ruleScreen(choices) {
     modal(`${ribbon('주방 규칙 하나 고르기', '#5cc96b')}<div class="pen sub">W${G.wave} 정리 끝!</div>
-      ${choices.map(k => { const r = D.RULES[k]; return `<div class="rule" data-k="${k}"><div class="ra">${ingImg(D.RULE_ART[k], 52)}</div><div><div class="jua rn">${r.name}</div><div class="good"><span>좋은 점</span>${r.good}</div><div class="bad"><span>대가</span>${r.bad}</div></div></div>`; }).join('')}`, (m) => {
+      ${choices.map(k => { const r = D.RULES[k]; return `<div class="rule" data-k="${k}"><div class="ra">${ingImg(D.RULE_ART[k], 52)}</div><div><div class="jua rn">${r.name}</div><div class="good">${r.good}</div></div></div>`; }).join('')}`, (m) => {
       m.querySelectorAll('.rule').forEach(el => el.onclick = () => { G.pickRule(el.dataset.k); closeModal(); });
     });
   }
