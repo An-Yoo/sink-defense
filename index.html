@@ -968,14 +968,20 @@
   };
 
   /* ---------- 웨이브 ---------- */
-  // stage: 음식점 안 스테이지 1~5. 1~4스테이지의 10웨이브는 중간 보스 강화판, 5스테이지만 최종 보스
+  // 한 판 15웨이브. 보스: 5웨이브 중간 보스, 10웨이브 강화 중간 보스, 15웨이브는 5스테이지만 최종 보스(1~4스테이지는 마지막 보스 = 중간 보스 강화판)
+  // 그릇 수·체력·등장 그릇 종류는 예전 10웨이브 곡선을 15웨이브 길이로 늘린 x(1~10)로 계산
+  const WAVES = 15;
   const STAGE_MUL = [1, 0.75, 0.85, 1, 1.1, 1.2];
+  const HPK = (typeof process !== 'undefined' && process.env && +process.env.SD_HPK) || 0.85;
   function waveSpec(w, map, stage = 5) {
-    const count = 7 + Math.round(w * 1.6);
-    const hpMul = (1 + 0.38 * (w - 1) + 0.06 * (w - 1) * (w - 1)) * (map.hpMul || 1) * (STAGE_MUL[stage] || 1);
-    const boss = w === 5 ? map.mid : w === 10 ? (stage >= 5 ? map.final : map.mid) : null;
-    const bossMul = (w === 10 && stage < 5) ? 1.8 : 1;
-    return { pool: map.pool(w), count: boss ? Math.round(count * 0.6) : count, hpMul, boss, bossMul, duration: 12 };
+    const x = 1 + (w - 1) * 9 / (WAVES - 1);
+    const count = 7 + Math.round(x * 1.6);
+    const hpMul = HPK * (1 + 0.38 * (x - 1) + 0.06 * (x - 1) * (x - 1)) * (map.hpMul || 1) * (STAGE_MUL[stage] || 1);
+    const last = w === WAVES;
+    const boss = w === 5 || w === 10 ? map.mid : last ? (stage >= 5 ? map.final : map.mid) : null;
+    const bossMul = w === 10 ? 1.3 : (last && stage < 5) ? 1.8 : 1;
+    const bossLabel = !boss ? '' : w === 5 ? '중간 보스' : w === 10 ? '강화 중간 보스' : stage >= 5 ? '최종 보스' : '마지막 보스';
+    return { pool: map.pool(Math.round(x)), count: boss ? Math.round(count * 0.6) : count, hpMul, boss, bossMul, bossLabel, duration: 12 };
   }
 
   /* ---------- 주방 상황 ---------- */
@@ -1071,7 +1077,7 @@
     SUMMON_LV_COST: [0, 20, 30, 45, 60],
     SUMMON_ODDS: [null, [1, 0, 0], [0.9, 0.1, 0], [0.77, 0.2, 0.03], [0.64, 0.3, 0.06], [0.5, 0.4, 0.1]],
     EXPAND_COST: [20, 30, 45, 60],
-    RULE_WAVES: [3, 5, 8],
+    RULE_WAVES: [3, 5, 10], WAVES,
     BREAK_TIME: 4, STATUS_TIME: 3, BOSS_HP: { mid: 0.25, final: 0.13 }, WOK_CD: 25, TAP_CD: 30
   };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -1358,7 +1364,7 @@
     G.startWave = function () {
       if (G.phase !== 'ready' && G.phase !== 'break') return;
       G.wave++;
-      if (map.situations) { G.sit = G.sitNext; G.sitNext = G.wave < 10 ? rollSit() : null; }
+      if (map.situations) { G.sit = G.sitNext; G.sitNext = G.wave < DATA.WAVES ? rollSit() : null; }
       const spec = DATA.waveSpec(G.wave, map, stage);
       let pool = spec.pool.slice();
       if (G.sit === 'fire') pool = pool.map(([k, w]) => [k, (k === 'wok' || k === 'fryingpan') ? w * 2 + 1 : w]);
@@ -1379,7 +1385,7 @@
       G.shine += bonus;
       G.zones = [];
       ev('waveEnd', { wave: G.wave, bonus });
-      if (G.wave >= 10) { G.phase = 'end'; ev('end', { win: true }); return; }
+      if (G.wave >= DATA.WAVES) { G.phase = 'end'; ev('end', { win: true }); return; }
       if (DATA.RULE_WAVES.includes(G.wave)) {
         const pool = Object.keys(DATA.RULES).filter(k => !G.rules[k]);
         const ch = []; while (ch.length < 3 && pool.length) ch.push(pool.splice(Math.floor(rng() * pool.length), 1)[0]);
@@ -1629,9 +1635,9 @@
     const im = new Image();
     im.onload = () => {
       try {
-        const w = im.naturalWidth || 96, h = im.naturalHeight || 96, k = 2;
+        const w = im.naturalWidth || 96, h = im.naturalHeight || 96, k = w >= 400 ? 1 : 2;   // 맵 배경은 이미 2배 크기
         const c = document.createElement('canvas'); c.width = w * k; c.height = h * k;
-        c.getContext('2d').drawImage(im, 0, 0, w * k, h * k); c.complete = true; IMG[id] = c;
+        c.getContext('2d').drawImage(im, 0, 0, w * k, h * k); c.complete = true; c.src = im.src; IMG[id] = c;
       } catch (err) { }
     };
     im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); IMG[id] = im; return im;
@@ -2019,7 +2025,7 @@
     const run = P.run || { map: r.map, stage: r.stage, cost: 0 }; P.run = null;
     const m = run.map, s = run.stage, ci = CHAPTERS().indexOf(m);
     const out = { win: !!r.win, stars: 0, rewards: [], firstClear: false, chest: null, lvUp: false };
-    const base = (ci + 1) * 40 + s * 10;
+    const base = Math.round(((ci + 1) * 40 + s * 10) * 1.5);   // 15웨이브(예전 10웨이브의 1.5배 길이)
     if (r.win) {
       out.stars = r.hearts >= 16 ? 3 : r.hearts >= 8 ? 2 : 1;
       out.firstClear = M.starsOf(m, s) === 0;
@@ -2029,7 +2035,7 @@
       out.rewards.push({ type: 'chest', tier: out.chest, items: M.openChest(out.chest) });
       P.stats.wins++;
     } else {
-      grant({ tips: Math.round(base * Math.min(10, r.wave || 0) / 20) }, out.rewards, '버틴 만큼');
+      grant({ tips: Math.round(base * Math.min(D().WAVES, r.wave || 0) / (2 * D().WAVES)) }, out.rewards, '버틴 만큼');
       if (run.cost) grant({ coffee: ECON.COFFEE_REFUND }, out.rewards, '환불');
     }
     if (r.newRecipes) grant({ tips: r.newRecipes * ECON.RECIPE_FIRST_TIPS }, out.rewards, '새 비법');
@@ -2162,7 +2168,7 @@
   /* ---------- HUD ---------- */
   function hud() {
     if (!G) return;
-    $('#wave').innerHTML = `W<b>${Math.max(1, G.wave)}</b><i>/10</i>`;
+    $('#wave').innerHTML = `W<b>${Math.max(1, G.wave)}</b><i>/${D.WAVES}</i>`;
     const seg = Math.ceil(G.hearts / 2);
     $('#hearts').innerHTML = Array.from({ length: 10 }, (_, i) => `<span class="${i < seg ? 'on' : ''}"></span>`).join('');
     $('#speed').textContent = 'x' + speed;
@@ -2177,7 +2183,7 @@
       line2 = `${ingName(u.key)} ${'★'.repeat(u.star)}${sts ? ' · ' + sts : ''}`;
     } else if (G.phase === 'ready') { line2 = '재료를 놓고 시작!'; }
     else if (G.phase === 'break') { line2 = `다음 W${G.wave + 1} · ${Math.ceil(G.breakT)}초`; }
-    else if (G.phase === 'wave') { const spec = D.waveSpec(G.wave, G.map, G.stage); line2 = spec.boss ? (G.wave === 5 ? '중간 보스!' : spec.bossMul > 1 ? '강화 중간 보스!' : '최종 보스!') : `남은 그릇 ${G.spawn.list.length + G.dishes.length}`; }
+    else if (G.phase === 'wave') { const spec = D.waveSpec(G.wave, G.map, G.stage); line2 = spec.boss ? spec.bossLabel + '!' : `남은 그릇 ${G.spawn.list.length + G.dishes.length}`; }
     else if (G.phase === 'end') line2 = '영업 끝';
     $('#chalk').innerHTML = `<div class="pen">${line1}</div><div class="jua">${line2}</div>`;
     const rs = Object.keys(G.rules);
@@ -2262,7 +2268,7 @@
     const ds = D.DISHES[boss];
     const weak = (ds.weak || []).map(f => (A.FAMILY[f] || {}).name || ingName(f)).join(', ');
     const res = (ds.resist || []).map(f => (A.FAMILY[f] || {}).name || ingName(f)).join(', ');
-    modal(`${ribbon(ds.boss === 'mid' ? (G.wave === 10 ? '강화 중간 보스 등장' : '중간 보스 등장') : '최종 보스 등장', '#a77bf3')}
+    modal(`${ribbon(D.waveSpec(G.wave, G.map, G.stage).bossLabel + ' 등장', '#a77bf3')}
       <div class="pair">${A.boss(boss, 120)}</div><div class="jua h1">${dishName(boss)}</div>
       <div class="lbl center">${weak ? `약점 <b>${weak}</b>` : ''}${res ? ` · 저항 <b>${res}</b>` : ''}</div>
       ${traitsOf(boss).map(t => `<div class="lbl center dim">${t}</div>`).join('')}
@@ -2527,7 +2533,7 @@
           <div class="sinfo">
             <div class="jua sname"><span class="sno" style="background:${map.color}">${mi + 1}-${st}</span>${map.name}</div>
             <div class="jua ssub">${M.stageName(viewMap, st)}</div>
-            <div class="bossline">${st === 5 ? `<span class="bossic">${A.boss(map.final, 34)}</span>` : ''}<span class="tag" style="background:#a77bf3">W5 ${bname(map.mid)}</span><span class="tag" style="background:${boss.lastStrong ? '#a77bf3' : '#ff6b5b'}">W10 ${bname(boss.last)}${boss.lastStrong ? ' 강화' : ''}</span></div>
+            <div class="bossline">${st === 5 ? `<span class="bossic">${A.boss(map.final, 34)}</span>` : ''}<span class="tag" style="background:#a77bf3">W5·W10 ${bname(map.mid)}</span><span class="tag" style="background:${boss.lastStrong ? '#a77bf3' : '#ff6b5b'}">W15 ${bname(boss.last)}${boss.lastStrong ? ' 강화' : ''}</span></div>
             <div class="sstars2">${starS(stars > 0, 22)}${starS(stars > 1, 22)}${starS(stars > 2, 22)}</div>
           </div>
           ${open ? '' : `<div class="slock"><div>${lock(30)}</div><div class="jua">${lockMsg}</div></div>`}
