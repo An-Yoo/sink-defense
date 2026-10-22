@@ -1487,6 +1487,30 @@
       return { id: P[ku.branch] };
     };
     G.canHybrid = (a, b) => { const h = G.hybridOf(a, b); return !!(h && (h.id || h.needBranch != null)); };
+    // i칸 재료와 합칠 수 있는 칸들: [{ j, kind: 'merge' | 'recipe' | 'branch', id, known }]
+    G.partnersOf = function (i) {
+      const A = G.cells[i], a = A && A.unit; if (!a || a.jam > 0) return [];
+      const out = [];
+      G.cells.forEach((c, j) => {
+        const b = c.unit; if (j === i || !b || b.jam > 0) return;
+        if (sameKind(a, b) && a.star < 4) { out.push({ j, kind: 'merge' }); return; }
+        const h = G.hybridOf(a, b);
+        if (h && h.id) out.push({ j, kind: 'recipe', id: h.id, known: !!codex.recipes[h.id] });
+        else if (h && h.needBranch != null) out.push({ j, kind: 'branch' });
+      });
+      return out;
+    };
+    // 판 전체 표시용: 칸 번호 → { merge, recipe: 'new' | 'known' | null }
+    G.hints = function () {
+      const m = new Map();
+      G.cells.forEach((c, i) => {
+        if (!c.unit) return;
+        const ps = G.partnersOf(i); if (!ps.length) return;
+        const rec = ps.filter(p => p.kind === 'recipe');
+        m.set(i, { merge: ps.some(p => p.kind === 'merge'), recipe: rec.some(p => !p.known) ? 'new' : rec.length ? 'known' : null });
+      });
+      return m;
+    };
     function sameKind(a, b) { return a.key === b.key && !!a.recipe === !!b.recipe && a.star === b.star; }
     // 이미 비법 노트에 있는 비법만 일괄 합성에서 자동으로 섞는다 (처음 보는 비법은 직접 끌어서 발견)
     function knownHybridPairs(limit = 99) {
@@ -1810,9 +1834,24 @@
         ctx.font = '13px Jua'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('탭!', c.x + 41, c.y + 44);
       }
     }
+    // 합칠 수 있음 표시: 오른쪽 아래 = 같은 재료 짝(별 올리기), 왼쪽 아래 = 살림 비법 짝(새 비법은 보라 ?, 아는 비법은 노랑 플라스크)
+    const hint = u && !dragging && !u.jam && ui.hints && ui.hints.get(i);
+    if (hint) {
+      const t = performance.now() / 1000;
+      if (hint.merge) { const x = c.x + 49, y = c.y + 38; ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fillStyle = '#ffd84d'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - 3.5, y + 1.5); ctx.lineTo(x, y - 2.5); ctx.lineTo(x + 3.5, y + 1.5); ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); ctx.lineCap = 'butt'; }
+      if (hint.recipe) {
+        const x = c.x + 7, y = c.y + 38, nw = hint.recipe === 'new', s = nw ? 1 + 0.12 * Math.sin(t * 6) : 1;
+        ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+        ctx.beginPath(); ctx.arc(0, 0, 7.5, 0, Math.PI * 2); ctx.fillStyle = nw ? '#a77bf3' : '#ffc93c'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke();
+        if (nw) outlinedText(ctx, '?', 0, 0.5, 11, '#fff', INK, 2.5);
+        else { ctx.beginPath(); ctx.moveTo(-1.5, -4); ctx.lineTo(-1.5, -1); ctx.lineTo(-4, 3.5); ctx.lineTo(4, 3.5); ctx.lineTo(1.5, -1); ctx.lineTo(1.5, -4); ctx.closePath(); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke(); }
+        ctx.restore();
+      }
+    }
     rr(ctx, c.x, c.y, 56, 56, 12);
     let bw = 2, bc = INK;
     if (ui.sel === i) { bw = 4; bc = '#ff9f1c'; }
+    if (!ui.drag && ui.selPartners && ui.selPartners.some(p => p.j === i)) { bw = 3.5; bc = '#ffb800'; }
     if (ui.drag && ui.dragTargets && ui.dragTargets.has(i)) { bw = 4; bc = '#ffb800'; }
     if (ui.drag && ui.hover === i) { bw = 4; bc = '#2ec4b6'; }
     ctx.lineWidth = bw; ctx.strokeStyle = bc; ctx.stroke();
@@ -1875,6 +1914,19 @@
       const at = ui.drag && ui.hover != null && G.cells[ui.hover] ? G.cells[ui.hover] : c;
       const r = G.rangeOf(at, c.unit);
       ctx.beginPath(); ctx.arc(at.cx, at.cy, r, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,184,0,0.08)'; ctx.fill(); ctx.setLineDash([6, 6]); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,159,28,0.8)'; ctx.stroke(); ctx.setLineDash([]);
+    }
+    if (!ui.drag && ui.sel != null && ui.selPartners && ui.selPartners.length && G.cells[ui.sel]) {
+      const a = G.cells[ui.sel];
+      ctx.save(); ctx.setLineDash([6, 5]); ctx.lineDashOffset = -performance.now() / 40; ctx.lineCap = 'round';
+      for (const p of ui.selPartners) {
+        const b = G.cells[p.j]; const mx = (a.cx + b.cx) / 2, my = (a.cy + b.cy) / 2 - 18;
+        ctx.strokeStyle = p.kind === 'recipe' ? (p.known ? '#e0a800' : '#8b5cf6') : p.kind === 'branch' ? '#ff6b5b' : '#ff9f1c';
+        const col = ctx.strokeStyle; ctx.beginPath(); ctx.moveTo(a.cx, a.cy); ctx.quadraticCurveTo(mx, my, b.cx, b.cy);
+        ctx.setLineDash([]); ctx.lineWidth = 7; ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.stroke();
+        ctx.setLineDash([7, 5]); ctx.lineWidth = 4; ctx.strokeStyle = col; ctx.stroke();
+        ctx.setLineDash([]); ctx.beginPath(); ctx.arc(b.cx, b.cy, 6, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke(); ctx.setLineDash([7, 5]);
+      }
+      ctx.restore();
     }
     for (const d of G.dishes) drawDish(ctx, G, d);
     for (const f of G.fx) drawFx(ctx, f);
@@ -2601,6 +2653,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
         if (n >= 12) acc = 0;
       }
       if (SD.sound) SD.sound.tick(G);
+      ui.hintT = (ui.hintT || 0) - real; if (ui.hintT <= 0) { ui.hintT = 0.15; ui.hints = G.hints(); ui.selPartners = ui.sel != null && !ui.drag ? G.partnersOf(ui.sel) : null; }
       if (G.events.length) drainEvents();
       SD.render(ctx, G, ui);
       hudT -= real; if (hudT <= 0) { hud(); hudT = 0.1; }
