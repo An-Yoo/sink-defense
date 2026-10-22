@@ -1121,7 +1121,7 @@
     SUMMON_LV_COST: [0, 20, 30, 45, 60],
     SUMMON_ODDS: [null, [1, 0, 0], [0.9, 0.1, 0], [0.77, 0.2, 0.03], [0.64, 0.3, 0.06], [0.5, 0.4, 0.1]],
     EXPAND_COST: [20, 30, 45, 60],
-    RULE_WAVES: [3, 7, 11], WAVES, MID_WAVE, GUESTS, GUEST_COUNT, rollGuests,
+    RULE_WAVES: [5], WAVES, MID_WAVE, GUESTS, GUEST_COUNT, rollGuests,
     BREAK_TIME: 4, STATUS_TIME: 3, BOSS_HP: { mid: 0.25, final: 0.13 }, WOK_CD: 25, TAP_CD: 30
   };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -2474,7 +2474,7 @@
     else if (G.phase === 'end') line2 = '영업 끝';
     $('#chalk').innerHTML = `<div class="pen">${line1}</div><div class="jua">${line2}</div>`;
     const rs = Object.keys(G.rules);
-    $('#receipt').innerHTML = (G.guests && G.guests.length ? `<div class="rl gl">${G.guests.map(g => `<span class="tago">${D.GUESTS[g.id].name}</span>`).join('')}</div>` : '') + `<div class="rt"><span class="tagr">주방 규칙</span></div>` + (rs.length ? rs.map(k => `<div class="rl">${D.RULES[k].name}</div>`).join('') : `<div class="rl dim">3웨이브 뒤에 골라요</div>`);
+    $('#receipt').innerHTML = (G.guests && G.guests.length ? `<div class="rl gl">${G.guests.map(g => `<span class="tago">${D.GUESTS[g.id].name}</span>`).join('')}</div>` : '') + `<div class="rt"><span class="tagr">주방 규칙</span></div>` + (rs.length ? rs.map(k => `<div class="rl">${D.RULES[k].name}</div>`).join('') : `<div class="rl dim">${D.RULE_WAVES[0]}웨이브 뒤에 골라요</div>`);
     const syn = G.synergy(); const need = { acid: [2, 3], alk: [2, 3], soap: [2, 3], water: [2, 3], scrub: [2, 4] };
     $('#syn').innerHTML = ['acid', 'alk', 'scrub', 'water', 'soap'].map(f => { const n = syn[f], on = n >= need[f][0]; return `<div class="tok ${on ? 'on' : ''}" style="${on ? `background:${A.FAMILY[f].color}` : ''}">${A.FAMILY[f].name}<i>${n}/${n >= need[f][0] ? need[f][1] : need[f][0]}</i></div>`; }).join('');
     const R = D.PAIRS[G.recipeToday], known = !!(codex.recipes[R.A] || codex.recipes[R.B]);
