@@ -992,10 +992,12 @@
   const WAVES = 15, MID_WAVE = 7;
   const STAGE_MUL = [1, 0.75, 0.82, 0.93, 1.0, 1.0];   // 까다로운 손님(2~5스테이지) 반영, 10웨이브 보스를 없앤 뒤 다시 맞춤. 예전 0.75/0.85/1.0/1.1/1.2   // 2026-10-22: 까다로운 손님(2~5스테이지)이 붙는 만큼 체력 배율을 낮춤. 예전 0.75/0.85/1.0/1.1/1.2. 시뮬(Lv3, 30판)로 스테이지가 오를수록 승률이 내려가게 맞춤
   const HPK = (typeof process !== 'undefined' && process.env && +process.env.SD_HPK) || 0.85;
+  // 주방 규칙(5웨이브 뒤)에 대가가 없어진 만큼 6웨이브부터 그릇 체력을 올림. 시뮬로 대가 있던 때 승률에 맞춤
+  const LATE_HP = (typeof process !== 'undefined' && process.env && +process.env.SD_LATEHP) || 1.1;
   function waveSpec(w, map, stage = 5) {
     const x = 1 + (w - 1) * 9 / (WAVES - 1);
     const count = 7 + Math.round(x * 1.6);
-    const hpMul = HPK * (1 + 0.38 * (x - 1) + 0.06 * (x - 1) * (x - 1)) * (map.hpMul || 1) * (STAGE_MUL[stage] || 1);
+    const hpMul = HPK * (1 + 0.38 * (x - 1) + 0.06 * (x - 1) * (x - 1)) * (map.hpMul || 1) * (STAGE_MUL[stage] || 1) * (w > 5 ? LATE_HP : 1);
     const last = w === WAVES;
     const boss = w === MID_WAVE ? map.mid : last ? (stage >= 5 ? map.final : map.mid) : null;
     const bossMul = (last && stage < 5) ? 1.8 : 1;
