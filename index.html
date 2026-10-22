@@ -1852,7 +1852,7 @@
     { coffee: 10, chest: 'silver' }, { coffee: 10, tips: 400 }, { coffee: 10, chest: 'gold' }
   ];
   const PRODUCTS = {
-    starter: { name: '스타터팩', price: 2900, once: true, desc: '커피 50 · 팁 3,000 · 금 상자 2 · 커피 최대치 +10', items: { coffee: 50, tips: 3000, chest: 'gold', chest2: 'gold', maxPlus: 10 } },
+    starter: { name: '스타터팩', price: 2900, once: true, desc: '커피 50 · 팁 3,000 · 덱 재료 조각 각 8 · 커피 최대치 +10', items: { coffee: 50, tips: 3000, deckShards: 8, maxPlus: 10 } },
     coffee50: { name: '커피 50', price: 1200, desc: '바로 충전', items: { coffee: 50 } },
     maxplus: { name: '커피 최대치 +10', price: 3300, desc: '영구', items: { maxPlus: 10 } },
     adfree: { name: '광고 제거', price: 5500, once: true, desc: '광고 없이 광고 보상 바로 받기', items: { adFree: true } }
@@ -1920,12 +1920,13 @@
     if (items.tips) { P.tips += items.tips; out.push({ type: 'tips', n: items.tips }); }
     if (items.maxPlus) { P.maxPlus = (P.maxPlus || 0) + items.maxPlus; out.push({ type: 'maxPlus', n: items.maxPlus }); }
     if (items.adFree) { P.adFree = true; out.push({ type: 'adFree' }); }
+    if (items.deckShards) { for (const k of P.deck) addShards(k, items.deckShards); out.push({ type: 'deckShards', n: items.deckShards, keys: P.deck.slice() }); }
     for (const k of ['chest', 'chest2']) if (items.chest && items[k]) out.push({ type: 'chest', tier: items[k], items: M.openChest(items[k]) });
     if (label) for (let i = n0; i < out.length; i++) out[i].label = label;
     return out;
   }
   M.grant = grant;
-  const addShards = (k, n) => { P.shards[k] = (P.shards[k] || 0) + n; };
+  function addShards(k, n) { P.shards[k] = (P.shards[k] || 0) + n; }
 
   /* ---------- 재료 ---------- */
   M.allIngs = () => Object.keys(ART().ING);
@@ -2428,7 +2429,7 @@
   /* ---------- 보상 표시 ---------- */
   function rewardChips(rw) {
     const lb = (r) => r.label ? `<small class="rwl">${r.label}</small>` : '';
-    return rw.filter(r => r.type !== 'chest').map(r => lb(r) + (r.type === 'coffee' ? `<span class="rw">${coffee(18)}+${r.n}</span>` : r.type === 'tips' ? `<span class="rw">${tip(18)}+${num(r.n)}</span>` : r.type === 'maxPlus' ? `<span class="rw">${coffee(18)}최대치 +${r.n}</span>` : r.type === 'adFree' ? `<span class="rw">광고 제거</span>` : '')).join('');
+    return rw.filter(r => r.type !== 'chest').map(r => lb(r) + (r.type === 'coffee' ? `<span class="rw">${coffee(18)}+${r.n}</span>` : r.type === 'tips' ? `<span class="rw">${tip(18)}+${num(r.n)}</span>` : r.type === 'maxPlus' ? `<span class="rw">${coffee(18)}최대치 +${r.n}</span>` : r.type === 'adFree' ? `<span class="rw">광고 제거</span>` : r.type === 'deckShards' ? r.keys.map(k => `<span class="rw">${shard(k, 18)}x${r.n}</span>`).join('') : '')).join('');
   }
   function chestHtml(c) {
     return `<div class="chestbox"><div style="display:flex;align-items:center;gap:8px">${box(c.tier, 44)}<span class="jua" style="font-size:17px">${M.CHESTS[c.tier].name}</span><span class="link" data-act="odds" data-tier="${c.tier}">확률 보기</span></div>
@@ -2593,7 +2594,7 @@
         ${WEB ? '' : `<div class="card fcard ${d.adCoffee >= E.AD_COFFEE_CAP ? 'used' : ''}" data-act="adCoffee">${coffee(44)}<span class="jua">커피 +${E.AD_COFFEE}</span>${adBtn(E.AD_COFFEE_CAP, E.AD_COFFEE_CAP - d.adCoffee)}</div>
         <div class="card fcard ${d.adTip >= E.AD_TIP_CAP ? 'used' : ''}" data-act="adTip">${tip(44)}<span class="jua">팁 +${E.AD_TIP}</span>${adBtn(E.AD_TIP_CAP, E.AD_TIP_CAP - d.adTip)}</div>`}
       </div>
-      <div class="sec" style="margin-top:12px">조각 가게 <small id="lShopT">${mmss(M.shopNextMs())} 뒤 바뀜</small><span class="btn sm" style="margin-left:auto;width:auto;padding:0 8px" data-act="reroll">새로고침 ${tip(14)}${E.SHOP_REROLL}</span></div>
+      <div class="sec" style="margin-top:12px">조각 가게 <small id="lShopT">${mmss(M.shopNextMs())} 뒤 바뀜</small><span class="btn sm" style="margin-left:auto;width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="reroll">새로고침 ${tip(14)}${E.SHOP_REROLL}</span></div>
       <div class="g4">${P.shop.slots.map((s, i) => { const bought = P.shop.bought.includes(i), un = M.isUnlocked(s.k); return `<div class="card scard ${bought ? 'used' : ''}" data-act="shopBuy" data-i="${i}">${un ? '' : '<span class="tag newtag" style="background:#a77bf3">새 재료</span>'}${shard(s.k, 38)}<span>${A.ING[s.k].name} x${s.n}</span><div class="btn sm">${bought ? '구매 완료' : tip(14) + num(s.price)}</div></div>`; }).join('')}</div>
       ${WEB ? '' : `<div class="sec" style="margin-top:12px">상품 <small>토스 결제 연결 전 · 지금은 테스트로 바로 지급</small></div>
       ${P.bought.starter ? '' : `<div class="card pstarter" data-act="buy" data-id="starter"><span class="tag" style="position:absolute;top:-9px;left:12px;background:#ff6b5b">한 번만</span>${box('gold', 54)}<div style="flex:1"><div class="jua" style="font-size:18px">스타터팩</div><div class="pdesc">${M.PRODUCTS.starter.desc}</div></div><div class="btn" style="height:42px;width:78px;background:#ffc93c">${num(M.PRODUCTS.starter.price)}원</div></div>`}
@@ -2616,7 +2617,7 @@
         <div class="lbl dim" style="margin-top:6px">게임을 꺼 둬도 최대 ${E.KITCHEN_CAP_H}시간까지 쌓여요</div>
       </div>
       <div class="sec" style="margin-top:14px">소탕 <small>별 3개 스테이지 · 바로 보상 (나무 상자)</small></div>
-      ${sweeps.length ? sweeps.map(([m, s]) => `<div class="t2row"><span class="tag" style="background:${D.MAPS[m].color}">${D.MAPS[m].name}</span><span class="jua">${D.MAP_ORDER.indexOf(m) + 1}-${s} ${M.stageName(m, s)}</span><div class="btn sm" style="margin-left:auto;width:auto;padding:0 10px" data-act="sweepAt" data-m="${m}" data-s="${s}">소탕 ${M.isFree(m) ? '무료' : coffee(14) + '5'}</div></div>`).join('') : `<div class="lbl dim" style="margin-top:8px">아직 별 3개 스테이지가 없어요. 만족도를 16 이상 남기고 클리어하면 별 3개예요.</div>`}
+      ${sweeps.length ? sweeps.map(([m, s]) => `<div class="t2row"><span class="tag" style="background:${D.MAPS[m].color}">${D.MAPS[m].name}</span><span class="jua">${D.MAP_ORDER.indexOf(m) + 1}-${s} ${M.stageName(m, s)}</span><div class="btn sm" style="margin-left:auto;width:auto;padding:0 10px;flex-direction:row;gap:3px;white-space:nowrap" data-act="sweepAt" data-m="${m}" data-s="${s}">소탕 ${M.isFree(m) ? '무료' : coffee(14) + '5'}</div></div>`).join('') : `<div class="lbl dim" style="margin-top:8px">아직 별 3개 스테이지가 없어요. 만족도를 16 이상 남기고 클리어하면 별 3개예요.</div>`}
     </div>`;
   }
 
