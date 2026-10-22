@@ -145,7 +145,7 @@
   .rcard.unk,.t2row.unk{border-style:dashed;border-color:rgba(59,47,47,.35);background:rgba(255,255,255,.6);box-shadow:none;color:rgba(59,47,47,.5);cursor:default}
   .t2row{display:flex;align-items:center;gap:7px;min-height:46px;padding:6px 9px;border:2px solid var(--ink);border-radius:10px;background:#fff;box-shadow:0 2px 0 var(--ink);margin-top:6px;flex-wrap:wrap;cursor:pointer}
   .t2row .jua{font-size:15px}.t2row small{flex-basis:100%;font-size:11px;font-weight:700;opacity:.7}
-  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+  .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}
   .fcard{height:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 7px;cursor:pointer;text-align:center}.fcard .jua{font-size:14px}.fcard small{font-size:10px;font-weight:800;line-height:1.2}
   .fcard.hot{background:#fff6b8}.fcard.used,.scard.used{opacity:.5}
   .scard{position:relative;height:116px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 5px;box-shadow:0 3px 0 var(--ink);cursor:pointer;font-size:11.5px;font-weight:800;text-align:center}
@@ -196,6 +196,9 @@
   @keyframes bL{30%{transform:translateX(-14px)}}@keyframes bR{30%{transform:translateX(14px)}}@keyframes bU{30%{transform:translateY(-14px)}}@keyframes bD{30%{transform:translateY(14px)}}
   .stageview.left{animation:inL .22s ease-out}.stageview.right{animation:inR .22s ease-out}.stageview.up{animation:inU .22s ease-out}.stageview.down{animation:inD .22s ease-out}
   .stageview.bump-left{animation:bL .25s}.stageview.bump-right{animation:bR .25s}.stageview.bump-up{animation:bU .25s}.stageview.bump-down{animation:bD .25s}
+  .sname2{min-height:2.5em;max-width:100%;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;word-break:keep-all}
+  .btn.sm.prow{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:3px}
+  .fwide{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer}.fwide.used{opacity:.6}
   .dim{opacity:.55}
   .rwl{font-size:10px;font-weight:800;opacity:.6;margin-right:-3px;align-self:center}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.row2 .btn,.sheet>.btn:not(.big){height:44px}
@@ -2590,13 +2593,13 @@
     const adBtn = (n, left) => `<div class="btn sm" style="flex-direction:column;gap:0;line-height:1">${P.adFree ? '바로 받기' : '광고 보기'}<small>${left}/${n} 남음</small></div>`;
     return `<div class="lscroll">
       <div class="sec">오늘의 무료 <small>매일 오전 5시 초기화</small></div>
-      <div class="g3">
-        <div class="card fcard ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 50)}<span class="jua">무료 상자</span><div class="btn sm ${d.freeChest ? '' : 'go'}">${d.freeChest ? '내일 또' : '받기'}</div></div>
+      <div class="${WEB ? '' : 'g3'}">
+        ${WEB ? `<div class="card fwide ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 50)}<div style="flex:1"><div class="jua" style="font-size:18px">무료 상자</div><div class="pdesc">재료 조각과 팁이 들어 있어요</div></div><div class="btn sm ${d.freeChest ? '' : 'go'}" style="width:84px;height:36px">${d.freeChest ? '내일 또' : '받기'}</div></div>` : `<div class="card fcard ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 50)}<span class="jua">무료 상자</span><div class="btn sm ${d.freeChest ? '' : 'go'}">${d.freeChest ? '내일 또' : '받기'}</div></div>`}
         ${WEB ? '' : `<div class="card fcard ${d.adCoffee >= E.AD_COFFEE_CAP ? 'used' : ''}" data-act="adCoffee">${coffee(44)}<span class="jua">커피 +${E.AD_COFFEE}</span>${adBtn(E.AD_COFFEE_CAP, E.AD_COFFEE_CAP - d.adCoffee)}</div>
         <div class="card fcard ${d.adTip >= E.AD_TIP_CAP ? 'used' : ''}" data-act="adTip">${tip(44)}<span class="jua">팁 +${E.AD_TIP}</span>${adBtn(E.AD_TIP_CAP, E.AD_TIP_CAP - d.adTip)}</div>`}
       </div>
       <div class="sec" style="margin-top:12px">조각 가게 <small id="lShopT">${mmss(M.shopNextMs())} 뒤 바뀜</small><span class="btn sm" style="margin-left:auto;width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="reroll">새로고침 ${tip(14)}${E.SHOP_REROLL}</span></div>
-      <div class="g4">${P.shop.slots.map((s, i) => { const bought = P.shop.bought.includes(i), un = M.isUnlocked(s.k); return `<div class="card scard ${bought ? 'used' : ''}" data-act="shopBuy" data-i="${i}">${un ? '' : '<span class="tag newtag" style="background:#a77bf3">새 재료</span>'}${shard(s.k, 38)}<span>${A.ING[s.k].name} x${s.n}</span><div class="btn sm">${bought ? '구매 완료' : tip(14) + num(s.price)}</div></div>`; }).join('')}</div>
+      <div class="g4">${P.shop.slots.map((s, i) => { const bought = P.shop.bought.includes(i), un = M.isUnlocked(s.k); return `<div class="card scard ${bought ? 'used' : ''}" data-act="shopBuy" data-i="${i}">${un ? '' : '<span class="tag newtag" style="background:#a77bf3">새 재료</span>'}${shard(s.k, 38)}<span class="sname2">${A.ING[s.k].name} x${s.n}</span><div class="btn sm prow">${bought ? '구매 완료' : tip(14) + num(s.price)}</div></div>`; }).join('')}</div>
       ${WEB ? '' : `<div class="sec" style="margin-top:12px">상품 <small>토스 결제 연결 전 · 지금은 테스트로 바로 지급</small></div>
       ${P.bought.starter ? '' : `<div class="card pstarter" data-act="buy" data-id="starter"><span class="tag" style="position:absolute;top:-9px;left:12px;background:#ff6b5b">한 번만</span>${box('gold', 54)}<div style="flex:1"><div class="jua" style="font-size:18px">스타터팩</div><div class="pdesc">${M.PRODUCTS.starter.desc}</div></div><div class="btn" style="height:42px;width:78px;background:#ffc93c">${num(M.PRODUCTS.starter.price)}원</div></div>`}
       <div class="g3" style="margin-top:10px">${['coffee50', 'maxplus', 'adfree'].map(id => { const pr = M.PRODUCTS[id], own = pr.once && P.bought[id]; const ic = id === 'coffee50' ? coffee(40) : id === 'maxplus' ? `<span style="position:relative">${coffee(40)}<span class="jua plusbadge">+10</span></span>` : `<svg viewBox="0 0 24 24" width="40" height="40"><rect x="3" y="5" width="18" height="13" rx="2" fill="#fff" ${S}/><path d="M10 9l5 2.5-5 2.5z" fill="#ff6b5b" ${S} stroke-width="1.6"/><path d="M4 20L20 4" stroke="#ff6b5b" stroke-width="3" stroke-linecap="round"/></svg>`; return `<div class="card fcard ${own ? 'used' : ''}" data-act="buy" data-id="${id}">${ic}<span class="jua">${pr.name}</span><small class="dim">${pr.desc}</small><div class="btn sm">${own ? '보유 중' : num(pr.price) + '원'}</div></div>`; }).join('')}</div>`}
