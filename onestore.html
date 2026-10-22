@@ -1239,7 +1239,15 @@
       if (!codex.combos[id]) { codex.combos[id] = true; ev('comboFirst', { combo: id }); }
       if ((G.comboTextCd[id] || 0) > 0) return;
       G.comboTextCd[id] = 0.8;
-      fx({ type: 'text', x: p.x, y: p.y - 26, text: DATA.COMBOS[id].name, color: DATA.COMBOS[id].color, big: true, life: 0.9 });
+      const text = DATA.COMBOS[id].name, hw = text.length * 11 + 6;
+      const x = Math.max(hw + 4, Math.min(386 - hw, p.x));
+      let y = Math.max(196, p.y - 26);
+      // 떠 있는 글자는 끝까지 18px 올라가므로, 그 끝 위치보다 30px 위에 놓는다
+      for (let i = 0; i < 4; i++) {
+        const hit = G.fx.find(f => f.type === 'text' && Math.abs(f.x - x) < hw + (f.hw || hw) && y > f.y - 18 - 30 && y < f.y + 30);
+        if (!hit) break; y = hit.y - 18 - 30;
+      }
+      fx({ type: 'text', x, y, hw, text, color: DATA.COMBOS[id].color, big: true, life: 0.9 });
     }
     function tryCombos(dish, cell, base) {
       if (dish.dead) return;
@@ -1262,7 +1270,9 @@
       }
       if (st.foam > 0 && st.soak > 0) {
         const life = (4 + (syn.soap >= 3 ? 2 : syn.soap >= 2 ? 1 : 0)) * (G.rules.rag ? 2 : 1) * (br.puddleMul || 1);
-        G.zones.push({ x: p.x, y: p.y, r: 44, t: life, life, dps: base * 1.4 * mul });
+        const dps = base * 1.4 * mul, near0 = G.zones.find(z => dist(z, p) < 30);
+        if (near0) { near0.t = Math.max(near0.t, life); near0.life = Math.max(near0.life, life); near0.dps = Math.max(near0.dps, dps); }
+        else { G.zones.push({ x: p.x, y: p.y, r: 44, t: life, life, dps }); if (G.zones.length > 16) G.zones.sort((a, b) => b.t - a.t).length = 16; }
         if (consume) { st.foam = 0; st.soak = 0; }
         comboText('puddle', p);
       }
@@ -1615,7 +1625,18 @@
   const S = `stroke="${INK}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"`;
 
   const IMG = {};
-  function svgImg(id, svg) { if (IMG[id]) return IMG[id]; const im = new Image(); im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); IMG[id] = im; return im; }
+  function svgImg(id, svg) {
+    if (IMG[id]) return IMG[id];
+    const im = new Image();
+    im.onload = () => {
+      try {
+        const w = im.naturalWidth || 96, h = im.naturalHeight || 96, k = 2;
+        const c = document.createElement('canvas'); c.width = w * k; c.height = h * k;
+        c.getContext('2d').drawImage(im, 0, 0, w * k, h * k); c.complete = true; IMG[id] = c;
+      } catch (err) { }
+    };
+    im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); IMG[id] = im; return im;
+  }
   function img(kind, key) {
     const A = g.SD_ART;
     if (kind === 'ing') return svgImg('ing:' + key, A.ing(key, 96));
@@ -1789,7 +1810,7 @@
     else if (f.type === 'chain') { ctx.lineJoin = 'round'; for (const [w, c] of [[6, INK], [3, '#bfe9ff']]) { ctx.beginPath(); f.pts.forEach((p, i) => { if (!i) ctx.moveTo(p.x, p.y); else { const q = f.pts[i - 1]; ctx.lineTo((p.x + q.x) / 2 + 6, (p.y + q.y) / 2 - 6); ctx.lineTo(p.x, p.y); } }); ctx.lineWidth = w; ctx.strokeStyle = c; ctx.stroke(); } f.pts.forEach(p => ctx.drawImage(img('fx', 'crystal'), p.x - 8, p.y - 9, 16, 16)); }
     else if (f.type === 'shard') { const x = f.x1 + (f.x2 - f.x1) * pr, y = f.y1 + (f.y2 - f.y1) * pr; ctx.translate(x, y); ctx.rotate(Math.atan2(f.y2 - f.y1, f.x2 - f.x1) + Math.PI / 2); ctx.drawImage(img('fx', 'shard'), -9, -12, 18, 24); }
     else if (f.type === 'oil') { const mx = (f.x1 + f.x2) / 2, my = Math.min(f.y1, f.y2) - 30, u = 1 - pr; const x = u * u * f.x1 + 2 * u * pr * mx + pr * pr * f.x2, y = u * u * f.y1 + 2 * u * pr * my + pr * pr * f.y2; ctx.globalAlpha = 1; ctx.drawImage(img('fx', 'oil'), x - 9, y - 9, 18, 18); }
-    else if (f.type === 'text') { const s = f.big ? 22 : 14; const tx = Math.max(70, Math.min(320, f.x)); outlinedText(ctx, f.text, tx, Math.max(200, f.y) - (1 - k) * 18, s, f.color || '#fff', INK, 6); }
+    else if (f.type === 'text') { const s = f.big ? 22 : 14; outlinedText(ctx, f.text, f.x, f.y - (1 - k) * 18, s, f.color || '#fff', INK, 6); }
     else if (f.type === 'coin') { outlinedText(ctx, f.text, f.x, f.y - (1 - k) * 22, 14, '#ffd84d', INK, 4); }
     else if (f.type === 'spark') { const s = 22 + pr * 16; ctx.translate(f.x, f.y); ctx.rotate(pr * 1.2); ctx.drawImage(img('fx', 'sparkle'), -s / 2, -s / 2, s, s); }
     else if (f.type === 'pop') { ctx.strokeStyle = f.merge ? '#ffb800' : '#fff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(f.x, f.y, 20 + (1 - k) * 18, 0, Math.PI * 2); ctx.stroke(); }
