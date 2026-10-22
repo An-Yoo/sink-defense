@@ -199,6 +199,21 @@
   .sname2{min-height:2.5em;max-width:100%;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;word-break:keep-all}
   .btn.sm.prow{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:3px}
   .fwide{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer}.fwide.used{opacity:.6}
+  /* 소리 토글 */
+  .tgls{display:flex;gap:8px;margin:10px 0 4px}.tgl{flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border:2.5px solid var(--ink);border-radius:12px;background:#fff;font-family:Jua;font-size:16px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+  .tgl i{width:38px;height:22px;border:2px solid var(--ink);border-radius:11px;background:#e2d8c8;position:relative}.tgl i::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-sizing:border-box;transition:left .15s}
+  .tgl.on i{background:#5cc96b}.tgl.on i::after{left:18px}
+  /* 첫 영업 버튼 */
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}.startbtn.pulse{animation:pulse 1.1s ease-in-out infinite}
+  /* 처음 하는 사람 안내 */
+  #tut{position:absolute;inset:0;z-index:15;pointer-events:none;display:none}
+  #tut .tring{position:absolute;border:3px solid #ff6b5b;border-radius:16px;box-shadow:0 0 0 3px #fff;animation:tring 1s ease-in-out infinite}
+  @keyframes tring{50%{transform:scale(1.06)}}
+  #tut .tarrow{position:absolute;left:0;top:0}
+  #tut .thand{position:absolute;filter:drop-shadow(0 2px 0 rgba(59,47,47,.5))}
+  #tut .tbub{position:absolute;left:24px;right:24px;background:#fffdf6;border:3px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink);padding:10px 14px 9px;font-size:15px;font-weight:700;line-height:1.4;pointer-events:auto;display:flex;align-items:flex-end;gap:10px}
+  #tut .tbub .tt{flex:1}#tut .tbub b{color:#e8653f}
+  #tut .tskip{font-size:11px;font-weight:800;opacity:.5;white-space:nowrap;cursor:pointer;padding:2px 0 2px 6px}
   .dim{opacity:.55}
   .rwl{font-size:10px;font-weight:800;opacity:.6;margin-right:-3px;align-self:center}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.row2 .btn,.sheet>.btn:not(.big){height:44px}
@@ -1473,13 +1488,37 @@
     };
     G.canHybrid = (a, b) => { const h = G.hybridOf(a, b); return !!(h && (h.id || h.needBranch != null)); };
     function sameKind(a, b) { return a.key === b.key && !!a.recipe === !!b.recipe && a.star === b.star; }
+    // 이미 비법 노트에 있는 비법만 일괄 합성에서 자동으로 섞는다 (처음 보는 비법은 직접 끌어서 발견)
+    function knownHybridPairs(limit = 99) {
+      const list = units(), used = new Set(), out = [];
+      for (let i = 0; i < list.length && out.length < limit; i++) {
+        if (used.has(i)) continue;
+        for (let j = i + 1; j < list.length; j++) {
+          if (used.has(j)) continue;
+          const h = G.hybridOf(list[i].unit, list[j].unit);
+          if (h && h.id && codex.recipes[h.id]) { used.add(i); used.add(j); out.push([G.cells.indexOf(list[i]), G.cells.indexOf(list[j])]); break; }
+        }
+      }
+      return out;
+    }
     G.mergePairs = function () {
       const groups = {};
       for (const c of units()) { const u = c.unit; if (u.star >= 4) continue; const k = u.key + '|' + u.star; groups[k] = (groups[k] || 0) + 1; }
-      return Object.values(groups).reduce((s, n) => s + Math.floor(n / 2), 0);
+      return Object.values(groups).reduce((s, n) => s + Math.floor(n / 2), 0) + knownHybridPairs().length;
     };
     function mergeInto(B, a, b) { B.unit = { ...b, star: b.star + 1, cd: 0.3, jam: 0, branch: b.branch || a.branch }; }
     G.bulkMerge = function () {
+      let merged = 0, recipes = 0;
+      for (let guard = 0; guard < 60; guard++) {
+        merged += sameMerges();
+        const p = knownHybridPairs(1)[0];
+        if (!p) break;
+        if (G.move(p[1], p[0]) === 'recipe') recipes++; else break;
+      }
+      G.lastBulk = { merged, recipes };
+      return merged + recipes;
+    };
+    function sameMerges() {
       let merged = 0, again = true;
       while (again) {
         again = false;
@@ -2127,6 +2166,150 @@
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
+<script>
+/* 싱크대 수비대 - 소리 (파일 없이 WebAudio로 합성)
+ * 효과음: 버튼, 소환, 합성, 비법, 그릇 닦기, 콤보 5종, 하트 깎임, 보스, 웨이브, 승패
+ * 배경음: 로비(느리고 가벼움) / 영업(조금 빠름) 두 가지 루프
+ * 설정: localStorage 'sd.sound.v1' = { sfx, bgm } */
+(function (g) {
+  const SD = g.SD = g.SD || {};
+  const KEY = 'sd.sound.v1';
+  let cfg = { sfx: true, bgm: true };
+  try { cfg = Object.assign(cfg, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (e) { } };
+
+  const AC = g.AudioContext || g.webkitAudioContext;
+  let ctx = null, sfxBus = null, bgmBus = null, noiseBuf = null;
+  function ensure() {
+    if (!AC) return null;
+    if (!ctx) {
+      ctx = new AC();
+      const master = ctx.createDynamicsCompressor(); master.connect(ctx.destination);
+      sfxBus = ctx.createGain(); sfxBus.gain.value = cfg.sfx ? 0.9 : 0; sfxBus.connect(master);
+      bgmBus = ctx.createGain(); bgmBus.gain.value = cfg.bgm ? 0.55 : 0; bgmBus.connect(master);
+      noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    if (ctx.state === 'suspended' && !document.hidden) ctx.resume();
+    return ctx;
+  }
+  // 브라우저 자동재생 정책: 첫 터치 때 켠다
+  const unlock = () => { ensure(); if (ctx && ctx.state === 'running') { removeEventListener('pointerdown', unlock, true); startBgmIfNeeded(); } };
+  addEventListener('pointerdown', unlock, true);
+  document.addEventListener('visibilitychange', () => { if (!ctx) return; if (document.hidden) ctx.suspend(); else ctx.resume(); });
+
+  /* ---------- 기본 소리 ---------- */
+  function tone(f, dur, o = {}) {
+    if (!ctx || !cfg.sfx && !o.bgm) return;
+    const t = (o.at != null ? o.at : ctx.currentTime) + (o.delay || 0);
+    const osc = ctx.createOscillator(), gn = ctx.createGain();
+    osc.type = o.type || 'sine'; osc.frequency.setValueAtTime(f, t);
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    const v = o.vol == null ? 0.2 : o.vol, a = o.attack || 0.005;
+    gn.gain.setValueAtTime(0.0001, t); gn.gain.exponentialRampToValueAtTime(v, t + a); gn.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    let node = osc;
+    if (o.lp) { const fl = ctx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = o.lp; osc.connect(fl); node = fl; }
+    node.connect(gn); gn.connect(o.bgm ? bgmBus : sfxBus);
+    osc.start(t); osc.stop(t + dur + 0.02);
+  }
+  function noise(dur, o = {}) {
+    if (!ctx || !cfg.sfx && !o.bgm) return;
+    const t = (o.at != null ? o.at : ctx.currentTime) + (o.delay || 0);
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf;
+    const fl = ctx.createBiquadFilter(); fl.type = o.ft || 'bandpass'; fl.frequency.setValueAtTime(o.f || 1200, t); if (o.fTo) fl.frequency.exponentialRampToValueAtTime(o.fTo, t + dur); fl.Q.value = o.q || 1;
+    const gn = ctx.createGain(); const v = o.vol == null ? 0.15 : o.vol;
+    gn.gain.setValueAtTime(0.0001, t); gn.gain.exponentialRampToValueAtTime(v, t + (o.attack || 0.005)); gn.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(fl); fl.connect(gn); gn.connect(o.bgm ? bgmBus : sfxBus);
+    src.start(t, Math.random() * 0.5); src.stop(t + dur + 0.02);
+  }
+  const last = {};
+  const gate = (k, ms) => { const n = performance.now(); if (last[k] && n - last[k] < ms) return false; last[k] = n; return true; };
+
+  const FX = {
+    click: () => tone(720, 0.05, { type: 'triangle', vol: 0.06 }),
+    summon: () => { tone(520, 0.08, { type: 'triangle', vol: 0.14 }); tone(780, 0.1, { type: 'triangle', vol: 0.12, delay: 0.05 }); },
+    merge: () => [523, 659, 784].forEach((f, i) => tone(f, 0.16, { vol: 0.13, delay: i * 0.045 })),
+    recipe: () => { [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.22, { vol: 0.12, delay: i * 0.06 })); tone(2093, 0.5, { vol: 0.05, delay: 0.24 }); },
+    clean: () => tone(1300 + Math.random() * 500, 0.09, { vol: 0.045 }),
+    blast: () => { noise(0.28, { ft: 'lowpass', f: 1400, fTo: 200, vol: 0.22 }); tone(200, 0.2, { to: 70, type: 'sine', vol: 0.18 }); },
+    puddle: () => { for (let i = 0; i < 3; i++) tone(300 + Math.random() * 300, 0.08, { to: 700, vol: 0.07, delay: i * 0.05 }); },
+    shatter: () => { noise(0.12, { ft: 'highpass', f: 3000, vol: 0.12 }); tone(1800, 0.06, { type: 'square', vol: 0.03, delay: 0.02 }); },
+    chain: () => tone(1100, 0.16, { to: 260, type: 'sawtooth', vol: 0.05, lp: 2400 }),
+    cloud: () => noise(0.4, { f: 600, fTo: 1600, q: 2, vol: 0.08, attack: 0.08 }),
+    leak: () => tone(190, 0.22, { to: 110, type: 'square', vol: 0.06, lp: 900 }),
+    boss: () => { tone(220, 0.35, { type: 'sawtooth', vol: 0.08, lp: 900 }); tone(196, 0.5, { type: 'sawtooth', vol: 0.08, lp: 900, delay: 0.32 }); },
+    waveStart: () => { tone(880, 0.35, { vol: 0.1 }); tone(1320, 0.4, { vol: 0.06, delay: 0.01 }); },
+    waveEnd: () => [659, 880].forEach((f, i) => tone(f, 0.18, { vol: 0.08, delay: i * 0.08 })),
+    win: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i === 3 ? 0.5 : 0.18, { type: 'triangle', vol: 0.14, delay: i * 0.11 })),
+    lose: () => [523, 466, 392, 330].forEach((f, i) => tone(f, 0.25, { type: 'triangle', vol: 0.11, delay: i * 0.15 })),
+    chime: () => [988, 1319].forEach((f, i) => tone(f, 0.25, { vol: 0.08, delay: i * 0.07 })),
+    buzz: () => tone(140, 0.35, { type: 'square', vol: 0.07, lp: 700 }),
+    coin: () => { tone(988, 0.06, { type: 'square', vol: 0.04 }); tone(1319, 0.12, { type: 'square', vol: 0.04, delay: 0.05 }); }
+  };
+  const played = {};
+  function play(k, throttle = 0) { if (!cfg.sfx || !ensure() || ctx.state !== 'running') return; if (throttle && !gate(k, throttle)) return; played[k] = (played[k] || 0) + 1; FX[k] && FX[k](); }
+
+  /* ---------- 배경음: 간단한 4마디 루프 ---------- */
+  const CH = [[262, 330, 392], [220, 262, 330], [175, 220, 262], [196, 247, 294]];   // C Am F G
+  const MEL = [0, 2, 4, 2, 1, -1, 2, -1, 0, 2, 4, 5, 4, 2, 1, -1];                     // 화음 음 인덱스(-1 = 쉼)
+  let bgmMode = null, bgmTimer = null, step = 0, nextT = 0;
+  function sched() {
+    if (!ctx || ctx.state !== 'running') return;
+    const fast = bgmMode === 'run', spb = fast ? 60 / 108 / 2 : 60 / 84 / 2;   // 8분음표 길이
+    while (nextT < ctx.currentTime + 0.35) {
+      const bar = Math.floor(step / 8) % 4, s = step % 8, ch = CH[bar];
+      if (s === 0 || s === 4) tone(ch[0] / 2, spb * 3.5, { type: 'triangle', vol: 0.09, at: nextT, bgm: true, lp: 600 });
+      const m = MEL[(step % 16)]; if (m >= 0 && (fast || s % 2 === 0)) { const f = m < 3 ? ch[m] * 2 : ch[m - 3] * 4; tone(f, spb * 0.9, { type: 'sine', vol: 0.045, at: nextT, bgm: true }); }
+      if (fast && s % 2 === 1) noise(0.04, { ft: 'highpass', f: 7000, vol: 0.018, at: nextT, bgm: true });
+      nextT += spb; step++;
+    }
+  }
+  function startBgmIfNeeded() {
+    if (!bgmMode || !cfg.bgm || !ctx || ctx.state !== 'running') return;
+    if (!bgmTimer) { nextT = ctx.currentTime + 0.1; bgmTimer = setInterval(sched, 100); }
+  }
+  function setBgm(mode) {
+    if (mode === bgmMode) return; bgmMode = mode; step = 0;
+    if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; }
+    if (mode) startBgmIfNeeded();
+  }
+
+  /* ---------- 게임 상태 변화 감지 ---------- */
+  let seen = new WeakSet(), prev = null, prevG = null;
+  function tick(G) {
+    if (!G) { prevG = null; return; }
+    if (G !== prevG) { prevG = G; prev = { cleaned: G.stats.cleaned, summons: G.stats.summons, hearts: G.hearts, combos: { ...G.stats.combos } }; seen = new WeakSet(); for (const f of G.fx) seen.add(f); return; }
+    if (G.stats.summons > prev.summons) play('summon', 60);
+    if (G.stats.cleaned > prev.cleaned) play('clean', 70);
+    if (G.hearts < prev.hearts) play('leak', 150);
+    for (const k in G.stats.combos) if ((G.stats.combos[k] || 0) > (prev.combos[k] || 0)) play(k, 140);
+    for (const f of G.fx) if (!seen.has(f)) { seen.add(f); if (f.type === 'pop' && f.merge) play('merge', 60); }   // 그릇마다 뜨는 +반짝 글자는 닦기 소리로 충분
+    prev.cleaned = G.stats.cleaned; prev.summons = G.stats.summons; prev.hearts = G.hearts; prev.combos = { ...G.stats.combos };
+  }
+  function events(list) {
+    for (const e of list) {
+      if (e.type === 'recipe') play('recipe');
+      else if (e.type === 'bossWarn') play('boss');
+      else if (e.type === 'waveStart') play('waveStart');
+      else if (e.type === 'waveEnd') play('waveEnd');
+      else if (e.type === 'end') play(e.win ? 'win' : 'lose');
+      else if (e.type === 'chooseRule' || e.type === 'branch' || e.type === 'comboFirst') play('chime', 200);
+      else if (e.type === 'forbidden') play('buzz');
+    }
+  }
+  // 버튼 누를 때 가벼운 소리 (캔버스는 제외)
+  addEventListener('pointerdown', (e) => { if (e.target.closest && e.target.closest('.btn,.chip,.ltab,.sideb,.sdot,.peek,.sarrow,.card[data-act],.rule,.br')) play('click', 40); }, true);
+
+  SD.sound = {
+    play, tick, events, setBgm, played, get state() { return ctx ? ctx.state : 'none'; }, get bgmMode() { return bgmMode; }, get bgmRunning() { return !!bgmTimer; },
+    get sfx() { return cfg.sfx; }, get bgm() { return cfg.bgm; },
+    setSfx(on) { cfg.sfx = !!on; save(); ensure(); if (sfxBus) sfxBus.gain.value = on ? 0.9 : 0; },
+    setBgmOn(on) { cfg.bgm = !!on; save(); ensure(); if (bgmBus) bgmBus.gain.value = on ? 0.55 : 0; if (on) startBgmIfNeeded(); else if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; } },
+    suspend() { if (ctx) ctx.suspend(); }, resume() { if (ctx && !document.hidden) ctx.resume(); }
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
 <script>document.getElementById('icTap').innerHTML=SD_ART.device('pipe',34);document.getElementById('icPlug').innerHTML=SD_ART.device('drainplug',34);</script>
 <script>
 /* 싱크대 수비대 - 화면(DOM) · 입력 · 루프 */
@@ -2231,7 +2414,10 @@
   function closeModal() { modalOpen = false; $('#modal').classList.remove('show'); $('#modal').innerHTML = ''; if (mq.length) { const [h, f] = mq.shift(); modal(h, f); } }
   const ribbon = (t, c = '#ff6b5b') => `<div class="ribbon" style="background:${c}">${t}</div>`;
 
-  function startScreen() { mq.length = 0; modalOpen = false; $('#modal').classList.remove('show'); G = null; SD.lobby.show(); }
+const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sound.sfx ? 'on' : ''}" data-snd="sfx"><span>효과음</span><i></i></div><div class="tgl ${SD.sound && SD.sound.bgm ? 'on' : ''}" data-snd="bgm"><span>배경음</span><i></i></div></div>`;
+  const bindSnd = (m) => m.querySelectorAll('[data-snd]').forEach(t => t.onclick = () => { const on = !t.classList.contains('on'); t.classList.toggle('on', on); if (t.dataset.snd === 'sfx') SD.sound.setSfx(on); else SD.sound.setBgmOn(on); });
+  SD.sndToggles = sndToggles; SD.bindSnd = bindSnd;
+  function startScreen() { SD.sound && SD.sound.setBgm('lobby'); mq.length = 0; modalOpen = false; $('#modal').classList.remove('show'); G = null; SD.lobby.show(); }
   function startRun(mapId, stage) {
     const r = SD.meta.startRun(mapId, stage);
     if (!r.ok) { toast(r.why); if (r.coffee) SD.lobby.show('shop'); return false; }
@@ -2304,9 +2490,11 @@
     modal(`${ribbon('잠깐 멈춤', '#8d7b6f')}
       <div class="btn big" id="pGo">계속하기</div>
       <div class="btn" id="pHome">영업 그만하기</div>
+      ${sndToggles()}
       ${window.SD_PLATFORM === 'web' ? '' : `<div class="lbl center dim">개발용</div>
       <div class="row2"><div class="btn" id="pShine">+200 반짝</div><div class="btn" id="pSkip">웨이브 넘기기</div></div>`}`, (m) => {
       m.querySelector('#pGo').onclick = () => { paused = false; closeModal(); };
+      bindSnd(m);
       m.querySelector('#pHome').onclick = () => { paused = false; closeModal(); settle(false); startScreen(); };
       if (m.querySelector('#pShine')) m.querySelector('#pShine').onclick = () => { G.shine += 200; hud(); };
       if (m.querySelector('#pSkip')) m.querySelector('#pSkip').onclick = () => { if (G.phase === 'wave') { G.spawn.list = []; G.dishes.forEach(d => d.dead = true); } else if (G.phase === 'break' || G.phase === 'ready') G.startWave(); paused = false; closeModal(); };
@@ -2314,6 +2502,7 @@
   }
 
   function drainEvents() {
+    if (SD.sound) SD.sound.events(G.events);
     for (const e of G.events) {
       if (e.type === 'toast') toast(e.text);
       else if (e.type === 'forbidden') toast('락스와 산성 세제는 절대 섞으면 안 돼요! 유독 가스가 나와요', true);
@@ -2334,6 +2523,7 @@
 
   function newGame(mapId, recipeToday, extra = {}) {
     G = SD.createGame({ codex, recipeToday, mapId, ...extra });
+    SD.sound && SD.sound.setBgm('run');
     ui.sel = null; ui.drag = null; seenTypes = new Set(['plate', 'cup', 'mug', 'pot', 'spore']);
     paused = false;
     hud();
@@ -2389,7 +2579,7 @@
   const on = (id, fn) => $(id).addEventListener('click', () => { if (!G || modalOpen) return; fn(); hud(); });
   on('#bSummon', () => G.summon());
   on('#bLv', () => { if (!G.levelUp()) toast(G.lvCost() == null ? '소환 레벨 최대예요' : '반짝이 부족해요'); });
-  on('#bMerge', () => { const n = G.bulkMerge(); if (n) toast(`${n}번 합성!`); });
+  on('#bMerge', () => { const n = G.bulkMerge(); const b = G.lastBulk || {}; if (n) toast(b.recipes ? (b.merged ? `${b.merged}번 합성 · 비법 ${b.recipes}개` : `비법 ${b.recipes}개 만들었어요`) : `${n}번 합성!`); });
   on('#bRecycle', () => { if (ui.sel != null) { G.recycle(ui.sel); ui.sel = null; } });
   on('#dTap', () => { if (!G.useTap()) toast(G.phase !== 'wave' ? '웨이브 중에만 써요' : '아직 쿨타임이에요'); });
   on('#dPlug', () => { if (!G.usePlug()) toast(G.devices.plug.uses <= 0 ? '다 썼어요' : G.phase !== 'wave' ? '웨이브 중에만 써요' : '이미 막는 중이에요'); });
@@ -2410,6 +2600,7 @@
         while (acc >= 1 / 60 && n < 12) { G.update(1 / 60); acc -= 1 / 60; n++; if (G.events.some(e => e.type === 'branch' || e.type === 'chooseRule' || e.type === 'bossWarn' || e.type === 'end' || (e.type === 'recipe' && e.first))) break; }
         if (n >= 12) acc = 0;
       }
+      if (SD.sound) SD.sound.tick(G);
       if (G.events.length) drainEvents();
       SD.render(ctx, G, ui);
       hudT -= real; if (hudT <= 0) { hud(); hudT = 0.1; }
@@ -2498,7 +2689,8 @@
     const att = M.attendState();
     const L = [['attend', '출석', '<path d="M5 6h14v14H5z" fill="#fff" ' + S + '/><path d="M5 6h14v4H5z" fill="#ff6b5b" ' + S + '/><path d="M9 3v5M15 3v5M9 15l2 2 4-4" ' + S + '/>', !att.claimedToday],
       ['missions', '미션', '<path d="M6 4h12v16H6z" fill="#fff" ' + S + '/><path d="M9 9l1.5 1.5L13 8M9 14l1.5 1.5L13 13M15 9h1M15 14h1" ' + S + '/>', M.missionBadge()],
-      ['mail', '우편', '<path d="M3 6h18v12H3z" fill="#fff" ' + S + '/><path d="M3 6l9 7 9-7" fill="none" ' + S + '/>', M.p.mail.length > 0]];
+      ['mail', '우편', '<path d="M3 6h18v12H3z" fill="#fff" ' + S + '/><path d="M3 6l9 7 9-7" fill="none" ' + S + '/>', M.p.mail.length > 0],
+      ['sound', '소리', '<path d="M4 9h4l5-4v14l-5-4H4z" fill="#fff" ' + S + '/>' + (SD.sound && (SD.sound.sfx || SD.sound.bgm) ? '<path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" ' + S + '/>' : '<path d="M16 9l5 6M21 9l-5 6" ' + S + '/>'), false]];
     return `<div class="lside row">${L.map(([a, n, p, dot]) => `<div class="sideb" data-act="${a}"><svg viewBox="0 0 24 24" width="24" height="24">${p}</svg><span class="jua">${n}</span>${dot ? '<span class="dot"></span>' : ''}</div>`).join('')}</div>`;
   }
 
@@ -2548,7 +2740,7 @@
           <span class="todaychip" data-act="today"><span class="tag" style="background:#ff6b5b">오늘</span>${today ? ing(today.a, 18) + (known ? ing(today.b, 18) : '<b class="q">?</b>') : '-'}<small>바꾸기</small></span></div>
         <div style="display:flex;gap:8px;margin-top:8px">
           ${stars >= 3 ? `<div class="btn" style="width:96px;height:58px;flex-direction:column;gap:0" data-act="sweep">소탕<small style="display:flex;align-items:center;gap:2px">${free ? '무료' : coffee(14) + '5'}</small></div>` : ''}
-          <div class="btn startbtn ${open ? '' : 'dis'}" data-act="${open ? 'start' : 'lockedStart'}">영업 시작<span>${free ? '연습 주방 · 무료' : coffee(18) + ' 5'}</span></div>
+          <div class="btn startbtn ${open ? '' : 'dis'} ${open && !P.stats.plays ? 'pulse' : ''}" data-act="${open ? 'start' : 'lockedStart'}">영업 시작<span>${free ? '연습 주방 · 무료' : coffee(18) + ' 5'}</span></div>
         </div></div>`;
   }
 
@@ -2700,6 +2892,7 @@
       case 'missions': missionModal(); return;
       case 'mClaim': { const r = M.claimMission(ds.id); SD.ui.closeModal(); if (res(r)) showRewards('미션 완료', r.rewards, '#a77bf3'); break; }
       case 'mail': mailModal(); return;
+      case 'sound': SD.ui.modal(`<div class="ribbon" style="background:#2ec4b6">소리</div>${SD.sndToggles()}<div class="btn big" data-close>닫기</div>`, (m) => { SD.bindSnd(m); m.querySelector('[data-close]').onclick = () => { SD.ui.closeModal(); render(); }; }); return;
       case 'mailOne': { const r = M.claimMail(ds.id); SD.ui.closeModal(); if (res(r)) showRewards('우편 받기', r.rewards, '#4aa3ff'); break; }
       case 'mailAll': { const r = M.claimAllMail(); SD.ui.closeModal(); if (r.rewards.length) showRewards('우편 받기', r.rewards, '#4aa3ff'); break; }
       default: return;
@@ -2749,6 +2942,115 @@
     render, showRewards, chestHtml, rewardChips, starS, get tab() { return tab; }
   };
 })(window);
+
+</script>
+<script>
+/* 싱크대 수비대 - 처음 하는 사람 안내
+ * 첫 영업에서 순서대로: 소환 → 같은 재료 합성 → 설거지 시작 → 하트 설명 → (때가 되면) 일괄 합성 → 살림 비법
+ * 화면을 막지 않고 말풍선 + 강조 테두리 + 손가락만 띄운다. 끝나거나 건너뛰면 프로필에 tut=1 저장 */
+(function (g) {
+  const SD = g.SD;
+  const $ = (s) => document.querySelector(s);
+  let el = null, cur = null, stepT = 0;
+
+  const units = (G) => G.cells.map((c, i) => [c, i]).filter(([c]) => c.unit);
+  function samePair(G) {
+    const us = units(G);
+    for (let a = 0; a < us.length; a++) for (let b = a + 1; b < us.length; b++) {
+      const x = us[a][0].unit, y = us[b][0].unit;
+      if (x.key === y.key && !!x.recipe === !!y.recipe && x.star === y.star && x.star < 4 && x.jam <= 0 && y.jam <= 0) return [us[a][1], us[b][1]];
+    }
+    return null;
+  }
+  function hybridPair(G) {
+    const us = units(G);
+    for (let a = 0; a < us.length; a++) for (let b = a + 1; b < us.length; b++) {
+      const x = us[a][0].unit, y = us[b][0].unit; if (x.recipe || y.recipe || x.key === y.key) continue;
+      const h = G.hybridOf(x, y); if (h && (h.id || h.needBranch != null)) return [us[a][1], us[b][1]];
+    }
+    return null;
+  }
+
+  // when: 이 단계를 보여줄 조건 / done: 다음으로 넘어갈 조건 / target: 강조할 DOM / pair: 손가락으로 보여줄 칸 두 개
+  const STEPS = [
+    { id: 'summon', when: () => true, done: (G) => G.stats.summons >= 3, target: '#bSummon', text: () => '<b>소환</b>을 눌러 재료를 불러요' },
+    { id: 'merge', when: () => true, done: (G) => units(G).some(([c]) => c.unit.star >= 2), pair: samePair,
+      target: (G) => samePair(G) ? null : '#bSummon', text: (G) => samePair(G) ? '<b>같은 재료</b> 둘을 끌어다 겹치면 별이 올라요' : '같은 재료가 나올 때까지 <b>소환</b>해요' },
+    { id: 'wave', when: (G) => G.phase === 'ready', done: (G) => G.phase !== 'ready', target: '#bWave', text: () => '준비됐으면 <b>설거지 시작!</b>' },
+    { id: 'hearts', when: (G) => G.phase === 'wave', done: (G, t) => t > 5, target: '#hearts', tap: true, text: () => '재료가 지나가는 그릇을 닦아요. 그릇이 끝까지 가면 <b>하트</b>가 줄어요' },
+    { id: 'bulk', opt: true, when: (G) => G.mergePairs() >= 2, done: (G, t) => G.mergePairs() < 2 || t > 7, target: '#bMerge', tap: true, text: () => '합칠 게 많으면 <b>일괄 합성</b> 한 번이면 돼요' },
+    { id: 'hybrid', opt: true, when: (G) => !!hybridPair(G), done: (G, t) => G.stats.recipes.length > 0 || (!hybridPair(G) && t > 1), pair: hybridPair, text: () => '서로 다른 <b>3성 재료</b>를 겹치면 <b>살림 비법</b>이 생겨요' }
+  ];
+
+  // 앞 4단계는 순서대로, 뒤 2단계(opt)는 조건이 맞을 때 한 번씩. 진행은 프로필(tutDone)에 저장돼 판을 나가도 이어진다
+  const doneSet = () => new Set(SD.meta.p.tutDone || []);
+  function markDone(id) { const P = SD.meta.p, d = doneSet(); d.add(id); P.tutDone = [...d]; if (STEPS.every(s => d.has(s.id))) P.tut = 1; SD.meta.save(); }
+  function pick(G) {
+    const d = doneSet();
+    for (const s of STEPS) if (!s.opt && !d.has(s.id)) { if (s.when(G)) return s; if (s.done(G, 0)) { markDone(s.id); continue; } return null; }
+    if (cur && cur.opt && !d.has(cur.id)) return cur;   // 보여주기 시작한 단계는 끝날 때까지 유지
+    for (const s of STEPS) if (s.opt && !d.has(s.id) && s.when(G)) return s;
+    return null;
+  }
+  function finish() { hide(); const P = SD.meta.p; if (P && !P.tut) { P.tut = 1; SD.meta.save(); } }
+  function hide() { if (el) el.style.display = 'none'; }
+  function build() {
+    el = document.createElement('div'); el.id = 'tut';
+    el.innerHTML = `<div class="tring"></div><svg class="thand" viewBox="0 0 40 40" width="40" height="40"><path d="M14 36c-3-4-7-9-7-12 0-2 2-3 4-1l3 3V9a2.5 2.5 0 0 1 5 0v9l1-1a2.5 2.5 0 0 1 4 1l1-1a2.5 2.5 0 0 1 4 1 2.5 2.5 0 0 1 4 1v7c0 5-2 8-4 11z" fill="#fff" stroke="#3b2f2f" stroke-width="2.2" stroke-linejoin="round"/></svg><svg class="tarrow" width="390" height="844"><path d="" fill="none" stroke="#3b2f2f" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/></svg><div class="tbub"><div class="tt"></div><span class="tskip">건너뛰기</span></div>`;
+    $('#stage').appendChild(el);
+    el.querySelector('.tskip').addEventListener('pointerdown', (e) => { e.stopPropagation(); finish(); });
+    el.querySelector('.tbub').addEventListener('pointerdown', () => { if (cur && cur.tap) { markDone(cur.id); cur = null; hide(); } });
+  }
+
+  function stageRect(node) {
+    const st = $('#stage').getBoundingClientRect(), k = st.width / 390, r = node.getBoundingClientRect();
+    return { x: (r.left - st.left) / k, y: (r.top - st.top) / k, w: r.width / k, h: r.height / k };
+  }
+  function render(G, s) {
+    if (!el) build();
+    el.style.display = 'block';
+    const ring = el.querySelector('.tring'), hand = el.querySelector('.thand'), arrow = el.querySelector('.tarrow'), bub = el.querySelector('.tbub');
+    el.querySelector('.tt').innerHTML = s.text(G);
+    const tsel = typeof s.target === 'function' ? s.target(G) : s.target;
+    const tn = tsel && $(tsel);
+    const pair = s.pair && s.pair(G);
+    let by;
+    if (tn && tn.offsetParent !== null) {
+      const r = stageRect(tn);
+      Object.assign(ring.style, { display: 'block', left: (r.x - 5) + 'px', top: (r.y - 5) + 'px', width: (r.w + 10) + 'px', height: (r.h + 10) + 'px' });
+      by = r.y > 420 ? r.y - 74 : r.y + r.h + 14;
+    } else ring.style.display = 'none';
+    if (pair) {
+      const a = G.cells[pair[0]], b = G.cells[pair[1]];
+      const mx = (a.cx + b.cx) / 2, my = Math.min(a.cy, b.cy) - 40;
+      arrow.style.display = 'block'; arrow.querySelector('path').setAttribute('d', `M${a.cx} ${a.cy}Q${mx} ${my} ${b.cx} ${b.cy}`);
+      const p = (performance.now() % 1400) / 1400, q = Math.min(1, p * 1.3), u = 1 - q;
+      const hx = u * u * a.cx + 2 * u * q * mx + q * q * b.cx, hy = u * u * a.cy + 2 * u * q * my + q * q * b.cy;
+      Object.assign(hand.style, { display: 'block', left: (hx - 12) + 'px', top: (hy - 4) + 'px', opacity: p > 0.85 ? 0 : 1 });
+      by = Math.max(a.cy, b.cy) + 46 > 560 ? Math.min(a.cy, b.cy) - 110 : Math.max(a.cy, b.cy) + 46;
+    } else { arrow.style.display = 'none'; hand.style.display = 'none'; }
+    if (by == null) by = 140;
+    bub.style.top = Math.max(60, Math.min(540, by)) + 'px';
+  }
+
+  // 실제 흐른 시간으로 센다 (탭이 가려져 rAF가 멈춰도 setInterval로 이어감)
+  let lastNow = 0;
+  function frame() {
+    const now = performance.now(), dt = lastNow ? Math.min(0.25, (now - lastNow) / 1000) : 0; lastNow = now;
+    const G = SD.ui && SD.ui.G, P = SD.meta && SD.meta.p;
+    if (!P || P.tut || !G || G.phase === 'end' || $('#modal.show') || $('#lobby').style.display === 'block') { hide(); return; }
+    const s = pick(G);
+    if (!s) { hide(); return; }
+    if (s !== cur) { cur = s; stepT = 0; }
+    stepT += dt;
+    if (s.done(G, stepT)) { markDone(s.id); cur = null; hide(); return; }
+    render(G, s);
+  }
+  function raf() { frame(); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  setInterval(() => { if (performance.now() - lastNow > 120) frame(); }, 100);
+  SD.tutorial = { reset() { const P = SD.meta.p; delete P.tut; delete P.tutDone; SD.meta.save(); cur = null; }, get step() { return cur && cur.id; } };
+})(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
 </body>
