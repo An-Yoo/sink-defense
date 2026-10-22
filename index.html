@@ -214,6 +214,8 @@
   #tut .tbub .tt{flex:1;word-break:keep-all}#tut .tbub b{color:#e8653f}
   #tut .tlg{display:flex;flex-direction:column;gap:3px;margin-bottom:4px}#tut .tlg span{display:flex;align-items:center;gap:6px}#tut .tlg svg{flex-shrink:0}
   #tut .tskip{font-size:11px;font-weight:800;opacity:.5;white-space:nowrap;cursor:pointer;padding:2px 0 2px 6px}
+  .guest{display:flex;align-items:center;gap:10px;background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;margin:6px 0;box-shadow:0 3px 0 var(--ink)}.guest .gn{font-size:17px}.guest .gd{font-size:12.5px;font-weight:700;opacity:.75}
+  #receipt .gl{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:2px}.tago{background:#ff9f43;color:#fff;border:1.5px solid var(--ink);border-radius:6px;padding:0 4px;font-family:Jua;font-size:10.5px;line-height:15px}
   .dim{opacity:.55}
   .rwl{font-size:10px;font-weight:800;opacity:.6;margin-right:-3px;align-self:center}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.row2 .btn,.sheet>.btn:not(.big){height:44px}
@@ -987,7 +989,7 @@
   // 한 판 15웨이브. 보스: 5웨이브 중간 보스, 10웨이브 강화 중간 보스, 15웨이브는 5스테이지만 최종 보스(1~4스테이지는 마지막 보스 = 중간 보스 강화판)
   // 그릇 수·체력·등장 그릇 종류는 예전 10웨이브 곡선을 15웨이브 길이로 늘린 x(1~10)로 계산
   const WAVES = 15;
-  const STAGE_MUL = [1, 0.75, 0.85, 1, 1.1, 1.2];
+  const STAGE_MUL = [1, 0.75, 0.82, 0.93, 0.95, 0.9];   // 2026-10-22: 까다로운 손님(2~5스테이지)이 붙는 만큼 체력 배율을 낮춤. 예전 0.75/0.85/1.0/1.1/1.2. 시뮬(Lv3, 30판)로 스테이지가 오를수록 승률이 내려가게 맞춤
   const HPK = (typeof process !== 'undefined' && process.env && +process.env.SD_HPK) || 0.85;
   function waveSpec(w, map, stage = 5) {
     const x = 1 + (w - 1) * 9 / (WAVES - 1);
@@ -998,6 +1000,31 @@
     const bossMul = w === 10 ? 1.3 : (last && stage < 5) ? 1.8 : 1;
     const bossLabel = !boss ? '' : w === 5 ? '중간 보스' : w === 10 ? '강화 중간 보스' : stage >= 5 ? '최종 보스' : '마지막 보스';
     return { pool: map.pool(Math.round(x)), count: boss ? Math.round(count * 0.6) : count, hpMul, boss, bossMul, bossLabel, duration: 12 };
+  }
+
+  /* ---------- 까다로운 손님 ----------
+   * 스테이지가 올라가면 판마다 무작위로 붙는 방해. 2·3스테이지 1명, 4·5스테이지 2명. 한 명당 클리어 팁 +20% */
+  const GUESTS = {
+    broken: { name: '조리대 고장', desc: (g) => `조리대 ${g.n || 1}칸을 못 써요` },
+    hurry: { name: '급한 손님', desc: () => '그릇이 15% 빨리 와요' },
+    picky: { name: '까다로운 입맛', desc: () => '만족도 15로 시작해요' },
+    soldout: { name: '재료 품절', desc: (g, ART) => `${ART && ART.ING[g.key] ? ART.ING[g.key].name : '재료 하나'}가 이번 판엔 안 나와요` },
+    pricey: { name: '비싼 재료값', desc: () => '소환 비용 +2' },
+    stingy: { name: '팁 짠 손님', desc: () => '그릇당 반짝 20% 적게' },
+    oily: { name: '기름 범벅', desc: () => '10초마다 재료 하나가 기름에 고장 나요' },
+    nobreak: { name: '쉬는 시간 없음', desc: () => '웨이브 사이에 안 쉬어요' }
+  };
+  const GUEST_COUNT = [0, 0, 1, 1, 2, 2];
+  function rollGuests(stage, deck, rand = Math.random, mapIdx = 0) {
+    const n = GUEST_COUNT[stage] || 0, pool = Object.keys(GUESTS), out = [];
+    while (out.length < n && pool.length) {
+      const id = pool.splice(Math.floor(rand() * pool.length), 1)[0];
+      const g = { id };
+      if (id === 'soldout') { if (!deck || deck.length < 5) continue; g.key = deck[Math.floor(rand() * deck.length)]; }
+      if (id === 'broken') g.n = mapIdx >= 3 ? 2 : 1;
+      out.push(g);
+    }
+    return out;
   }
 
   /* ---------- 주방 상황 ---------- */
@@ -1093,7 +1120,7 @@
     SUMMON_LV_COST: [0, 20, 30, 45, 60],
     SUMMON_ODDS: [null, [1, 0, 0], [0.9, 0.1, 0], [0.77, 0.2, 0.03], [0.64, 0.3, 0.06], [0.5, 0.4, 0.1]],
     EXPAND_COST: [20, 30, 45, 60],
-    RULE_WAVES: [3, 5, 10], WAVES,
+    RULE_WAVES: [3, 5, 10], WAVES, GUESTS, GUEST_COUNT, rollGuests,
     BREAK_TIME: 4, STATUS_TIME: 3, BOSS_HP: { mid: 0.25, final: 0.13 }, WOK_CD: 25, TAP_CD: 30
   };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -1126,11 +1153,14 @@
     const stage = opts.stage || 5;
     const levels = opts.levels || null;   // 재료 레벨 {key: lv}. 레벨당 위력 +8%
     const lvMul = (k) => levels ? 1 + 0.08 * ((levels[k] || 1) - 1) : 1;
+    const guests = opts.guests || [];
+    const gst = (id) => guests.find(g => g.id === id);
+    const startHearts = gst('picky') ? 15 : DATA.HEARTS;
 
     const G = {
-      mapId, map, paths, rng, codex, deck, recipeToday, stage,
+      mapId, map, paths, rng, codex, deck, recipeToday, stage, guests, oilT: 10,
       phase: 'ready', wave: 0, time: 0,
-      shine: DATA.START_SHINE, hearts: DATA.HEARTS, maxHearts: DATA.HEARTS,
+      shine: DATA.START_SHINE, hearts: startHearts, maxHearts: startHearts,
       summonLv: 1, expandCount: 0,
       cells: map.cells.map(c => ({ ...c, cx: c.x + 28, cy: c.y + 28, unit: null, pile: c.pile ? { hp: c.pile, max: c.pile } : null })),
       dishes: [], zones: [], fx: [], events: [],
@@ -1142,6 +1172,12 @@
       comboTextCd: {}, nextId: 1, queue: []
     };
     G.L = Math.max(...paths.map(p => p.L));
+    G.guest = gst;
+    // 조리대 고장: 처음부터 쓸 수 있는 빈 칸 중 무작위로 잠금
+    if (gst('broken')) {
+      const cand = G.cells.filter(c => !c.locked && !c.pile && !c.terrain);
+      for (let k = 0; k < gst('broken').n && cand.length; k++) { const c = cand.splice(Math.floor(rng() * cand.length), 1)[0]; c.locked = true; c.ruleLocked = true; c.broken = true; }
+    }
 
     /* ---------- helpers ---------- */
     G.posAt = function (d, pi = 0) {
@@ -1158,7 +1194,7 @@
     const brOf = (u) => u.recipe ? (DATA.RECIPES[u.recipe].mods || {}) : u.branch ? DATA.BRANCH[u.key][u.branch] : {};
     G.branchOf = brOf;
     const sitIs = (k) => G.phase === 'wave' && G.sit === k;
-    G.summonCost = () => Math.round(DATA.SUMMON_COST * (G.rules.smallpack ? 0.7 : 1)) + (G.rules.recycler ? 3 : 0);
+    G.summonCost = () => Math.round(DATA.SUMMON_COST * (G.rules.smallpack ? 0.7 : 1)) + (G.rules.recycler ? 3 : 0) + (gst('pricey') ? 2 : 0);
     G.lvCap = () => G.rules.smallpack ? 3 : 5;
     G.lvCost = () => G.summonLv >= G.lvCap() ? null : DATA.SUMMON_LV_COST[G.summonLv];
     G.expandCost = () => DATA.EXPAND_COST[G.expandCount] ?? null;
@@ -1168,7 +1204,8 @@
     function weights() {
       const R = DATA.PAIRS[recipeToday];
       const known = !!(codex.recipes[R.A] || codex.recipes[R.B]);
-      return deck.map(k => [k, (k === 'hot' && sitIs('boiler')) ? 0 : (k === R.a || (known && k === R.b)) ? 2 : 1]);
+      const out = deck.map(k => [k, (k === 'hot' && sitIs('boiler')) ? 0 : (gst('soldout') && gst('soldout').key === k) ? 0 : (k === R.a || (known && k === R.b)) ? 2 : 1]);
+      return out;
     }
     function rollKey() { const w = weights(); let t = w.reduce((s, x) => s + x[1], 0) * rng(); for (const [k, v] of w) { if ((t -= v) < 0) return k; } return w[0][0]; }
     function rollStar() { const o = DATA.SUMMON_ODDS[G.summonLv]; const x = rng(); return x < o[0] ? 1 : x < o[0] + o[1] ? 2 : 3; }
@@ -1238,7 +1275,7 @@
       dish.dead = true;
       const ds = DATA.DISHES[dish.type];
       const mul = (G.rules.hurry ? 1.4 : 1) * (sitIs('rush') ? 1.5 : 1) * (sitIs('spin') ? 1.3 : 1);
-      const r = Math.max(1, Math.round(ds.reward * mul));
+      const r = Math.max(1, Math.round(ds.reward * mul * (gst('stingy') ? 0.8 : 1)));
       G.shine += r; G.stats.cleaned++;
       const p = pos(dish);
       fx({ type: 'spark', x: p.x, y: p.y, life: 0.5 });
@@ -1408,14 +1445,14 @@
         G.ruleChoices = ch; G.phase = 'choose'; ev('chooseRule', { choices: ch });
         return;
       }
-      G.phase = 'break'; G.breakT = G.rules.hurry ? 0 : DATA.BREAK_TIME;
+      G.phase = 'break'; G.breakT = G.rules.hurry || gst('nobreak') ? 0 : DATA.BREAK_TIME;
     }
     G.pickRule = function (key) {
       if (G.phase !== 'choose' || !G.ruleChoices.includes(key)) return false;
       G.rules[key] = true; G.ruleChoices = null;
       if (key === 'tidy') { let n = 2; for (let i = G.cells.length - 1; i >= 0 && n > 0; i--) { const c = G.cells[i]; if (!c.locked && !c.unit && !c.pile) { c.locked = true; c.ruleLocked = true; n--; } } }
       if (key === 'smallpack' && G.summonLv > 3) G.summonLv = 3;
-      G.phase = 'break'; G.breakT = G.rules.hurry ? 0 : DATA.BREAK_TIME;
+      G.phase = 'break'; G.breakT = G.rules.hurry || gst('nobreak') ? 0 : DATA.BREAK_TIME;
       ev('rulePicked', { rule: key });
       return true;
     };
@@ -1624,7 +1661,16 @@
       // 보스 오라
       let haste = 1, shieldSrc = [];
       for (const d of G.dishes) { if (d.dead) continue; const ds = DATA.DISHES[d.type]; if (ds.hasteAura) haste = Math.max(haste, ds.hasteAura); if (ds.shieldAura) shieldSrc.push(d); }
-      const speedMul = (G.rules.presoak ? 1.1 : 1) * (G.rules.rag ? 1.15 : 1) * (sitIs('spin') ? 1.3 : 1) * haste;
+      const speedMul = (G.rules.presoak ? 1.1 : 1) * (G.rules.rag ? 1.15 : 1) * (sitIs('spin') ? 1.3 : 1) * (gst('hurry') ? 1.15 : 1) * haste;
+      // 기름 범벅: 웨이브 중 10초마다 재료 하나 고장
+      if (gst('oily') && G.phase === 'wave') {
+        G.oilT -= dt;
+        if (G.oilT <= 0) {
+          G.oilT = 10;
+          const cand = units().filter(c => c.unit.jam <= 0);
+          if (cand.length) { const c = cand[Math.floor(rng() * cand.length)]; c.unit.jam = hasAura('autoUnjam') ? 0.4 : 3; fx({ type: 'oil', x1: c.cx, y1: 120, x2: c.cx, y2: c.cy, life: 0.4 }); if (!hasAura('autoUnjam')) ev('jam'); }
+        }
+      }
       for (const d of G.dishes) {
         if (d.dead) continue;
         const ds = DATA.DISHES[d.type];
@@ -1796,7 +1842,7 @@
       const cost = G.expandCost();
       ctx.font = '13px Jua'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       if (!c.ruleLocked && cost != null) { ctx.fillStyle = G.shine >= cost ? INK : 'rgba(59,47,47,0.45)'; ctx.fillText('+ ' + cost, c.cx, c.cy); }
-      else if (c.ruleLocked) { ctx.fillStyle = 'rgba(59,47,47,0.45)'; ctx.fillText('잠김', c.cx, c.cy); }
+      else if (c.ruleLocked) { ctx.fillStyle = c.broken ? '#e8653f' : 'rgba(59,47,47,0.45)'; ctx.fillText(c.broken ? '고장' : '잠김', c.cx, c.cy); }
       return;
     }
     rr(ctx, c.x, c.y, 56, 56, 12);
@@ -2110,8 +2156,9 @@
     const cost = M.isFree(m) ? 0 : ECON.COFFEE_COST;
     if (P.coffee < cost) return { ok: false, why: '커피가 부족해요', coffee: true };
     if (cost && P.coffee >= M.coffeeMax() && P.coffee - cost < M.coffeeMax()) P.coffeeT = nowFn();
-    P.coffee -= cost; P.sel = { map: m, stage: s }; P.run = { map: m, stage: s, cost, t: nowFn() }; M.save();
-    return { ok: true, cost, deck: P.deck.slice(), levels: { ...P.levels }, today: P.today };
+    const guests = D().rollGuests(s, P.deck, Math.random, CHAPTERS().indexOf(m));
+    P.coffee -= cost; P.sel = { map: m, stage: s }; P.run = { map: m, stage: s, cost, t: nowFn(), guests }; M.save();
+    return { ok: true, cost, deck: P.deck.slice(), levels: { ...P.levels }, today: P.today, guests };
   };
   M.finishRun = function (r) {
     const run = P.run || { map: r.map, stage: r.stage, cost: 0 }; P.run = null;
@@ -2119,10 +2166,12 @@
     const out = { win: !!r.win, stars: 0, rewards: [], firstClear: false, chest: null, lvUp: false };
     const base = Math.round(((ci + 1) * 40 + s * 10) * 1.5);   // 15웨이브(예전 10웨이브의 1.5배 길이)
     if (r.win) {
-      out.stars = r.hearts >= 16 ? 3 : r.hearts >= 8 ? 2 : 1;
+      const hm = r.maxHearts || 20;   // 까다로운 입맛이면 15에서 시작하니 비율로 (20 기준 16·8)
+      out.stars = r.hearts >= hm * 0.8 ? 3 : r.hearts >= hm * 0.4 ? 2 : 1;
       out.firstClear = M.starsOf(m, s) === 0;
       P.stars[sk(m, s)] = Math.max(M.starsOf(m, s), out.stars);
       grant({ tips: base + out.stars * 10 }, out.rewards, '클리어');
+      const ng = (run.guests || []).length; if (ng) grant({ tips: Math.round(base * 0.2 * ng) }, out.rewards, '까다로운 손님');
       out.chest = out.firstClear ? M.firstChest(m, s) : out.stars >= 3 ? 'silver' : 'wood';
       out.rewards.push({ type: 'chest', tier: out.chest, items: M.openChest(out.chest) });
       P.stats.wins++;
@@ -2423,7 +2472,7 @@
     else if (G.phase === 'end') line2 = '영업 끝';
     $('#chalk').innerHTML = `<div class="pen">${line1}</div><div class="jua">${line2}</div>`;
     const rs = Object.keys(G.rules);
-    $('#receipt').innerHTML = `<div class="rt"><span class="tagr">주방 규칙</span></div>` + (rs.length ? rs.map(k => `<div class="rl">${D.RULES[k].name}</div>`).join('') : `<div class="rl dim">3웨이브 뒤에 골라요</div>`);
+    $('#receipt').innerHTML = (G.guests && G.guests.length ? `<div class="rl gl">${G.guests.map(g => `<span class="tago">${D.GUESTS[g.id].name}</span>`).join('')}</div>` : '') + `<div class="rt"><span class="tagr">주방 규칙</span></div>` + (rs.length ? rs.map(k => `<div class="rl">${D.RULES[k].name}</div>`).join('') : `<div class="rl dim">3웨이브 뒤에 골라요</div>`);
     const syn = G.synergy(); const need = { acid: [2, 3], alk: [2, 3], soap: [2, 3], water: [2, 3], scrub: [2, 4] };
     $('#syn').innerHTML = ['acid', 'alk', 'scrub', 'water', 'soap'].map(f => { const n = syn[f], on = n >= need[f][0]; return `<div class="tok ${on ? 'on' : ''}" style="${on ? `background:${A.FAMILY[f].color}` : ''}">${A.FAMILY[f].name}<i>${n}/${n >= need[f][0] ? need[f][1] : need[f][0]}</i></div>`; }).join('');
     const R = D.PAIRS[G.recipeToday], known = !!(codex.recipes[R.A] || codex.recipes[R.B]);
@@ -2474,8 +2523,14 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     const r = SD.meta.startRun(mapId, stage);
     if (!r.ok) { toast(r.why); if (r.coffee) SD.lobby.show('shop'); return false; }
     SD.lobby.hide();
-    newGame(mapId, r.today, { deck: r.deck, levels: r.levels, stage });
+    newGame(mapId, r.today, { deck: r.deck, levels: r.levels, stage, guests: r.guests || [] });
+    if (r.guests && r.guests.length) guestScreen(r.guests);
     return true;
+  }
+  function guestScreen(gs) {
+    modal(`${ribbon('오늘의 까다로운 손님', '#ff9f43')}<div class="pen sub">한 명당 클리어 팁 +20%</div>
+      ${gs.map(g => `<div class="guest"><span class="tag" style="background:#ff9f43">손님</span><div><div class="jua gn">${D.GUESTS[g.id].name}</div><div class="gd">${D.GUESTS[g.id].desc(g, g && window.SD_ART)}</div></div></div>`).join('')}
+      <div class="btn big" id="gOk">알겠어요</div>`, (m) => { m.querySelector('#gOk').onclick = () => closeModal(); });
   }
   function ruleScreen(choices) {
     modal(`${ribbon('주방 규칙 하나 고르기', '#5cc96b')}<div class="pen sub">W${G.wave} 정리 끝!</div>
@@ -2515,7 +2570,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   }
   function settle(win) {
     const comboN = Object.values(G.stats.combos).reduce((s, v) => s + v, 0);
-    return SD.meta.finishRun({ win, hearts: G.hearts, wave: G.wave, cleaned: G.stats.cleaned, combos: comboN, recipes: G.stats.recipes.length, newRecipes: G.stats.newRecipes });
+    return SD.meta.finishRun({ win, hearts: G.hearts, maxHearts: G.maxHearts, wave: G.wave, cleaned: G.stats.cleaned, combos: comboN, recipes: G.stats.recipes.length, newRecipes: G.stats.newRecipes });
   }
   function endScreen(win) {
     mq.length = 0;
@@ -2779,7 +2834,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
           <div class="sinfo">
             <div class="jua sname"><span class="sno" style="background:${map.color}">${mi + 1}-${st}</span>${map.name}</div>
             <div class="jua ssub">${M.stageName(viewMap, st)}</div>
-            <div class="bossline">${st === 5 ? `<span class="bossic">${A.boss(map.final, 34)}</span>` : ''}<span class="tag" style="background:#a77bf3">W5·W10 ${bname(map.mid)}</span><span class="tag" style="background:${boss.lastStrong ? '#a77bf3' : '#ff6b5b'}">W15 ${bname(boss.last)}${boss.lastStrong ? ' 강화' : ''}</span></div>
+            <div class="bossline">${st === 5 ? `<span class="bossic">${A.boss(map.final, 34)}</span>` : ''}${D.GUEST_COUNT[st] ? `<span class="tag" style="background:#ff9f43">까다로운 손님 ${D.GUEST_COUNT[st]}명</span>` : ''}<span class="tag" style="background:#a77bf3">W5·W10 ${bname(map.mid)}</span><span class="tag" style="background:${boss.lastStrong ? '#a77bf3' : '#ff6b5b'}">W15 ${bname(boss.last)}${boss.lastStrong ? ' 강화' : ''}</span></div>
             <div class="sstars2">${starS(stars > 0, 22)}${starS(stars > 1, 22)}${starS(stars > 2, 22)}</div>
           </div>
           ${open ? '' : `<div class="slock"><div>${lock(30)}</div><div class="jua">${lockMsg}</div></div>`}
