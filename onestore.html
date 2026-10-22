@@ -1616,6 +1616,16 @@
       }
       B.unit = a; A.unit = b; return 'swap';
     };
+    // 광고 부활: 판마다 한 번. 만족도를 절반으로 채우고 레일 위 일반 그릇은 치운다(보스는 남음)
+    G.canRevive = () => !G.revived && G.phase === 'end' && G.hearts <= 0;
+    G.revive = function () {
+      if (!G.canRevive()) return false;
+      G.revived = true; G.hearts = Math.ceil(G.maxHearts / 2);
+      for (const d of G.dishes) if (!DATA.DISHES[d.type].boss) { d.dead = true; const p = pos(d); fx({ type: 'spark', x: p.x, y: p.y, life: 0.5 }); }
+      G.dishes = G.dishes.filter(d => !d.dead); G.zones = [];
+      G.phase = 'wave';
+      return true;
+    };
     G.refundOf = function (i) {
       const u = G.cells[i] && G.cells[i].unit; if (!u) return 0;
       const n = u.recipe ? 8 * Math.pow(2, u.star - 1) : Math.pow(2, u.star - 1);
@@ -1697,7 +1707,7 @@
           d.dead = true; d.escaped = true;
           G.hearts -= ds.boss ? 5 : 1;
           ev('leak', { boss: !!ds.boss });
-          if (G.hearts <= 0) { G.hearts = 0; G.phase = 'end'; ev('end', { win: false }); }
+          if (G.hearts <= 0) { G.hearts = 0; if (G.phase !== 'end') { G.phase = 'end'; ev('end', { win: false }); } }
         }
       }
       // 랩 보호막: 1.5초마다 주변 그릇에 다시 씌움
@@ -2270,6 +2280,28 @@
 
 </script>
 <script>
+/* 싱크대 수비대 - 광고 연결부
+ * 지금은 토스 SDK 연결 전이라 테스트로 바로 성공한다. 앱인토스로 포장할 때 show()만 실제 보상형 광고로 바꾸면 된다.
+ *   (앱인토스: loadAdMobRewardedAd → showAdMobRewardedAd, 보상 이벤트를 받았을 때만 true)
+ * 웹판(깃허브 페이지·원스토어)은 광고가 없으므로 available() = false → 광고 버튼 자체를 안 보여준다. */
+(function (g) {
+  const SD = g.SD = g.SD || {};
+  SD.ads = {
+    available: () => g.SD_PLATFORM !== 'web',
+    // kind: 'revive' 등. 끝까지 봤으면 true
+    show(kind) {
+      return new Promise((resolve) => {
+        if (SD.meta && SD.meta.p && SD.meta.p.adFree) return resolve(true);   // 광고 제거 구매자는 바로 보상
+        // TODO 토스 SDK 연결
+        setTimeout(() => resolve(true), 400);
+      });
+    },
+    isTest: true
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* 싱크대 수비대 - 소리 (파일 없이 WebAudio로 합성)
  * 효과음: 버튼, 소환, 합성, 비법, 그릇 닦기, 콤보 5종, 하트 깎임, 보스, 웨이브, 승패
  * 배경음: 로비(느리고 가벼움) / 영업(조금 빠름) 두 가지 루프
@@ -2574,6 +2606,24 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     const comboN = Object.values(G.stats.combos).reduce((s, v) => s + v, 0);
     return SD.meta.finishRun({ win, hearts: G.hearts, maxHearts: G.maxHearts, wave: G.wave, cleaned: G.stats.cleaned, combos: comboN, recipes: G.stats.recipes.length, newRecipes: G.stats.newRecipes });
   }
+  function reviveScreen() {
+    const half = Math.ceil(G.maxHearts / 2), adFree = SD.meta.p && SD.meta.p.adFree;
+    modal(`${ribbon('만족도가 바닥났어요', '#ff6b5b')}<div class="pen sub">W${G.wave} · 판마다 한 번 이어할 수 있어요</div>
+      <div class="lbl center" style="margin:6px 0 10px">만족도를 ${half}까지 채우고 레일 위 그릇을 치워요</div>
+      <div class="btn big go" id="rvAd">${adFree ? '바로 이어하기' : '광고 보고 이어하기'}</div>
+      <div class="btn" id="rvNo">그만하기</div>`, (m) => {
+      const go = m.querySelector('#rvAd');
+      go.onclick = () => {
+        if (go.classList.contains('dis')) return; go.classList.add('dis'); go.textContent = '광고 보는 중…';
+        SD.ads.show('revive').then((ok) => {
+          closeModal();
+          if (ok && G.revive()) { toast(SD.ads.isTest && !adFree ? '(테스트 광고) 다시 영업 시작!' : '다시 영업 시작!'); SD.sound && SD.sound.play('recipe'); }
+          else endScreen(false);
+        });
+      };
+      m.querySelector('#rvNo').onclick = () => { closeModal(); endScreen(false); };
+    });
+  }
   function endScreen(win) {
     mq.length = 0;
     const res = settle(win), L = SD.lobby;
@@ -2620,7 +2670,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       else if (e.type === 'branch') branchScreen(e.cell);
       else if (e.type === 'needBranch') { toast(`${ingName(e.key)}의 3성 분기를 먼저 골라야 교잡돼요`); branchScreen(e.cell); }
       else if (e.type === 'bossWarn') bossScreen(e.boss);
-      else if (e.type === 'end') endScreen(e.win);
+      else if (e.type === 'end') { if (!e.win && G.canRevive() && SD.ads && SD.ads.available()) reviveScreen(); else endScreen(e.win); }
       else if (e.type === 'comboFirst') toast('새 콤보: ' + D.COMBOS[e.combo].name);
       else if (e.type === 'waveEnd') toast(`W${e.wave} 정리! +${e.bonus}`);
       else if (e.type === 'waveStart' && e.sit && e.sit !== 'normal') toast(`${D.SITUATIONS[e.sit].name}: ${D.SITUATIONS[e.sit].desc}`);
