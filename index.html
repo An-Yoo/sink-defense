@@ -20,7 +20,11 @@
   .jua{font-family:"Jua",sans-serif;font-weight:400}.pen{font-family:"Nanum Pen Script",cursive}
   .ii{display:inline-flex;align-items:center;justify-content:center;flex:none}.ii svg{display:block}
   /* top */
-  #top{position:absolute;left:12px;right:12px;top:12px;display:flex;align-items:center;gap:8px}
+  #top{position:absolute;left:12px;right:var(--navr,12px);top:12px;display:flex;align-items:center;gap:8px}
+  /* 화면 틀 여백이 있을 때(토스 등): 남는 띠를 검은색 대신 게임 바탕색으로 */
+  html.framed,html.framed body{background:#f6f0e6}
+  /* 오른쪽 위에 토스 버튼이 있을 때: 첫 줄이 좁아지므로 커피 충전 시간 글자를 숨기고 줄바꿈을 막는다 */
+  html.navpill .ltop #lCoffeeT,html.navpill .ltop .plus{display:none}html.navpill .ltop .chip{white-space:nowrap;min-width:0}html.navpill .ltop{gap:5px}
   .chip{background:var(--paper);border:2px solid var(--ink);border-radius:10px;box-shadow:0 2px 0 var(--ink);height:34px;display:flex;align-items:center;justify-content:center;font-family:Jua;font-size:15px;padding:0 10px}
   #wave b{font-weight:400;font-size:20px;margin-left:2px}#wave i{font-style:normal;opacity:.5;font-size:13px}
   #hearts{flex:1;height:16px;border:2px solid var(--ink);border-radius:6px;overflow:hidden;display:flex;background:#f3e6d6}
@@ -57,8 +61,8 @@
   .dev .cd{position:absolute;inset:0;border-radius:50%}.dev .t{font-family:Jua;font-size:13px;line-height:1.1}.dev small{display:block;font-family:Pretendard;font-size:10px;font-weight:800;opacity:.7}
   #bWave{margin-left:auto;height:46px;padding:0 10px;background:#5cc96b;color:#fff;font-size:15px;white-space:nowrap;text-shadow:0 1px 0 var(--ink)}
   /* toast + modal */
-  #toast{position:absolute;left:50%;top:560px;transform:translate(-50%,10px);background:var(--paper);border:2.5px solid var(--ink);border-radius:12px;box-shadow:0 3px 0 var(--ink);padding:8px 14px;font-weight:800;font-size:13px;opacity:0;pointer-events:none;transition:all .18s;max-width:340px;text-align:center}
-  #toast.show{opacity:1;transform:translate(-50%,0)}#toast.warn{background:#ffd0c9}
+  #toast{position:absolute;left:50%;top:560px;transform:translate(-50%,10px);background:var(--paper);border:2.5px solid var(--ink);border-radius:12px;box-shadow:0 3px 0 var(--ink);padding:8px 14px;font-weight:800;font-size:13px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:340px;text-align:center}
+  #toast.show{opacity:1;transform:translate(-50%,0)}#toast.warn{background:#ffd0c9}#toast.hi{top:14px}
   #modal{position:absolute;inset:0;background:rgba(43,33,30,.66);display:none;align-items:center;justify-content:center;padding:20px}
   #modal.show{display:flex}
   .sheet{position:relative;width:100%;background:var(--paper);border:3px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);padding:40px 18px 18px;display:flex;flex-direction:column;gap:10px}
@@ -83,7 +87,7 @@
   /* ---------- 로비 ---------- */
   #lobby{position:absolute;inset:0;z-index:10;display:none;background-color:#f6f0e6;background-image:linear-gradient(#e7dccb 1.5px,transparent 1.5px),linear-gradient(90deg,#e7dccb 1.5px,transparent 1.5px);background-size:32px 32px}
   #modal{z-index:20}#toast{z-index:30}
-  .ltop{position:absolute;left:12px;right:12px;top:12px;display:flex;align-items:center;gap:6px}
+  .ltop{position:absolute;left:12px;right:var(--navr,12px);top:12px;display:flex;align-items:center;gap:6px}
   .ltop .chip{gap:4px;padding:0 8px 0 5px;cursor:pointer}.chip small{font-family:Pretendard;font-size:10px;font-weight:800;opacity:.6}
   .lvchip{position:relative;background:#2ec4b6;color:#fff;text-shadow:0 1px 0 var(--ink);overflow:hidden;padding:0 8px 0 4px!important}
   .lvchip i{position:absolute;left:0;bottom:0;height:4px;background:#ffc93c}
@@ -220,6 +224,32 @@
   .dim{opacity:.55}
   .rwl{font-size:10px;font-weight:800;opacity:.6;margin-right:-3px;align-self:center}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.row2 .btn,.sheet>.btn:not(.big){height:44px}
+  /* 1.1: 단골 패스 · 상품 · 주방 도구 · 도전 · 랭킹 */
+  .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+  .fcard .btn.sm{font-size:11.5px}.g4 .fcard{height:122px;padding:0 5px}.g4 .fcard .jua{font-size:13px;white-space:nowrap}
+  .passcard{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;background:#fff3e2}.passcard.hot{background:#fff6b8}
+  .pcard{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"ic tx" "bt bt";align-items:center;gap:6px 8px;padding:8px;cursor:pointer}.pcard.used{opacity:.5}
+  .pcard .pic{grid-area:ic;display:flex}.pcard .ptx{grid-area:tx;display:flex;flex-direction:column;min-width:0}.pcard .ptx .jua{font-size:15px;line-height:1.15}.pcard .ptx small{font-size:10px;font-weight:800;line-height:1.25;word-break:keep-all}.pcard .btn.sm{grid-area:bt}
+  .tcard{position:relative;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 6px;min-height:74px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+  .tcard.on{background:#e3f7e6}.tcard.lockd{background:#f1ebe2}.tcard.lockd .tic{filter:grayscale(1);opacity:.55}
+  .tcard .tic{flex:none;display:flex}.tcard .ttx{display:flex;flex-direction:column;min-width:0}.tcard .ttx .jua{font-size:15px;line-height:1.2}.tcard .ttx small{font-size:10px;font-weight:800;line-height:1.25;opacity:.75;word-break:keep-all}
+  .tcard .ton{position:absolute;top:-8px;right:6px;display:flex;align-items:center;gap:2px}
+  .partchip{margin-left:auto;display:inline-flex;align-items:center;gap:3px;height:24px;padding:0 8px 0 5px;border:2px solid var(--ink);border-radius:8px;background:#fff;font-family:Jua;font-size:14px}
+  .chcard{padding:10px 12px;display:flex;flex-direction:column;gap:6px;box-shadow:0 3px 0 var(--ink)}.chcard .btn.big{height:46px;font-size:18px}
+  .chh{display:flex;align-items:center;gap:6px}.chh .jua{font-size:18px}.chd{font-size:12px;font-weight:800;line-height:1.35;word-break:keep-all}.chd svg{vertical-align:-2px}.chg{display:flex;flex-wrap:wrap;gap:4px}
+  .rklist{max-height:330px;overflow-y:auto;border:2.5px solid var(--ink);border-radius:12px;background:#fff;padding:4px 8px;touch-action:pan-y}
+  .rkrow{display:flex;align-items:center;gap:8px;height:30px;border-bottom:1.5px dashed #e3d9c8;font-size:13px;font-weight:800}.rkrow:last-of-type{border-bottom:0}
+  .rkrow b{width:28px;text-align:center;font-family:Jua;font-weight:400;font-size:15px}.rkrow span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rkrow i{font-style:normal;font-family:Jua;font-size:14px}
+  .rkrow.me{background:#fff6b8;border-radius:7px;border-bottom-color:transparent}.rkgap{text-align:center;line-height:14px;opacity:.5}
+  .plist{max-height:262px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;touch-action:pan-y;padding:1px 1px 3px}
+  .prow2{display:grid;grid-template-columns:26px 1fr 1fr;gap:5px;align-items:center}.prow2>b{font-family:Jua;font-weight:400;font-size:15px;text-align:center;opacity:.45}.prow2.open>b{opacity:1}
+  .prow2.phd{font-size:11px;font-weight:800;text-align:center;margin-bottom:-4px}.prow2.phd span{display:flex;align-items:center;justify-content:center;gap:3px}
+  .pcell{display:flex;align-items:center;justify-content:center;gap:3px;height:30px;border:2px solid var(--ink);border-radius:8px;background:#fff;font-size:12px;font-weight:800;white-space:nowrap}
+  .pcell.wait{opacity:.45}.pcell.got{background:#e3f7e6;opacity:.6;text-decoration:line-through}
+  .one .prow2,.prow2.one{grid-template-columns:26px 1fr}
+  #receipt{cursor:pointer}
+  .iline{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;padding:6px 2px;border-bottom:1.5px dashed #e3d9c8;font-size:12px;font-weight:800}.iline:last-child{border-bottom:0}
+  .iline b{font-family:Jua;font-weight:400;font-size:16px}.iline small{flex-basis:100%;opacity:.7;line-height:1.3}
 </style>
 <script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
 </head>
@@ -837,7 +867,7 @@
 
   const MAPS = {
     basic: {
-      name: '기본 주방', shape: 'U자 싱크대', cuisine: 'base', hpMul: 1, color: '#2ec4b6',
+      name: '기본 주방', shape: 'U자 싱크대', cuisine: 'base', hpMul: 1.2, color: '#2ec4b6',
       paths: [[[40, 186], [40, 548], [350, 548], [350, 206]]],
       cells: (() => { const GX = [76, 138, 200, 262], GY = [204, 266, 328, 390, 452]; const T = { '0,0': 'shelf', '1,1': 'tap', '3,0': 'board', '2,2': 'gas', '0,2': 'window', '3,2': 'rack' }; const P = { '0,3': 160, '3,3': 160 }; const out = []; GY.forEach((y, r) => GX.forEach((x, c) => out.push(C(x, y, { L: r === 4, t: T[c + ',' + r], p: P[c + ',' + r] })))); return out; })(),
       devices: { tap: R(80, 524, 260, 572), plug: R(270, 400, 374, 572) },
@@ -855,7 +885,7 @@
       pool: (w) => [['banchan', 7], ['plate', 4], ['cup', w >= 2 ? 2 : 0], ['dolsot', w >= 3 ? 2 : 0], ['ttukbaegi', w >= 4 ? 2 : 0], ['mug', w >= 3 ? 2 : 0], ['board', w >= 6 ? 2 : 0], ['fryingpan', w >= 7 ? 1 : 0], ['pot_black', w >= 8 ? 1 : 0]]
     },
     cn: {
-      name: '중식당', shape: '중식도', cuisine: 'cn', hpMul: 1.35, color: '#e8402f',
+      name: '중식당', shape: '중식도', cuisine: 'cn', hpMul: 1.15, color: '#e8402f',
       paths: [[[40, 186], [40, 445], [140, 445], [140, 578], [250, 578], [250, 445], [350, 445], [350, 196]]],
       cells: [C(74, 236, { t: 'gas' }), C(136, 236), C(198, 236), C(260, 236, { t: 'shelf' }), C(74, 298), C(136, 298, { t: 'tap' }), C(198, 298, { p: 160 }), C(260, 298), C(74, 360, { t: 'window' }), C(136, 360), C(198, 360, { t: 'board' }), C(260, 360, { L: 1 }), C(167, 470, { L: 1, t: 'rack' })],
       devices: { wok: { x: 297, y: 214, r: 100 }, tap: R(115, 555, 275, 602), plug: R(117, 445, 163, 600) },
@@ -968,8 +998,8 @@
     tray: { hp: 900, speed: 43, reward: 30, weak: ['soap', 'alk'], boss: 'mid' },
     grill: { hp: 3200, speed: 38, reward: 60, weak: ['soap', 'water'], resist: ['ice'], boss: 'final', bossJam: 6 },
     stockpot: { hp: 1000, speed: 40, reward: 30, weak: ['alk', 'scrub'], resist: ['acid'], boss: 'mid', kbImmune: true },
-    dimsum_tower: { hp: 1100, speed: 38, reward: 30, boss: 'mid', tiers: ['acid', 'alk', 'scrub'] },
-    jjajang_wok: { hp: 3000, speed: 34, reward: 60, weak: ['alk', 'soap'], boss: 'final', bossJam: 6, nonWeakMul: 0.6 },
+    dimsum_tower: { hp: 850, speed: 38, reward: 30, boss: 'mid', tiers: ['acid', 'alk', 'scrub'] },
+    jjajang_wok: { hp: 2400, speed: 34, reward: 60, weak: ['alk', 'soap'], boss: 'final', bossJam: 6, nonWeakMul: 0.6 },
     ramen_don: { hp: 1000, speed: 40, reward: 30, weak: ['water'], boss: 'mid', needSoak: 0.5 },
     curry: { hp: 3000, speed: 34, reward: 60, weak: ['alk'], resist: ['scrub'], boss: 'final', windowMul: 2, hasteAura: 1.2 },
     pizza_pan: { hp: 1100, speed: 38, reward: 30, weak: ['soap'], boss: 'mid', kbImmune: true, hasteAura: 1.15 },
@@ -991,20 +1021,41 @@
   // 한 판 15웨이브. 보스: 7웨이브 중간 보스, 15웨이브는 5스테이지만 최종 보스(1~4스테이지는 마지막 보스 = 중간 보스 강화판)
   // 그릇 수·체력·등장 그릇 종류는 예전 10웨이브 곡선을 15웨이브 길이로 늘린 x(1~10)로 계산
   const WAVES = 15, MID_WAVE = 7;
+  // 기본 주방 1~3스테이지는 10웨이브에서 끝난다 (첫 20분이 너무 길고 평평해서 줄임). 곡선은 그대로 두고 10웨이브에서 자르며, 마지막 보스가 10웨이브에 나온다
+  const SHORT_WAVES = 10;
+  const wavesOf = (mapId, stage) => (mapId === 'basic' && stage <= 3) ? SHORT_WAVES : WAVES;
   const STAGE_MUL = [1, 0.75, 0.82, 0.93, 1.0, 1.0];   // 까다로운 손님(2~5스테이지) 반영, 10웨이브 보스를 없앤 뒤 다시 맞춤. 예전 0.75/0.85/1.0/1.1/1.2   // 2026-10-22: 까다로운 손님(2~5스테이지)이 붙는 만큼 체력 배율을 낮춤. 예전 0.75/0.85/1.0/1.1/1.2. 시뮬(Lv3, 30판)로 스테이지가 오를수록 승률이 내려가게 맞춤
   const HPK = (typeof process !== 'undefined' && process.env && +process.env.SD_HPK) || 0.85;
   // 주방 규칙(5웨이브 뒤)에 대가가 없어진 만큼 6웨이브부터 그릇 체력을 올림. 시뮬로 대가 있던 때 승률에 맞춤
   const LATE_HP = (typeof process !== 'undefined' && process.env && +process.env.SD_LATEHP) || 1.1;
-  function waveSpec(w, map, stage = 5) {
+  // endless(무한 영업 · 오늘의 도전): 15웨이브에서 끝나지 않고, 16웨이브부터 웨이브마다 체력 x1.15씩 더 오르고 그릇이 4%씩 빨라지며 5웨이브마다 보스가 나온다
+  const ENDLESS_HP = (typeof process !== 'undefined' && process.env && +process.env.SD_EHP) || 1.15;
+  const ENDLESS_SPEED = (typeof process !== 'undefined' && process.env && process.env.SD_ESPD != null && +process.env.SD_ESPD) || 0.04;   // 16웨이브부터 웨이브마다 그릇이 이만큼 빨라진다
+  function waveSpec(w, map, stage = 5, endless = false, waves = WAVES) {
     const x = 1 + (w - 1) * 9 / (WAVES - 1);
-    const count = 7 + Math.round(x * 1.6);
-    const hpMul = HPK * (1 + 0.38 * (x - 1) + 0.06 * (x - 1) * (x - 1)) * (map.hpMul || 1) * (STAGE_MUL[stage] || 1) * (w > 5 ? LATE_HP : 1);
-    const last = w === WAVES;
-    const boss = w === MID_WAVE ? map.mid : last ? (stage >= 5 ? map.final : map.mid) : null;
-    const bossMul = (last && stage < 5) ? 1.8 : 1;
-    const bossLabel = !boss ? '' : w === MID_WAVE ? '중간 보스' : stage >= 5 ? '최종 보스' : '마지막 보스';
+    const over = endless ? Math.max(0, w - WAVES) : 0;
+    const count = 7 + Math.round(Math.min(x, 13) * 1.6);
+    const hpMul = HPK * (1 + 0.38 * (x - 1) + 0.06 * (x - 1) * (x - 1)) * (map.hpMul || 1) * (STAGE_MUL[stage] || 1) * (w > 5 ? LATE_HP : 1) * Math.pow(ENDLESS_HP, over);
+    const last = w === waves;
+    let boss = w === MID_WAVE ? map.mid : last ? (stage >= 5 || endless ? map.final : map.mid) : null;
+    let bossMul = (last && stage < 5 && !endless) ? 1.8 : 1;
+    let bossLabel = !boss ? '' : w === MID_WAVE ? '중간 보스' : (stage >= 5 || endless) ? '최종 보스' : '마지막 보스';
+    if (over > 0 && over % 5 === 0) { boss = (over / 5) % 2 ? map.mid : map.final; bossMul = 1.5; bossLabel = '보스'; }
     return { pool: map.pool(Math.round(x)), count: boss ? Math.round(count * 0.6) : count, hpMul, boss, bossMul, bossLabel, duration: 12 };
   }
+
+  /* ---------- 주방 도구 ----------
+   * 판 밖에서 부품으로 열고, 판에 2개(레벨 8부터 3개) 들고 간다. 수치를 올리는 게 아니라 판의 규칙을 하나씩 바꾼다 */
+  const TOOLS = {
+    cup: { name: '계량컵', cost: 4, desc: '판의 첫 소환 3번은 2성으로 나와요' },
+    shelf: { name: '예비 선반', cost: 4, desc: '조리대 첫 확장이 공짜예요' },
+    timer: { name: '주방 타이머', cost: 6, desc: '보스 웨이브가 시작되면 소환 3번이 공짜예요' },
+    bell: { name: '주문 벨', cost: 6, desc: '쉬는 시간에 다음 웨이브를 일찍 부르면 남은 1초마다 반짝 +2' },
+    rag: { name: '마른 행주', cost: 8, desc: '기름에 고장 난 재료가 바로 돌아와요' },
+    funnel: { name: '깔때기', cost: 8, desc: '웨이브마다 한 번, 재활용하면 다음 소환이 공짜예요' },
+    memo: { name: '메모지', cost: 10, desc: '주방 규칙을 한 번 다시 뽑을 수 있어요' },
+    apron: { name: '앞치마', cost: 10, desc: '판마다 한 번, 만족도가 바닥나면 5로 버텨요' }
+  };
 
   /* ---------- 까다로운 손님 ----------
    * 스테이지가 올라가면 판마다 무작위로 붙는 방해. 2·3스테이지 1명, 4·5스테이지 2명. 한 명당 클리어 팁 +20% */
@@ -1118,13 +1169,15 @@
 
   SD.DATA = {
     MAPS, MAP_ORDER: ['basic', 'kr', 'cn', 'jp', 'we'], TERRAIN, ING, STAR_DMG, STAR_CD, BRANCH, DISHES, FAMILY_OF, TRAIT_TEXT,
-    waveSpec, SITUATIONS, PAIRS, RECIPES, FORBIDDEN, RULES, RULE_ART, COMBOS,
+    waveSpec, SITUATIONS, PAIRS, RECIPES, FORBIDDEN, RULES, RULE_ART, COMBOS, TOOLS, ENDLESS_SPEED,
     DEFAULT_DECK: ['vinegar', 'lemon', 'soda', 'oxy', 'dish', 'hot', 'ice', 'salt'],
     START_SHINE: 60, SUMMON_COST: 10, WAVE_BONUS: 8, HEARTS: 20,
-    SUMMON_LV_COST: [0, 20, 30, 45, 60],
-    SUMMON_ODDS: [null, [1, 0, 0], [0.9, 0.1, 0], [0.77, 0.2, 0.03], [0.64, 0.3, 0.06], [0.5, 0.4, 0.1]],
+    // 소환 레벨 6·7은 후반에 남는 반짝을 쓸 곳 (1.2)
+    SUMMON_LV_COST: [0, 20, 30, 45, 60, 90, 130],
+    SUMMON_ODDS: [null, [1, 0, 0], [0.9, 0.1, 0], [0.77, 0.2, 0.03], [0.64, 0.3, 0.06], [0.5, 0.4, 0.1], [0.35, 0.45, 0.2], [0.2, 0.5, 0.3]],
+    SUMMON_LV_MAX: 7,
     EXPAND_COST: [20, 30, 45, 60],
-    RULE_WAVES: [5], WAVES, MID_WAVE, GUESTS, GUEST_COUNT, rollGuests,
+    RULE_WAVES: [5], WAVES, MID_WAVE, SHORT_WAVES, wavesOf, GUESTS, GUEST_COUNT, rollGuests,
     BREAK_TIME: 4, STATUS_TIME: 3, BOSS_HP: { mid: 0.25, final: 0.13 }, WOK_CD: 25, TAP_CD: 30
   };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -1159,10 +1212,15 @@
     const lvMul = (k) => levels ? 1 + 0.08 * ((levels[k] || 1) - 1) : 1;
     const guests = opts.guests || [];
     const gst = (id) => guests.find(g => g.id === id);
+    const tools = opts.tools || [];           // 들고 온 주방 도구 (DATA.TOOLS의 키)
+    const tool = (id) => tools.includes(id);
+    const endless = !!opts.endless;           // 무한 영업 · 오늘의 도전: 15웨이브에서 끝나지 않는다
     const startHearts = gst('picky') ? 15 : DATA.HEARTS;
+    const waves = endless ? DATA.WAVES : DATA.wavesOf(mapId, stage);   // 이 판의 웨이브 수 (기본 주방 1~3은 10)
 
     const G = {
       mapId, map, paths, rng, codex, deck, recipeToday, stage, guests, oilT: 10,
+      endless, tools, waves, freeSummons: 0, cleared: 0,
       phase: 'ready', wave: 0, time: 0,
       shine: DATA.START_SHINE, hearts: startHearts, maxHearts: startHearts,
       summonLv: 1, expandCount: 0,
@@ -1198,10 +1256,12 @@
     const brOf = (u) => u.recipe ? (DATA.RECIPES[u.recipe].mods || {}) : u.branch ? DATA.BRANCH[u.key][u.branch] : {};
     G.branchOf = brOf;
     const sitIs = (k) => G.phase === 'wave' && G.sit === k;
-    G.summonCost = () => Math.round(DATA.SUMMON_COST * (G.rules.smallpack ? 0.7 : 1)) + (gst('pricey') ? 2 : 0);
-    G.lvCap = () => 5;
+    G.tool = tool;
+    G.summonCost = () => G.freeSummons > 0 ? 0 : Math.round(DATA.SUMMON_COST * (G.rules.smallpack ? 0.7 : 1)) + (gst('pricey') ? 2 : 0);
+    G.lvCap = () => DATA.SUMMON_LV_MAX;
     G.lvCost = () => G.summonLv >= G.lvCap() ? null : DATA.SUMMON_LV_COST[G.summonLv];
-    G.expandCost = () => DATA.EXPAND_COST[G.expandCount] ?? null;
+    // 예비 선반: 첫 확장은 공짜이고 값 사다리도 쓰지 않는다
+    G.expandCost = () => (tool('shelf') && !G.shelfUsed) ? 0 : (DATA.EXPAND_COST[G.expandCount - (G.shelfUsed ? 1 : 0)] ?? null);
     const units = () => G.cells.filter(c => c.unit);
     G.rangeOf = (cell, u = cell.unit) => specOf(u).range + (brOf(u).rangeAdd || 0) + (cell.terrain === 'shelf' ? 40 : 0);
 
@@ -1418,9 +1478,12 @@
     /* ---------- waves ---------- */
     G.startWave = function () {
       if (G.phase !== 'ready' && G.phase !== 'break') return;
+      // 주문 벨: 쉬는 시간을 남기고 부르면 남은 1초마다 반짝 +2
+      if (G.phase === 'break' && tool('bell') && G.breakT >= 1) { const b = Math.floor(G.breakT) * 2; G.shine += b; ev('toast', { text: `주문 벨! 반짝 +${b}` }); }
       G.wave++;
-      if (map.situations) { G.sit = G.sitNext; G.sitNext = G.wave < DATA.WAVES ? rollSit() : null; }
-      const spec = DATA.waveSpec(G.wave, map, stage);
+      if (map.situations) { G.sit = G.sitNext; G.sitNext = (endless || G.wave < waves) ? rollSit() : null; }
+      const spec = DATA.waveSpec(G.wave, map, stage, endless, waves);
+      if (spec.boss && tool('timer')) { G.freeSummons += 3; ev('toast', { text: '주방 타이머! 소환 3번 공짜' }); }
       let pool = spec.pool.slice();
       if (G.sit === 'fire') pool = pool.map(([k, w]) => [k, (k === 'wok' || k === 'fryingpan') ? w * 2 + 1 : w]);
       let count = spec.count;
@@ -1440,20 +1503,37 @@
       G.shine += bonus;
       G.zones = [];
       ev('waveEnd', { wave: G.wave, bonus });
-      if (G.wave >= DATA.WAVES) { G.phase = 'end'; ev('end', { win: true }); return; }
-      if (DATA.RULE_WAVES.includes(G.wave)) {
-        const pool = Object.keys(DATA.RULES).filter(k => !G.rules[k]);
-        const ch = []; while (ch.length < 3 && pool.length) ch.push(pool.splice(Math.floor(rng() * pool.length), 1)[0]);
-        G.ruleChoices = ch; G.phase = 'choose'; ev('chooseRule', { choices: ch });
-        return;
+      G.cleared = G.wave;
+      if (!endless && G.wave >= waves) { G.phase = 'end'; ev('end', { win: true }); return; }
+      // 무한 영업은 15웨이브부터 10웨이브마다 규칙을 하나씩 더 고른다
+      if (DATA.RULE_WAVES.includes(G.wave) || (endless && G.wave >= DATA.WAVES && (G.wave - DATA.WAVES) % 10 === 0)) {
+        const ch = drawRules([]);
+        if (ch.length) { G.ruleChoices = ch; G.phase = 'choose'; ev('chooseRule', { choices: ch }); return; }
       }
       G.phase = 'break'; G.breakT = gst('nobreak') ? 0 : DATA.BREAK_TIME;
     }
+    function drawRules(avoid) {
+      let pool = Object.keys(DATA.RULES).filter(k => !G.rules[k] && !avoid.includes(k));
+      if (pool.length < 3) pool = Object.keys(DATA.RULES).filter(k => !G.rules[k]);
+      const ch = []; while (ch.length < 3 && pool.length) ch.push(pool.splice(Math.floor(rng() * pool.length), 1)[0]);
+      return ch;
+    }
+    // 메모지: 판마다 한 번 규칙 3장을 다시 뽑는다
+    G.canRerollRules = () => tool('memo') && !G.memoUsed && G.phase === 'choose';
+    G.rerollRules = function () {
+      if (!G.canRerollRules()) return false;
+      G.memoUsed = true; G.ruleChoices = drawRules(G.ruleChoices || []); ev('chooseRule', { choices: G.ruleChoices });
+      return true;
+    };
+    // 광고 보고 시작: 반짝 +40, 소환 레벨 2에서 시작 (판마다 한 번, 첫 웨이브 전에만)
+    G.boost = function () {
+      if (G.boosted || G.phase !== 'ready') return false;
+      G.boosted = true; G.shine += 40; G.summonLv = Math.max(G.summonLv, 2);
+      return true;
+    };
     G.pickRule = function (key) {
       if (G.phase !== 'choose' || !G.ruleChoices.includes(key)) return false;
       G.rules[key] = true; G.ruleChoices = null;
-      
-      if (key === 'smallpack' && G.summonLv > 3) G.summonLv = 3;
       G.phase = 'break'; G.breakT = gst('nobreak') ? 0 : DATA.BREAK_TIME;
       ev('rulePicked', { rule: key });
       return true;
@@ -1482,11 +1562,12 @@
       const empty = G.emptyCells();
       if (!empty.length) { ev('toast', { text: '조리대가 꽉 찼어요' }); return false; }
       if (G.shine < cost) { ev('toast', { text: '반짝이 부족해요' }); return false; }
-      G.shine -= cost;
+      if (G.freeSummons > 0) G.freeSummons--; else G.shine -= cost;
       let key = G.queue.shift(); G.queue.push(rollKey());
       if (key === 'hot' && sitIs('boiler')) key = rollKey();
       const cell = empty[Math.floor(rng() * empty.length)];
-      cell.unit = { key, star: rollStar(), cd: 0.3, jam: 0 };
+      // 계량컵: 판의 첫 소환 3번은 2성 이상
+      cell.unit = { key, star: Math.max(rollStar(), tool('cup') && G.stats.summons < 3 ? 2 : 1), cd: 0.3, jam: 0 };
       G.stats.summons++;
       fx({ type: 'pop', x: cell.cx, y: cell.cy, life: 0.35 });
       checkBranch(G.cells.indexOf(cell));
@@ -1496,6 +1577,7 @@
     G.expand = function (i) {
       const c = G.cells[i]; const cost = G.expandCost();
       if (!c || !c.locked || c.ruleLocked || cost == null || G.shine < cost) return false;
+      if (cost === 0 && tool('shelf') && !G.shelfUsed) G.shelfUsed = true;
       G.shine -= cost; c.locked = false; G.expandCount++; return true;
     };
     // 교잡 결과: {id} | {needBranch:'a'|'b'} | {forbidden} | {none} | null(교잡 대상 아님)
@@ -1635,8 +1717,20 @@
     G.recycle = function (i) {
       const c = G.cells[i]; if (!c || !c.unit) return false;
       const r = G.refundOf(i); G.shine += r; c.unit = null; G.branchQueue = G.branchQueue.filter(x => x !== i);
+      // 깔때기: 웨이브마다 한 번, 재활용하면 다음 소환이 공짜
+      if (tool('funnel') && G.funnelWave !== G.wave) { G.funnelWave = G.wave; G.freeSummons++; ev('toast', { text: '깔때기! 다음 소환 공짜' }); }
       fx({ type: 'coin', x: c.cx, y: c.cy, text: '+' + r, life: 0.8 });
       return true;
+    };
+    // 1성 일괄 재활용: 조리대가 꽉 찼을 때 짝 없는 1성 재료를 한 번에 치운다 (비법·2성 이상은 남김)
+    G.lowCells = () => G.cells.map((c, i) => i).filter(i => { const u = G.cells[i].unit; return u && !u.recipe && u.star === 1; });
+    G.lowRefund = () => G.lowCells().reduce((s, i) => s + G.refundOf(i), 0);
+    // 꽉 찼고 합칠 것도 없을 때만 (합칠 짝이 남아 있으면 일괄 합성이 먼저)
+    G.canRecycleLow = () => G.phase !== 'end' && G.phase !== 'choose' && !G.emptyCells().length && G.lowCells().length > 0 && G.mergePairs() === 0;
+    G.recycleLow = function () {
+      if (!G.canRecycleLow()) return 0;
+      const L = G.lowCells(); for (const i of L) G.recycle(i);
+      return L.length;
     };
     G.unjam = function (i) { const c = G.cells[i]; if (c && c.unit && c.unit.jam > 0) { c.unit.jam = 0; fx({ type: 'pop', x: c.cx, y: c.cy, life: 0.3 }); return true; } return false; };
     G.useTap = function () { const t = G.devices.tap; if (!t || t.cd > 0 || G.phase !== 'wave') return false; t.active = 8; t.cd = DATA.TAP_CD; return true; };
@@ -1645,7 +1739,7 @@
       const w = G.devices.wok, W = map.devices.wok; if (!w || w.cd > 0 || G.phase !== 'wave') return false;
       w.cd = DATA.WOK_CD;
       const p = { x: W.x, y: W.y };
-      const amount = 40 * DATA.waveSpec(Math.max(1, G.wave), map, stage).hpMul;
+      const amount = 40 * DATA.waveSpec(Math.max(1, G.wave), map, stage, endless, waves).hpMul;
       for (const d of near(p, W.r, null)) { damage(d, amount * (DATA.DISHES[d.type].boss ? 0.3 : 1)); if (!d.dead) d.st.soak = Math.max(d.st.soak || 0, 2); }
       fx({ type: 'fire', x: p.x, y: p.y, r: W.r, life: 0.6 });
       const cand = units().filter(c => Math.hypot(c.cx - p.x, c.cy - p.y) <= 90 && c.unit.jam <= 0);
@@ -1668,19 +1762,19 @@
       if (dv.plug) dv.plug.active = Math.max(0, dv.plug.active - dt);
       if (dv.wok) dv.wok.cd = Math.max(0, dv.wok.cd - dt);
       const steamUnjam = units().some(c => c.unit.key === 'steam');
-      const autoUnjam = hasAura('autoUnjam');
+      const autoUnjam = hasAura('autoUnjam') || tool('rag');   // 마른 행주: 스팀 타월과 같은 효과
       const waterHaste = hasAura('waterHaste');
       // 보스 오라
       let haste = 1, shieldSrc = [];
       for (const d of G.dishes) { if (d.dead) continue; const ds = DATA.DISHES[d.type]; if (ds.hasteAura) haste = Math.max(haste, ds.hasteAura); if (ds.shieldAura) shieldSrc.push(d); }
-      const speedMul = (sitIs('spin') ? 1.3 : 1) * (gst('hurry') ? 1.15 : 1) * haste;
+      const speedMul = (sitIs('spin') ? 1.3 : 1) * (gst('hurry') ? 1.15 : 1) * haste * (endless ? 1 + DATA.ENDLESS_SPEED * Math.max(0, G.wave - DATA.WAVES) : 1);
       // 기름 범벅: 웨이브 중 10초마다 재료 하나 고장
       if (gst('oily') && G.phase === 'wave') {
         G.oilT -= dt;
         if (G.oilT <= 0) {
           G.oilT = 10;
           const cand = units().filter(c => c.unit.jam <= 0);
-          if (cand.length) { const c = cand[Math.floor(rng() * cand.length)]; c.unit.jam = hasAura('autoUnjam') ? 0.4 : 3; fx({ type: 'oil', x1: c.cx, y1: 120, x2: c.cx, y2: c.cy, life: 0.4 }); if (!hasAura('autoUnjam')) ev('jam'); }
+          if (cand.length) { const c = cand[Math.floor(rng() * cand.length)]; c.unit.jam = autoUnjam ? 0.4 : 3; fx({ type: 'oil', x1: c.cx, y1: 120, x2: c.cx, y2: c.cy, life: 0.4 }); if (!autoUnjam) ev('jam'); }
         }
       }
       for (const d of G.dishes) {
@@ -1708,7 +1802,11 @@
           d.dead = true; d.escaped = true;
           G.hearts -= ds.boss ? 5 : 1;
           ev('leak', { boss: !!ds.boss });
-          if (G.hearts <= 0) { G.hearts = 0; if (G.phase !== 'end') { G.phase = 'end'; ev('end', { win: false }); } }
+          if (G.hearts <= 0) {
+            // 앞치마: 판마다 한 번 만족도 5로 버틴다
+            if (tool('apron') && !G.apronUsed && G.phase !== 'end') { G.apronUsed = true; G.hearts = 5; ev('toast', { text: '앞치마가 한 번 막아 줬어요! 만족도 5' }); }
+            else { G.hearts = 0; if (G.phase !== 'end') { G.phase = 'end'; ev('end', { win: false }); } }
+          }
         }
       }
       // 랩 보호막: 1.5초마다 주변 그릇에 다시 씌움
@@ -2006,7 +2104,8 @@
 
   const ECON = {
     COFFEE_MAX: 50, COFFEE_REGEN_MS: 8 * 60e3, COFFEE_COST: 5, COFFEE_REFUND: 3,
-    AD_COFFEE: 10, AD_COFFEE_CAP: 3, AD_TIP: 300, AD_TIP_CAP: 3,
+    // 상점 광고: 커피 +10, 덱 재료 2종 조각 x6 (팁은 남아서 1.2에서 조각으로 바꿈)
+    AD_COFFEE: 10, AD_COFFEE_CAP: 3, AD_SHARD_KINDS: 2, AD_SHARD_N: 6, AD_SHARD_CAP: 3,
     MAX_LV: 10, LV_DMG: 0.08,
     LV_SHARDS: [0, 0, 5, 10, 20, 30, 50, 80, 120, 160, 200],
     LV_TIPS: [0, 0, 100, 200, 400, 600, 900, 1300, 1800, 2400, 3000],
@@ -2014,29 +2113,52 @@
     SHOP_REFRESH_MS: 3 * 3600e3, SHOP_REROLL: 50,
     STAGE_MUL: [1, 0.75, 0.85, 1, 1.1, 1.2],
     KITCHEN_CAP_H: 8, KITCHEN_MAX_LV: 10,
-    RECIPE_FIRST_TIPS: 100, LVUP_COFFEE: 10, DAY_RESET_HOUR: 5
+    RECIPE_FIRST_TIPS: 100, LVUP_COFFEE: 10, DAY_RESET_HOUR: 5,
+    // 광고 보상 하루 횟수 (커피·팁은 위 AD_COFFEE_CAP·AD_TIP_CAP)
+    AD_CAPS: { chest: 2, reroll: 2, sweep: 3, boost: 5, double: 10, daily: 2 },
+    // 무한 영업 · 오늘의 도전
+    MODE_COFFEE: 5, ENDLESS_MS: [15, 20, 25, 30, 35, 40], ENDLESS_MS_PARTS: 2, ENDLESS_TIPS: 12, DAILY_TIPS: 15,
+    // 주방 도구
+    TOOL_SLOTS: 2, TOOL_SLOT3_LV: 8, PASS_TOOL_SLOT: 1,   // 단골 줄을 연 시즌 동안 도구를 하나 더 든다
+    // 단골 패스: 28일 시즌, 150점마다 1단계, 20단계. 시즌 시작은 2026-11-02(월) 05:00 KST
+    PASS_DAYS: 28, PASS_STEP: 150, PASS_LEVELS: 20, PASS_EPOCH: Date.UTC(2026, 10, 1, 20),
+    PASS_PTS: { win: 20, lose: 10, sweep: 5, mission: 30, mission2: 15, attend: 20, mode: 20 }
   };
+  const RANK_A = ['반짝이는', '부지런한', '꼼꼼한', '날쌌', '든든한', '상냥한', '씩씩한', '야무진', '느긋한', '뽀득한', '싱그러운', '용감한'];
+  const RANK_B = ['수세미', '행주', '고무장갑', '주방세제', '베이킹소다', '레몬', '솔', '앞치마', '국자', '뚝배기', '접시', '주전자'];
   const CHESTS = {
     wood: { name: '나무 상자', color: ['#d99a52', '#f2c48a'], deck: [2, 2, 5], off: [0.15, 3], unlock: [0.03, 5], tips: [60, 120] },
     silver: { name: '은 상자', color: ['#c9d1d6', '#e8edf0'], deck: [2, 3, 8], off: [0.2, 5], unlock: [0.05, 10], tips: [120, 240] },
     gold: { name: '금 상자', color: ['#ffc93c', '#ffe08a'], deck: [3, 6, 12], off: [0.35, 8], unlock: [0.12, 15], tips: [300, 500] }
   };
+  // 일일 미션은 3단계. 한 단계를 받으면 같은 미션의 다음 단계가 열린다 (1단계는 예전 그대로)
   const MISSIONS = [
-    { id: 'plays', name: '영업 3판 하기', goal: 3, reward: { tips: 200 } },
-    { id: 'dishes', name: '그릇 150개 닦기', goal: 150, reward: { coffee: 10 } },
-    { id: 'combos', name: '콤보 30번 터뜨리기', goal: 30, reward: { tips: 150 } },
-    { id: 'recipes', name: '살림 비법 1번 만들기', goal: 1, reward: { chest: 'wood' } }
+    { id: 'plays', name: (n) => `영업 ${n}판 하기`, tiers: [{ goal: 3, reward: { tips: 200 } }, { goal: 6, reward: { coffee: 10 } }, { goal: 10, reward: { chest: 'silver' } }] },
+    { id: 'dishes', name: (n) => `그릇 ${n.toLocaleString('ko-KR')}개 닦기`, tiers: [{ goal: 150, reward: { coffee: 10 } }, { goal: 800, reward: { tips: 300 } }, { goal: 2000, reward: { deckShards: 2 } }] },
+    { id: 'combos', name: (n) => `콤보 ${n.toLocaleString('ko-KR')}번 터뜨리기`, tiers: [{ goal: 30, reward: { tips: 150 } }, { goal: 500, reward: { chest: 'wood' } }, { goal: 1500, reward: { deckShards: 2 } }] },
+    { id: 'recipes', name: (n) => `살림 비법 ${n}번 만들기`, tiers: [{ goal: 1, reward: { chest: 'wood' } }, { goal: 3, reward: { tips: 300 } }, { goal: 6, reward: { parts: 1 } }] }
   ];
   const ATTEND = [
     { coffee: 10, tips: 100 }, { coffee: 10, tips: 150 }, { coffee: 10, chest: 'wood' }, { coffee: 10, tips: 250 },
     { coffee: 10, chest: 'silver' }, { coffee: 10, tips: 400 }, { coffee: 10, chest: 'gold' }
   ];
   const PRODUCTS = {
-    starter: { name: '스타터팩', price: 2900, once: true, desc: '커피 50 · 팁 3,000 · 덱 재료 조각 각 8 · 커피 최대치 +10', items: { coffee: 50, tips: 3000, deckShards: 8, maxPlus: 10 } },
-    coffee50: { name: '커피 50', price: 1200, desc: '바로 충전', items: { coffee: 50 } },
-    maxplus: { name: '커피 최대치 +10', price: 3300, desc: '영구', items: { maxPlus: 10 } },
-    adfree: { name: '광고 제거', price: 5500, once: true, desc: '광고 없이 광고 보상 바로 받기', items: { adFree: true } }
+    starter: { name: '스타터팩', price: 1540, once: true, desc: '덱 재료 조각 각 15 · 팁 3,000 · 커피 50 · 커피 최대치 +10', items: { coffee: 50, tips: 3000, deckShards: 15, maxPlus: 10 } },
+    // 커피는 남아서(1.2) 커피 50 · 커피 최대치 +10 상품을 같은 값의 재료 꾸러미로 바꿈. 조각은 덱 재료에 똑같이 주므로 확률형이 아니다
+    shards10: { name: '재료 꾸러미', price: 660, desc: '덱 조각 각 10 · 커피 30', items: { deckShards: 10, coffee: 30 } },
+    shards30: { name: '큰 재료 꾸러미', price: 1760, desc: '덱 조각 각 30 · 커피 100', items: { deckShards: 30, coffee: 100 } },
+    adfree: { name: '광고 제거', price: 2970, once: true, desc: '판 보상 2배 · 시작 부스트 · 상자를 광고 없이 바로', items: { adFree: true } },
+    speed4: { name: '4배속', price: 1760, once: true, desc: '영업을 4배속으로 돌려요', items: { speed4: true } },
+    // 둘을 따로 사면 4,730원. 둘 다 없을 때만 살 수 있다
+    combo: { name: '광고 제거 + 4배속', price: 3630, once: true, desc: '따로 사면 4,730원 · 1,100원 할인', items: { adFree: true, speed4: true } },
+    pass: { name: '단골 패스', price: 2640, desc: '이번 시즌 단골 보상 줄 열기 · 시즌 동안 도구 하나 더', items: { pass: true } }
   };
+  // 단골 패스 보상. 유료 줄에는 확률형 상자를 넣지 않는다 (등급분류: 확률형 아이템 미포함)
+  function passReward(line, lv) {
+    if (line === 'f') return lv % 10 === 0 ? { parts: 1 } : lv % 5 === 0 ? { chest: 'wood' } : lv % 2 ? { tips: 150 } : { coffee: 10 };
+    // 유료 줄 합계: 부품 15, 덱 조각 각 40, 팁 3,600 (예전: 부품 10, 조각 각 15, 팁 2,400, 커피 100)
+    return lv === ECON.PASS_LEVELS ? { parts: 6 } : lv % 5 === 0 ? { parts: 3 } : lv % 3 === 0 ? { deckShards: 5 } : lv % 2 ? { tips: 600 } : { deckShards: 3 };
+  }
   const CHAPTERS = () => D().MAP_ORDER;
 
   let store = {
@@ -2060,14 +2182,22 @@
       stars: {}, sel: { map: 'basic', stage: 1 },
       day: null, attend: { last: '', streak: 0 },
       mail: [{ id: 'welcome', title: '싱크대 수비대에 오신 걸 환영해요', body: '첫 영업 준비금이에요.', items: { coffee: 20, tips: 500 } }],
-      shop: null, kitchen: { lv: 1, t: t }, adFree: false, bought: {}, stats: { plays: 0, wins: 0 }
+      shop: null, kitchen: { lv: 1, t: t }, adFree: false, bought: {}, stats: { plays: 0, wins: 0 },
+      speed4: false, parts: 0, tools: {}, toolEq: [], endless: { best: {}, ms: {} }, last: null, pass: null, rank: null
     };
   }
+  // 예전 저장에 새 칸 채우기
+  function migrate(p) {
+    const d = { speed4: false, parts: 0, tools: {}, toolEq: [], endless: { best: {}, ms: {} }, last: null, pass: null, rank: null };
+    for (const k in d) if (p[k] === undefined) p[k] = d[k];
+    return p;
+  }
+  const hashStr = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
   let P = null;
   const M = SD.meta = {
-    ECON, CHESTS, MISSIONS, ATTEND, PRODUCTS,
+    ECON, CHESTS, MISSIONS, ATTEND, PRODUCTS, RANK_A, RANK_B, passReward,
     setStore(s) { store = s; }, setNow(f) { nowFn = f; }, setRand(f) { randFn = f; },
-    load() { P = store.get(KEY, null) || fresh(); M.tick(); return P; },
+    load() { P = migrate(store.get(KEY, null) || fresh()); M.tick(); return P; },
     save() { store.set(KEY, P); },
     reset() { P = fresh(); M.tick(); M.save(); return P; },
     get p() { return P; }
@@ -2085,10 +2215,17 @@
     }
     // 하루 초기화
     const dk = dayKey(t);
-    if (!P.day || P.day.key !== dk) P.day = { key: dk, freeChest: false, adCoffee: 0, adTip: 0, prog: { plays: 0, dishes: 0, combos: 0, recipes: 0 }, claimed: {} };
+    if (!P.day || P.day.key !== dk) P.day = { key: dk, freeChest: false, adCoffee: 0, adShard: 0, prog: { plays: 0, dishes: 0, combos: 0, recipes: 0 }, claimed: {} };
+    if (!P.day.ad) P.day.ad = {};
+    if (!P.day.daily) P.day.daily = { tries: 0, best: 0, wave: 0, part: false };
+    // 단골 패스 시즌이 바뀌면 처음부터
+    const se = Math.floor((t - ECON.PASS_EPOCH) / (ECON.PASS_DAYS * 864e5));
+    if (!P.pass || P.pass.season !== se) P.pass = { season: se, pts: 0, premium: false, f: [], p: [] };
     // 조각 가게
     const bucket = Math.floor(t / ECON.SHOP_REFRESH_MS);
     if (!P.shop || P.shop.bucket !== bucket) P.shop = { bucket, slots: rollShop(seeded(bucket * 7919 + 13)), bought: [] };
+    // 도구 칸이 줄면(패스 시즌 끝) 넘치는 도구는 내려놓는다
+    if (P.toolEq && P.toolEq.length > M.toolSlots()) P.toolEq.length = M.toolSlots();
   };
   M.coffeeNextMs = () => P.coffee >= M.coffeeMax() ? 0 : ECON.COFFEE_REGEN_MS - (nowFn() - P.coffeeT);
 
@@ -2100,7 +2237,11 @@
     if (items.tips) { P.tips += items.tips; out.push({ type: 'tips', n: items.tips }); }
     if (items.maxPlus) { P.maxPlus = (P.maxPlus || 0) + items.maxPlus; out.push({ type: 'maxPlus', n: items.maxPlus }); }
     if (items.adFree) { P.adFree = true; out.push({ type: 'adFree' }); }
+    if (items.speed4) { P.speed4 = true; out.push({ type: 'speed4' }); }
+    if (items.parts) { P.parts += items.parts; out.push({ type: 'parts', n: items.parts }); }
+    if (items.pass) { P.pass.premium = true; out.push({ type: 'pass' }); }
     if (items.deckShards) { for (const k of P.deck) addShards(k, items.deckShards); out.push({ type: 'deckShards', n: items.deckShards, keys: P.deck.slice() }); }
+    if (items.shardList && items.shardList.length) { for (const s of items.shardList) addShards(s.k, s.n); out.push({ type: 'shardList', list: items.shardList.map(s => ({ k: s.k, n: s.n })) }); }
     for (const k of ['chest', 'chest2']) if (items.chest && items[k]) out.push({ type: 'chest', tier: items[k], items: M.openChest(items[k]) });
     if (label) for (let i = n0; i < out.length; i++) out[i].label = label;
     return out;
@@ -2170,10 +2311,72 @@
     if (cost && P.coffee >= M.coffeeMax() && P.coffee - cost < M.coffeeMax()) P.coffeeT = nowFn();
     const guests = D().rollGuests(s, P.deck, Math.random, CHAPTERS().indexOf(m));
     P.coffee -= cost; P.sel = { map: m, stage: s }; P.run = { map: m, stage: s, cost, t: nowFn(), guests }; M.save();
-    return { ok: true, cost, deck: P.deck.slice(), levels: { ...P.levels }, today: P.today, guests };
+    return { ok: true, cost, deck: P.deck.slice(), levels: { ...P.levels }, today: P.today, guests, tools: P.toolEq.slice() };
   };
+
+  /* ---------- 무한 영업 · 오늘의 도전 ---------- */
+  M.dayISO = () => { const d = new Date(nowFn() - ECON.DAY_RESET_HOUR * 3600e3); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  M.modeUnlocked = () => M.starsOf('basic', 5) > 0;
+  M.endlessMaps = () => CHAPTERS().filter(m => M.starsOf(m, 5) > 0);
+  M.endlessBest = (m) => P.endless.best[m] || 0;
+  M.endlessNext = (m) => { const i = P.endless.ms[m] || 0; return i < ECON.ENDLESS_MS.length ? ECON.ENDLESS_MS[i] : null; };
+  // 오늘의 도전: 날짜로 정해지는 음식점·손님·소환 순서. 모두 같은 판을 한다
+  M.dailyInfo = function () {
+    M.tick(); const O = CHAPTERS(), seed = hashStr('sd-daily-' + M.dayISO()) || 1, mi = seed % O.length, dd = P.day.daily;
+    const guests = D().rollGuests(5, null, seeded(seed ^ 0x9e3779b9), mi);
+    return { day: M.dayISO(), seed, map: O[mi], guests, free: dd.tries < 1, adLeft: M.adLeft('daily'), tries: dd.tries, best: dd.best, bestWave: dd.wave };
+  };
+  M.startMode = function (mode, m, viaAd) {
+    M.tick();
+    if (!M.modeUnlocked()) return { ok: false, why: '기본 주방 5스테이지를 깨면 열려요' };
+    let seed = 0, guests = [], cost = 0;
+    if (mode === 'daily') {
+      const di = M.dailyInfo(); m = di.map; seed = di.seed; guests = di.guests;
+      if (!di.free) {
+        if (!viaAd) return { ok: false, why: '오늘 무료 도전은 썼어요', ad: di.adLeft > 0 };
+        if (!adUse('daily')) return { ok: false, why: '오늘 도전은 다 했어요' };
+      }
+      P.day.daily.tries++;
+    } else {
+      mode = 'endless';
+      if (!M.endlessMaps().includes(m)) return { ok: false, why: '5스테이지를 깬 음식점만 무한 영업을 할 수 있어요' };
+      cost = ECON.MODE_COFFEE;
+      if (P.coffee < cost) return { ok: false, why: '커피가 부족해요', coffee: true };
+      if (P.coffee >= M.coffeeMax() && P.coffee - cost < M.coffeeMax()) P.coffeeT = nowFn();
+      P.coffee -= cost; seed = Math.floor(Math.random() * 0xffffffff) || 1;
+    }
+    P.run = { mode, map: m, stage: 5, cost, t: nowFn(), guests }; M.save();
+    return { ok: true, mode, map: m, seed, cost, deck: P.deck.slice(), levels: { ...P.levels }, today: P.today, guests, tools: P.toolEq.slice() };
+  };
+  function finishMode(run, r) {
+    const m = run.map, cleared = Math.max(0, r.cleared || 0), score = cleared * 10000 + Math.min(9999, r.cleaned || 0);
+    const out = { mode: run.mode, map: m, win: false, stars: 0, cleared, score, rewards: [], newBest: false, firstClear: false, chest: null, lvUp: false };
+    const tipsN = cleared * (run.mode === 'daily' ? ECON.DAILY_TIPS : ECON.ENDLESS_TIPS);
+    if (tipsN) grant({ tips: tipsN }, out.rewards, '버틴 웨이브');
+    M.tick();
+    if (run.mode === 'daily') {
+      const dd = P.day.daily;
+      if (score > dd.best) { dd.best = score; dd.wave = cleared; out.newBest = true; }
+      if (!dd.part) { dd.part = true; grant({ parts: 1 }, out.rewards, '오늘의 도전'); }
+      out.best = dd.wave; out.bestScore = dd.best; out.day = M.dayISO();
+    } else {
+      const E = P.endless, got = E.ms[m] || 0; let n = got;
+      if (cleared > (E.best[m] || 0)) { E.best[m] = cleared; out.newBest = true; }
+      ECON.ENDLESS_MS.forEach((w, i) => { if (i >= n && cleared >= w) n = i + 1; });
+      if (n > got) { E.ms[m] = n; grant({ parts: (n - got) * ECON.ENDLESS_MS_PARTS }, out.rewards, '기록 보상'); }
+      out.best = E.best[m] || 0; out.next = M.endlessNext(m);
+    }
+    P.last = { tips: tipsN, doubled: false };
+    if (r.newRecipes) grant({ tips: r.newRecipes * ECON.RECIPE_FIRST_TIPS }, out.rewards, '새 비법');
+    const exp = Math.max(3, cleared); P.exp += exp; out.exp = exp;
+    while (P.exp >= M.expNeed()) { P.exp -= M.expNeed(); P.lv++; out.lvUp = true; grant({ coffee: ECON.LVUP_COFFEE }, out.rewards, '레벨 업'); }
+    const pr = P.day.prog; pr.plays++; pr.dishes += r.cleaned || 0; pr.combos += r.combos || 0; pr.recipes += r.recipes || 0;
+    P.stats.plays++; passAdd(ECON.PASS_PTS.mode);
+    M.save(); return out;
+  }
   M.finishRun = function (r) {
     const run = P.run || { map: r.map, stage: r.stage, cost: 0 }; P.run = null;
+    if (run.mode) return finishMode(run, r);
     const m = run.map, s = run.stage, ci = CHAPTERS().indexOf(m);
     const out = { win: !!r.win, stars: 0, rewards: [], firstClear: false, chest: null, lvUp: false };
     const base = Math.round(((ci + 1) * 40 + s * 10) * 1.5);   // 15웨이브(예전 10웨이브의 1.5배 길이)
@@ -2188,9 +2391,14 @@
       out.rewards.push({ type: 'chest', tier: out.chest, items: M.openChest(out.chest) });
       P.stats.wins++;
     } else {
-      grant({ tips: Math.round(base * Math.min(D().WAVES, r.wave || 0) / (2 * D().WAVES)) }, out.rewards, '버틴 만큼');
+      const W = D().wavesOf(m, s);
+      grant({ tips: Math.round(base * Math.min(W, r.wave || 0) / (2 * W)) }, out.rewards, '버틴 만큼');
       if (run.cost) grant({ coffee: ECON.COFFEE_REFUND }, out.rewards, '환불');
     }
+    // 광고 보고 2배로 받을 수 있는 보상: 팁과 상자에서 나온 조각 (환불·새 비법은 빼고)
+    const lastShards = []; for (const x of out.rewards) if (x.type === 'chest') for (const it of x.items) if (it.type === 'shard') lastShards.push({ k: it.k, n: it.n });
+    P.last = { tips: out.rewards.filter(x => x.type === 'tips').reduce((a, x) => a + x.n, 0), shards: lastShards, doubled: false };
+    passAdd(r.win ? ECON.PASS_PTS.win : ECON.PASS_PTS.lose);
     if (r.newRecipes) grant({ tips: r.newRecipes * ECON.RECIPE_FIRST_TIPS }, out.rewards, '새 비법');
     // 경험치
     const exp = r.win ? 10 * (ci + 1) + s * 2 : 3;
@@ -2203,11 +2411,16 @@
     M.save(); return out;
   };
   M.expNeed = () => 40 + P.lv * 20;
-  M.sweep = function (m, s) {
+  // viaAd: 광고 보고 커피 없이 소탕 (하루 AD_CAPS.sweep번)
+  M.sweep = function (m, s, viaAd) {
     M.tick();
     if (M.starsOf(m, s) < 3) return { ok: false, why: '별 3개를 받은 스테이지만 소탕돼요' };
-    if (!M.isFree(m) && P.coffee < ECON.COFFEE_COST) return { ok: false, why: '커피가 부족해요', coffee: true };
-    if (!M.isFree(m)) P.coffee -= ECON.COFFEE_COST;
+    if (viaAd && !M.isFree(m)) { if (!adUse('sweep')) return { ok: false, why: '오늘 광고 소탕은 다 썼어요' }; }
+    else {
+      if (!M.isFree(m) && P.coffee < ECON.COFFEE_COST) return { ok: false, why: '커피가 부족해요', coffee: true };
+      if (!M.isFree(m)) P.coffee -= ECON.COFFEE_COST;
+    }
+    passAdd(ECON.PASS_PTS.sweep);
     const ci = CHAPTERS().indexOf(m), out = [];
     grant({ tips: (ci + 1) * 40 + s * 10 + 30 }, out);
     out.push({ type: 'chest', tier: 'wood', items: M.openChest('wood') });
@@ -2237,12 +2450,44 @@
   M.adReward = function (kind) {
     M.tick();
     if (kind === 'coffee') { if (P.day.adCoffee >= ECON.AD_COFFEE_CAP) return { ok: false, why: '오늘은 다 봤어요' }; P.day.adCoffee++; const r = grant({ coffee: ECON.AD_COFFEE }); M.save(); return { ok: true, rewards: r }; }
-    if (P.day.adTip >= ECON.AD_TIP_CAP) return { ok: false, why: '오늘은 다 봤어요' }; P.day.adTip++; const r = grant({ tips: ECON.AD_TIP }); M.save(); return { ok: true, rewards: r };
+    // 덱 재료 중 서로 다른 AD_SHARD_KINDS종에 조각 AD_SHARD_N개씩
+    if ((P.day.adShard || 0) >= ECON.AD_SHARD_CAP) return { ok: false, why: '오늘은 다 봤어요' };
+    P.day.adShard = (P.day.adShard || 0) + 1;
+    const pool = P.deck.slice(), list = [];
+    while (list.length < ECON.AD_SHARD_KINDS && pool.length) list.push({ k: pool.splice(Math.floor(randFn() * pool.length), 1)[0], n: ECON.AD_SHARD_N });
+    const r = grant({ shardList: list }); M.save(); return { ok: true, rewards: r };
   };
+  M.adShardLeft = () => Math.max(0, ECON.AD_SHARD_CAP - ((P.day && P.day.adShard) || 0));
+  /* ---------- 광고 보상 (커피·팁 말고) ---------- */
+  M.adLeft = (kind) => Math.max(0, (ECON.AD_CAPS[kind] || 0) - ((P.day && P.day.ad && P.day.ad[kind]) || 0));
+  function adUse(kind) { M.tick(); if (M.adLeft(kind) <= 0) return false; P.day.ad[kind] = (P.day.ad[kind] || 0) + 1; return true; }
+  const NOAD = { ok: false, why: '오늘은 다 봤어요' };
+  M.adChest = function () { if (!adUse('chest')) return NOAD; const items = M.openChest('wood'); M.save(); return { ok: true, items }; };
+  M.adReroll = function () { if (!adUse('reroll')) return NOAD; P.shop.slots = rollShop(randFn); P.shop.bought = []; M.save(); return { ok: true }; };
+  M.adBoost = function () { if (!adUse('boost')) return NOAD; M.save(); return { ok: true }; };
+  // 방금 끝난 판의 팁과 상자 조각을 한 번 더
+  const lastHas = () => !!(P.last && !P.last.doubled && (P.last.tips > 0 || (P.last.shards || []).length));
+  M.lastShardN = () => (P.last && P.last.shards || []).reduce((a, x) => a + x.n, 0);
+  M.canDouble = () => lastHas() && M.adLeft('double') > 0;
+  M.doubleLast = function () {
+    if (!lastHas()) return { ok: false, why: '두 배로 받을 보상이 없어요' };
+    if (!adUse('double')) return NOAD;
+    P.last.doubled = true; const r = grant({ tips: P.last.tips, shardList: P.last.shards || [] }, [], '광고 2배'); M.save(); return { ok: true, rewards: r };
+  };
+  // 패배한 날 한 번, 스타터팩을 안 샀으면 권한다 (웹판은 결제가 없어서 안 함)
+  M.starterOfferDue = () => { M.tick(); return g.SD_PLATFORM !== 'web' && !P.bought.starter && !P.day.offer; };
+  M.markStarterOffer = () => { M.tick(); P.day.offer = true; M.save(); };
+
+  /* ---------- 상품 ---------- */
+  M.owned = (id) => id === 'adfree' ? !!P.adFree : id === 'speed4' ? !!P.speed4 : id === 'combo' ? !!(P.adFree && P.speed4) : id === 'pass' ? !!(P.pass && P.pass.premium) : !!(PRODUCTS[id] && PRODUCTS[id].once && P.bought[id]);
+  // 웹판(깃허브 페이지·원스토어·MS 스토어)은 결제가 없어서 4배속을 그냥 열어 둔다
+  M.canSpeed4 = () => !!P.speed4 || g.SD_PLATFORM === 'web';
   // 토스 결제 연결 전: 바로 지급 (테스트)
   M.buyProduct = function (id) {
     const pr = PRODUCTS[id]; if (!pr) return { ok: false };
-    if (pr.once && P.bought[id]) return { ok: false, why: '이미 산 상품이에요' };
+    M.tick();
+    if (M.owned(id)) return { ok: false, why: id === 'pass' ? '이번 시즌 패스는 이미 있어요' : '이미 산 상품이에요' };
+    if (id === 'combo' && (P.adFree || P.speed4)) return { ok: false, why: '하나는 이미 있어요. 남은 하나만 사면 돼요' };
     P.bought[id] = (P.bought[id] || 0) + 1; const r = grant(pr.items); M.save(); return { ok: true, rewards: r };
   };
 
@@ -2259,19 +2504,81 @@
   };
 
   /* ---------- 미션 · 출석 · 우편 ---------- */
-  M.missionState = () => { M.tick(); return MISSIONS.map(ms => ({ ...ms, prog: Math.min(ms.goal, P.day.prog[ms.id] || 0), done: (P.day.prog[ms.id] || 0) >= ms.goal, claimed: !!P.day.claimed[ms.id] })); };
+  // 미션마다 지금 단계 하나를 보여 준다. claimed[id] = 받은 단계 수 (예전 저장의 true는 1)
+  const msGot = (id) => Math.min(3, +P.day.claimed[id] || 0);
+  M.missionState = () => {
+    M.tick();
+    return MISSIONS.map(ms => {
+      const got = msGot(ms.id), all = got >= ms.tiers.length, ti = Math.min(got, ms.tiers.length - 1), t = ms.tiers[ti], have = P.day.prog[ms.id] || 0;
+      return { id: ms.id, name: ms.name(t.goal), goal: t.goal, reward: t.reward, tier: ti + 1, tiers: ms.tiers.length, prog: Math.min(t.goal, have), done: have >= t.goal, claimed: all };
+    });
+  };
   M.claimMission = function (id) {
     const ms = M.missionState().find(x => x.id === id);
     if (!ms || !ms.done || ms.claimed) return { ok: false };
-    P.day.claimed[id] = true; const r = grant(ms.reward); M.save(); return { ok: true, rewards: r };
+    P.day.claimed[id] = msGot(id) + 1; const r = grant(ms.reward); passAdd(ms.tier === 1 ? ECON.PASS_PTS.mission : ECON.PASS_PTS.mission2); M.save(); return { ok: true, rewards: r };
   };
-  M.claimAllMissions = function () { const out = []; for (const ms of M.missionState()) if (ms.done && !ms.claimed) { const r = M.claimMission(ms.id); if (r.ok) out.push(...r.rewards); } return { ok: out.length > 0, rewards: out, why: '받을 미션이 없어요' }; };
+  // 한 단계를 받으면 다음 단계가 바로 끝나 있을 수 있어서, 받을 게 없을 때까지 돈다
+  M.claimAllMissions = function () { const out = []; for (let guard = 0; guard < 20; guard++) { const ms = M.missionState().find(x => x.done && !x.claimed); if (!ms) break; const r = M.claimMission(ms.id); if (!r.ok) break; out.push(...r.rewards); } return { ok: out.length > 0, rewards: out, why: '받을 미션이 없어요' }; };
   M.missionBadge = () => M.missionState().some(x => x.done && !x.claimed);
   M.attendState = () => { M.tick(); const today = P.day.key; const claimedToday = P.attend.last === today; const idx = claimedToday ? (P.attend.streak - 1) % 7 : P.attend.streak % 7; return { idx, claimedToday, streak: P.attend.streak }; };
   M.claimAttend = function () {
     const st = M.attendState(); if (st.claimedToday) return { ok: false, why: '오늘은 이미 받았어요' };
-    P.attend.last = P.day.key; P.attend.streak++; const r = grant(ATTEND[st.idx]); M.save(); return { ok: true, rewards: r, day: st.idx + 1 };
+    P.attend.last = P.day.key; P.attend.streak++; const r = grant(ATTEND[st.idx]); passAdd(ECON.PASS_PTS.attend); M.save(); return { ok: true, rewards: r, day: st.idx + 1 };
   };
+
+  /* ---------- 단골 패스 ---------- */
+  function passAdd(n) { if (!P.pass) M.tick(); P.pass.pts = Math.min(ECON.PASS_LEVELS * ECON.PASS_STEP, P.pass.pts + n); }
+  M.passAdd = passAdd;
+  M.passLevel = () => Math.min(ECON.PASS_LEVELS, Math.floor(P.pass.pts / ECON.PASS_STEP));
+  M.passEndMs = () => ECON.PASS_EPOCH + (P.pass.season + 1) * ECON.PASS_DAYS * 864e5 - nowFn();
+  M.passState = function () {
+    M.tick(); const lv = M.passLevel(), ps = P.pass, rows = [];
+    for (let i = 1; i <= ECON.PASS_LEVELS; i++) rows.push({ lv: i, open: i <= lv, free: passReward('f', i), paid: passReward('p', i), gotF: ps.f.includes(i), gotP: ps.p.includes(i) });
+    const claimable = rows.filter(x => x.open && (!x.gotF || (ps.premium && !x.gotP))).length;
+    return { lv, pts: ps.pts, into: lv >= ECON.PASS_LEVELS ? ECON.PASS_STEP : ps.pts % ECON.PASS_STEP, step: ECON.PASS_STEP, premium: ps.premium, rows, claimable, endMs: M.passEndMs() };
+  };
+  M.claimPass = function () {
+    const st = M.passState(), out = [];
+    for (const x of st.rows) {
+      if (!x.open) break;
+      if (!x.gotF) { P.pass.f.push(x.lv); grant(x.free, out); }
+      if (st.premium && !x.gotP) { P.pass.p.push(x.lv); grant(x.paid, out, '패스'); }
+    }
+    if (!out.length) return { ok: false, why: '받을 보상이 없어요' };
+    M.save(); return { ok: true, rewards: out };
+  };
+
+  /* ---------- 주방 도구 ---------- */
+  M.toolSlots = () => (P.lv >= ECON.TOOL_SLOT3_LV ? 3 : ECON.TOOL_SLOTS) + (P.pass && P.pass.premium ? ECON.PASS_TOOL_SLOT : 0);
+  M.hasTool = (id) => !!P.tools[id];
+  M.buyTool = function (id) {
+    const t = D().TOOLS[id]; if (!t) return { ok: false };
+    if (P.tools[id]) return { ok: false, why: '이미 있는 도구예요' };
+    if (P.parts < t.cost) return { ok: false, why: `도구 부품이 ${t.cost - P.parts}개 모자라요` };
+    P.parts -= t.cost; P.tools[id] = 1; if (P.toolEq.length < M.toolSlots()) P.toolEq.push(id);
+    M.save(); return { ok: true, equipped: P.toolEq.includes(id) };
+  };
+  M.toggleTool = function (id) {
+    if (!P.tools[id]) return { ok: false, why: '아직 없는 도구예요' };
+    const i = P.toolEq.indexOf(id);
+    if (i >= 0) P.toolEq.splice(i, 1);
+    else { if (P.toolEq.length >= M.toolSlots()) return { ok: false, why: `도구는 ${M.toolSlots()}개까지 들 수 있어요. 먼저 하나를 내려놓아요` }; P.toolEq.push(id); }
+    M.save(); return { ok: true, on: i < 0 };
+  };
+
+  /* ---------- 랭킹용 이름 (직접 입력 없이 낱말 조합) ---------- */
+  M.rankId = function () {
+    if (!P.rank) {
+      const b = new Uint8Array(32), c = g.crypto;
+      if (c && c.getRandomValues) c.getRandomValues(b); else for (let i = 0; i < 32; i++) b[i] = Math.floor(Math.random() * 256);
+      P.rank = { uid: Array.from(b, x => x.toString(16).padStart(2, '0')).join(''), a: Math.floor(Math.random() * RANK_A.length), b: Math.floor(Math.random() * RANK_B.length), tag: Math.floor(Math.random() * 1000) };
+      M.save();
+    }
+    return P.rank;
+  };
+  M.rankName = () => { const R = M.rankId(); return `${RANK_A[R.a % RANK_A.length]} ${RANK_B[R.b % RANK_B.length]} ${String(R.tag % 1000).padStart(3, '0')}`; };
+  M.rankReroll = function () { const R = M.rankId(); R.a = Math.floor(Math.random() * RANK_A.length); R.b = Math.floor(Math.random() * RANK_B.length); M.save(); return M.rankName(); };
   M.claimMail = function (id) {
     const i = P.mail.findIndex(x => x.id === id); if (i < 0) return { ok: false };
     const m = P.mail.splice(i, 1)[0]; const r = grant(m.items); M.save(); return { ok: true, rewards: r };
@@ -2289,7 +2596,9 @@
   const SD = g.SD = g.SD || {};
   SD.ads = {
     available: () => g.SD_PLATFORM !== 'web',
-    // kind: 'revive' 등. 끝까지 봤으면 true
+    // kind: 광고 자리. 끝까지 봤으면 true
+    //   revive(이어하기) · boost(시작 버프) · double(판 끝 팁 2배) · coffee · tips · chest(상자 하나 더) · reroll(조각 가게) · sweep(소탕) · daily(오늘의 도전 다시)
+    //   토스는 광고 그룹을 자리별로 나눠 만들면 어느 자리가 잘 버는지 콘솔에서 볼 수 있다
     show(kind) {
       return new Promise((resolve) => {
         if (SD.meta && SD.meta.p && SD.meta.p.adFree) return resolve(true);   // 광고 제거 구매자는 바로 보상
@@ -2298,6 +2607,33 @@
       });
     },
     isTest: true
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* 싱크대 수비대 - 오늘의 도전 랭킹 (Supabase, 서울. 데스크던전과 같은 프로젝트, sd_ 로 시작하는 함수만 쓴다)
+ * 공개 키라 코드에 넣어도 된다: 테이블 직접 접근은 막혀 있고 sd_daily_submit · sd_daily_top 함수만 부를 수 있다 (server/sd-rank.sql)
+ * 보내는 것: 기기에서 만든 무작위 아이디, 낱말 조합 이름 번호, 날짜, 점수. 개인정보는 보내지 않는다 */
+(function (g) {
+  const SD = g.SD = g.SD || {};
+  const URL = 'https://ynvrgftxlowebkkzwxmv.supabase.co', KEY = 'sb_publishable_WmpO7yaEjJhmCHhpW_u09A_baRCMc3r';
+  function rpc(fn, body) {
+    if (typeof fetch !== 'function') return Promise.reject(new Error('no fetch'));
+    return fetch(`${URL}/rest/v1/rpc/${fn}`, { method: 'POST', headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(r => r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)));
+  }
+  SD.rank = {
+    // 오늘 최고 점수 올리기 → { ok, rank, total }
+    submit(day, score, wave) {
+      const R = SD.meta.rankId();
+      return rpc('sd_daily_submit', { p_uid: R.uid, p_day: day, p_score: score, p_wave: wave, p_a: R.a, p_b: R.b, p_tag: R.tag }).catch(() => ({ ok: false, err: 'net' }));
+    },
+    // 그날 순위표 → { top: [{ rank, name, score, wave, me }], me: { rank, name, score, wave } | null, total } 또는 null(못 불러옴)
+    top(day) {
+      const R = SD.meta.rankId();
+      return rpc('sd_daily_top', { p_day: day, p_uid: R.uid }).catch(() => null);
+    }
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -2461,7 +2797,7 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
   };
 
-  let G = null, speed = store.get('sd.speed', 1), paused = false, modalOpen = false;
+  let G = null, speed = store.get('sd.speed', 1), paused = false, modalOpen = false, runMode = null;   // runMode: null(스테이지) | 'endless' | 'daily'
   const codex = store.get('sd.codex.v1', { recipes: {}, combos: {}, safety: {} });
   const ui = { sel: null, drag: null, hover: null, dragTargets: null };
   const cv = $('#cv'), ctx = cv.getContext('2d');
@@ -2475,10 +2811,29 @@
   const traitsOf = (type) => { const ds = D.DISHES[type]; return Object.keys(D.TRAIT_TEXT).filter(k => ds[k]).map(k => D.TRAIT_TEXT[k]); };
 
   /* ---------- layout ---------- */
+  // 화면 틀 여백: 토스 게임 웹뷰는 전체 화면이라 상태바 · 홈 바 영역과 오른쪽 위 토스 버튼(더보기 · 닫기)을 피해야 한다 (검수 반려 사유)
+  // 값은 window.SD_INSETS = { top, bottom, nav, ios } (토스 빌드가 SafeAreaInsets로 넣음) 또는 주소의 ?ti=&bi=&nav=1&ios=1 (미리보기용). 없으면 예전 그대로
+  // 토스 버튼 위치는 문서 값(오른쪽 10, 위 +5 iOS / +10 안드로이드), 크기는 문서에 없어 어림값이다. 기기에서 확인 필요
+  const NAV = { w: 96, h: 40, right: 10, gap: 6 };
+  function insets() {
+    const q = new URLSearchParams(location.search), I = window.SD_INSETS || {}, n = (v) => Math.max(0, +v || 0);
+    return { top: n(I.top != null ? I.top : q.get('ti')), bottom: n(I.bottom != null ? I.bottom : q.get('bi')), nav: I.nav != null ? !!I.nav : q.get('nav') === '1', ios: I.ios != null ? !!I.ios : q.get('ios') === '1' };
+  }
   function fit() {
-    const W = window.innerWidth, H = window.innerHeight;
-    scale = Math.min(W / 390, H / 844);
-    stage.style.transform = `translate(${(W - 390 * scale) / 2}px, ${(H - 844 * scale) / 2}px) scale(${scale})`;
+    const W = window.innerWidth, H = window.innerHeight, I = insets();
+    let top = I.top; const availH = () => H - top - I.bottom;
+    scale = Math.min(W / 390, availH() / 844);
+    if (I.nav) {
+      // 둘째 줄(로비 아이콘 줄 · 칠판, 설계 높이 55부터)이 토스 버튼 아래에 오도록, 모자라면 화면을 그만큼 더 내린다
+      const need = (I.ios ? 5 : 10) + NAV.h + 4 - 55 * scale;
+      if (need > 0) { top += need; scale = Math.min(W / 390, availH() / 844); }
+    }
+    const sx = (W - 390 * scale) / 2, sy = top + (availH() - 844 * scale) / 2;
+    stage.style.transform = `translate(${sx}px, ${sy}px) scale(${scale})`;
+    // 첫 줄 오른쪽은 토스 버튼 자리만큼 비운다 (설계 좌표, 원래 오른쪽 여백 12 포함)
+    stage.style.setProperty('--navr', (I.nav ? Math.max(12, Math.ceil((NAV.right + NAV.w + NAV.gap - sx) / scale)) : 12) + 'px');
+    document.documentElement.classList.toggle('framed', I.top > 0 || I.bottom > 0 || I.nav);
+    document.documentElement.classList.toggle('navpill', I.nav);
     const k = scale * (window.devicePixelRatio || 1);
     cv.width = Math.round(390 * k); cv.height = Math.round(844 * k);
     ctx.setTransform(k, 0, 0, k, 0, 0);
@@ -2488,13 +2843,13 @@
   /* ---------- HUD ---------- */
   function hud() {
     if (!G) return;
-    $('#wave').innerHTML = `W<b>${Math.max(1, G.wave)}</b><i>/${D.WAVES}</i>`;
+    $('#wave').innerHTML = `W<b>${Math.max(1, G.wave)}</b><i>/${G.endless ? '∞' : G.waves}</i>`;
     const seg = Math.ceil(G.hearts / 2);
     $('#hearts').innerHTML = Array.from({ length: 10 }, (_, i) => `<span class="${i < seg ? 'on' : ''}"></span>`).join('');
     $('#speed').textContent = 'x' + speed;
     $('#speed').classList.toggle('hot', speed > 1);
     // chalkboard
-    let line1 = `${G.map.name} ${G.stage}스테이지`, line2 = '';
+    let line1 = runMode ? `${runMode === 'daily' ? '오늘의 도전' : '무한 영업'} · ${G.map.name}` : `${G.map.name} ${G.stage}스테이지`, line2 = '';
     if (G.map.situations) { const S = D.SITUATIONS; line1 = G.sit ? `지금 ${S[G.sit].name}${G.sitNext ? ' → 다음 ' + S[G.sitNext].name : ''}` : `다음 ${S[G.sitNext].name}`; }
     if (ui.sel != null && G.cells[ui.sel] && G.cells[ui.sel].unit) {
       const u = G.cells[ui.sel].unit, sp = u.recipe ? D.RECIPES[u.recipe] : D.ING[u.key], br = G.branchOf(u);
@@ -2503,11 +2858,11 @@
       line2 = `${ingName(u.key)} ${'★'.repeat(u.star)}${sts ? ' · ' + sts : ''}`;
     } else if (G.phase === 'ready') { line2 = '재료를 놓고 시작!'; }
     else if (G.phase === 'break') { line2 = `다음 W${G.wave + 1} · ${Math.ceil(G.breakT)}초`; }
-    else if (G.phase === 'wave') { const spec = D.waveSpec(G.wave, G.map, G.stage); line2 = spec.boss ? spec.bossLabel + '!' : `남은 그릇 ${G.spawn.list.length + G.dishes.length}`; }
+    else if (G.phase === 'wave') { const spec = D.waveSpec(G.wave, G.map, G.stage, G.endless, G.waves); line2 = spec.boss ? spec.bossLabel + '!' : `남은 그릇 ${G.spawn.list.length + G.dishes.length}`; }
     else if (G.phase === 'end') line2 = '영업 끝';
     $('#chalk').innerHTML = `<div class="pen">${line1}</div><div class="jua">${line2}</div>`;
     const rs = Object.keys(G.rules);
-    $('#receipt').innerHTML = (G.guests && G.guests.length ? `<div class="rl gl">${G.guests.map(g => `<span class="tago">${D.GUESTS[g.id].name}</span>`).join('')}</div>` : '') + `<div class="rt"><span class="tagr">주방 규칙</span></div>` + (rs.length ? rs.map(k => `<div class="rl">${D.RULES[k].name}</div>`).join('') : `<div class="rl dim">${D.RULE_WAVES[0]}웨이브 뒤에 골라요</div>`);
+    $('#receipt').innerHTML = (G.guests && G.guests.length ? `<div class="rl gl">${G.guests.map(g => `<span class="tago">${D.GUESTS[g.id].name}</span>`).join('')}</div>` : '') + `<div class="rt"><span class="tagr">주방 규칙</span></div>` + (rs.length > 1 ? `<div class="rl">${D.RULES[rs[rs.length - 1]].name} 외 ${rs.length - 1}개</div>` : rs.length ? `<div class="rl">${D.RULES[rs[0]].name}</div>` : `<div class="rl dim">${D.RULE_WAVES[0]}웨이브 뒤에 골라요</div>`);
     const syn = G.synergy(); const need = { acid: [2, 3], alk: [2, 3], soap: [2, 3], water: [2, 3], scrub: [2, 4] };
     $('#syn').innerHTML = ['acid', 'alk', 'scrub', 'water', 'soap'].map(f => { const n = syn[f], on = n >= need[f][0]; return `<div class="tok ${on ? 'on' : ''}" style="${on ? `background:${A.FAMILY[f].color}` : ''}">${A.FAMILY[f].name}<i>${n}/${n >= need[f][0] ? need[f][1] : need[f][0]}</i></div>`; }).join('');
     const R = D.PAIRS[G.recipeToday], known = !!(codex.recipes[R.A] || codex.recipes[R.B]);
@@ -2515,7 +2870,7 @@
     $('#shine').innerHTML = coin(20) + G.shine;
     const cost = G.summonCost();
     $('#bSummon').classList.toggle('dis', G.shine < cost || !G.emptyCells().length);
-    $('#bSummon .cost').innerHTML = coin(12) + cost;
+    $('#bSummon .cost').innerHTML = G.freeSummons > 0 ? `공짜 ${G.freeSummons}` : coin(12) + cost;
     $('#next').innerHTML = G.queue.map(k => `<span class="mini">${ingImg(k, 20)}</span>`).join('');
     const lc = G.lvCost(), odds = D.SUMMON_ODDS[G.summonLv];
     $('#bLv b').textContent = '소환 Lv' + G.summonLv;
@@ -2525,8 +2880,10 @@
     $('#bMerge .badge').textContent = mp; $('#bMerge .badge').style.display = mp ? 'flex' : 'none';
     $('#bMerge').classList.toggle('dis', !mp);
     const selU = ui.sel != null && G.cells[ui.sel] && G.cells[ui.sel].unit;
-    $('#bRecycle small').innerHTML = selU ? `${coin(11)}+${G.refundOf(ui.sel)}` : '골라서 버리기';
-    $('#bRecycle').classList.toggle('dis', !selU);
+    // 고른 게 없고 조리대가 꽉 찼으면 1성을 한 번에 재활용
+    const lowOk = !selU && G.canRecycleLow();
+    $('#bRecycle small').innerHTML = selU ? `${coin(11)}+${G.refundOf(ui.sel)}` : lowOk ? `1성 모두 +${G.lowRefund()}` : '골라서 버리기';
+    $('#bRecycle').classList.toggle('dis', !selU && !lowOk);
     const dv = G.devices;
     $('#dTap').style.display = dv.tap ? 'flex' : 'none';
     $('#dPlug').style.display = dv.plug ? 'flex' : 'none';
@@ -2544,9 +2901,10 @@
 
   /* ---------- toasts / modals ---------- */
   let toastT = null;
-  function toast(text, warn) { const t = $('#toast'); t.textContent = text; t.className = 'show' + (warn ? ' warn' : ''); clearTimeout(toastT); toastT = setTimeout(() => t.className = '', 1800); }
+  // 창이 떠 있으면 알림을 맨 위로 올려 창의 버튼을 가리지 않게 한다
+  function toast(text, warn) { const t = $('#toast'); t.textContent = text; t.className = 'show' + (warn ? ' warn' : '') + (modalOpen ? ' hi' : ''); clearTimeout(toastT); toastT = setTimeout(() => t.className = '', 1800); }
   const mq = [];
-  function modal(html, onReady) { if (modalOpen) { mq.push([html, onReady]); return; } modalOpen = true; const m = $('#modal'); m.innerHTML = `<div class="sheet">${html}</div>`; m.classList.add('show'); onReady && onReady(m); }
+  function modal(html, onReady) { if (modalOpen) { mq.push([html, onReady]); return; } modalOpen = true; const m = $('#modal'); m.innerHTML = `<div class="sheet">${html}</div>`; m.classList.add('show'); const tt = $('#toast'); if (tt.classList.contains('show')) tt.classList.add('hi'); onReady && onReady(m); }
   function closeModal() { modalOpen = false; $('#modal').classList.remove('show'); $('#modal').innerHTML = ''; if (mq.length) { const [h, f] = mq.shift(); modal(h, f); } }
   const ribbon = (t, c = '#ff6b5b') => `<div class="ribbon" style="background:${c}">${t}</div>`;
 
@@ -2554,23 +2912,64 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   const bindSnd = (m) => m.querySelectorAll('[data-snd]').forEach(t => t.onclick = () => { const on = !t.classList.contains('on'); t.classList.toggle('on', on); if (t.dataset.snd === 'sfx') SD.sound.setSfx(on); else SD.sound.setBgmOn(on); });
   SD.sndToggles = sndToggles; SD.bindSnd = bindSnd;
   function startScreen() { SD.sound && SD.sound.setBgm('lobby'); mq.length = 0; modalOpen = false; $('#modal').classList.remove('show'); G = null; SD.lobby.show(); }
+  function begin(r, mapId, stage) {
+    SD.lobby.hide(); runMode = r.mode || null;
+    newGame(mapId, r.today, { deck: r.deck, levels: r.levels, stage, guests: r.guests || [], tools: r.tools || [], endless: !!r.mode, seed: r.seed || undefined });
+    if (r.guests && r.guests.length) guestScreen(r.guests);
+    boostScreen();
+    return true;
+  }
   function startRun(mapId, stage) {
     const r = SD.meta.startRun(mapId, stage);
     if (!r.ok) { toast(r.why); if (r.coffee) SD.lobby.show('shop'); return false; }
-    SD.lobby.hide();
-    newGame(mapId, r.today, { deck: r.deck, levels: r.levels, stage, guests: r.guests || [] });
-    if (r.guests && r.guests.length) guestScreen(r.guests);
-    return true;
+    return begin(r, mapId, stage);
+  }
+  // 무한 영업('endless', 음식점) · 오늘의 도전('daily')
+  function startMode(mode, mapId, viaAd) {
+    const r = SD.meta.startMode(mode, mapId, viaAd);
+    if (!r.ok) { toast(r.why); if (r.coffee) SD.lobby.show('shop'); return false; }
+    return begin(r, r.map, 5);
+  }
+  // 광고 보고 유리하게 시작 (하루 5번). 첫 판과 웹판에서는 묻지 않는다
+  function boostScreen() {
+    const M = SD.meta, left = M.adLeft('boost');
+    if (!SD.ads || !SD.ads.available() || left <= 0 || !M.p.stats.plays) return;
+    const adFree = M.p.adFree;
+    modal(`${ribbon('영업 준비', '#4aa3ff')}<div class="pen sub">넉넉하게 시작해 볼까요?</div>
+      <div class="guest"><span class="tag" style="background:#4aa3ff">준비</span><div><div class="jua gn">반짝 +40 · 소환 레벨 2</div><div class="gd">이번 판을 반짝 100과 소환 레벨 2로 시작해요</div></div></div>
+      <div class="btn big go" id="bsAd">${adFree ? '바로 받기' : '광고 보고 받기'}</div>
+      <div class="lbl center dim">오늘 ${left}번 남음</div>
+      <div class="btn" id="bsNo">그냥 시작</div>`, (m) => {
+      const go = m.querySelector('#bsAd');
+      go.onclick = () => {
+        if (go.classList.contains('dis')) return; go.classList.add('dis'); if (!adFree) go.textContent = '광고 보는 중…';
+        SD.ads.show('boost').then((ok) => { closeModal(); if (ok && G && M.adBoost().ok && G.boost()) { toast('반짝 +40, 소환 레벨 2로 시작!'); hud(); } });
+      };
+      m.querySelector('#bsNo').onclick = () => closeModal();
+    });
   }
   function guestScreen(gs) {
-    modal(`${ribbon('오늘의 까다로운 손님', '#ff9f43')}<div class="pen sub">한 명당 클리어 팁 +20%</div>
+    modal(`${ribbon('오늘의 까다로운 손님', '#ff9f43')}<div class="pen sub">${runMode === 'daily' ? '오늘은 모두 이 손님과 영업해요' : '한 명당 클리어 팁 +20%'}</div>
       ${gs.map(g => `<div class="guest"><span class="tag" style="background:#ff9f43">손님</span><div><div class="jua gn">${D.GUESTS[g.id].name}</div><div class="gd">${D.GUESTS[g.id].desc(g, g && window.SD_ART)}</div></div></div>`).join('')}
       <div class="btn big" id="gOk">알겠어요</div>`, (m) => { m.querySelector('#gOk').onclick = () => closeModal(); });
   }
+  // 영수증을 누르면 이번 판에 걸린 손님 · 규칙 · 도구를 모아 본다
+  function runInfoScreen() {
+    const rs = Object.keys(G.rules), tl = G.tools || [], gs = G.guests || [];
+    if (!rs.length && !gs.length && !tl.length) { toast(`${D.RULE_WAVES[0]}웨이브 뒤에 주방 규칙을 골라요`); return; }
+    const line = (tag, color, name, desc) => `<div class="iline"><span class="tag" style="background:${color}">${tag}</span><b>${name}</b><small>${desc}</small></div>`;
+    modal(`${ribbon('이번 판', '#8d7b6f')}<div>
+      ${gs.map(g => line('손님', '#ff9f43', D.GUESTS[g.id].name, D.GUESTS[g.id].desc(g, A))).join('')}
+      ${rs.map(k => line('규칙', '#5cc96b', D.RULES[k].name, D.RULES[k].good)).join('')}
+      ${tl.map(k => line('도구', '#8d7b6f', D.TOOLS[k].name, D.TOOLS[k].desc)).join('')}</div>
+      <div class="btn big" id="mOk">닫기</div>`, (m) => { m.querySelector('#mOk').onclick = closeModal; });
+  }
   function ruleScreen(choices) {
     modal(`${ribbon('주방 규칙 하나 고르기', '#5cc96b')}<div class="pen sub">W${G.wave} 정리 끝!</div>
-      ${choices.map(k => { const r = D.RULES[k]; return `<div class="rule" data-k="${k}"><div class="ra">${ingImg(D.RULE_ART[k], 52)}</div><div><div class="jua rn">${r.name}</div><div class="good">${r.good}</div></div></div>`; }).join('')}`, (m) => {
+      ${choices.map(k => { const r = D.RULES[k]; return `<div class="rule" data-k="${k}"><div class="ra">${ingImg(D.RULE_ART[k], 52)}</div><div><div class="jua rn">${r.name}</div><div class="good">${r.good}</div></div></div>`; }).join('')}
+      ${G.canRerollRules() ? '<div class="btn" id="rrRe">메모지로 다시 뽑기 (한 번)</div>' : ''}`, (m) => {
       m.querySelectorAll('.rule').forEach(el => el.onclick = () => { G.pickRule(el.dataset.k); closeModal(); });
+      const re = m.querySelector('#rrRe'); if (re) re.onclick = () => { closeModal(); G.rerollRules(); };
     });
   }
   function branchScreen(i) {
@@ -2597,7 +2996,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     const ds = D.DISHES[boss];
     const weak = (ds.weak || []).map(f => (A.FAMILY[f] || {}).name || ingName(f)).join(', ');
     const res = (ds.resist || []).map(f => (A.FAMILY[f] || {}).name || ingName(f)).join(', ');
-    modal(`${ribbon(D.waveSpec(G.wave, G.map, G.stage).bossLabel + ' 등장', '#a77bf3')}
+    modal(`${ribbon(D.waveSpec(G.wave, G.map, G.stage, G.endless, G.waves).bossLabel + ' 등장', '#a77bf3')}
       <div class="pair">${A.boss(boss, 120)}</div><div class="jua h1">${dishName(boss)}</div>
       <div class="lbl center">${weak ? `약점 <b>${weak}</b>` : ''}${res ? ` · 저항 <b>${res}</b>` : ''}</div>
       ${traitsOf(boss).map(t => `<div class="lbl center dim">${t}</div>`).join('')}
@@ -2605,7 +3004,32 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   }
   function settle(win) {
     const comboN = Object.values(G.stats.combos).reduce((s, v) => s + v, 0);
-    return SD.meta.finishRun({ win, hearts: G.hearts, maxHearts: G.maxHearts, wave: G.wave, cleaned: G.stats.cleaned, combos: comboN, recipes: G.stats.recipes.length, newRecipes: G.stats.newRecipes });
+    return SD.meta.finishRun({ win, hearts: G.hearts, maxHearts: G.maxHearts, wave: G.wave, cleared: G.cleared, cleaned: G.stats.cleaned, combos: comboN, recipes: G.stats.recipes.length, newRecipes: G.stats.newRecipes });
+  }
+  // 판 끝 화면의 '광고 보고 보상 2배': 팁과 상자에서 나온 조각을 한 번 더
+  const doubleText = () => { const L = SD.meta.p.last, sn = SD.meta.lastShardN(); return [L.tips > 0 ? `팁 +${L.tips}` : '', sn ? `조각 +${sn}` : ''].filter(Boolean).join(' · '); };
+  const doubleBtn = () => (SD.ads && SD.ads.available() && SD.meta.canDouble()) ? `<div class="btn go" id="mDouble" style="height:40px;flex-direction:row;gap:6px">${SD.meta.p.adFree ? '보상 한 번 더 받기' : '광고 보고 보상 2배'} <small style="opacity:1">${doubleText()}</small></div>` : '';
+  function bindDouble(m) {
+    const b = m.querySelector('#mDouble'); if (!b) return;
+    b.onclick = () => {
+      if (b.classList.contains('dis')) return; b.classList.add('dis'); const txt = doubleText();
+      SD.ads.show('double').then((ok) => { const r = ok ? SD.meta.doubleLast() : { ok: false }; if (r.ok) { b.remove(); toast(`${txt} 더 받았어요`); } else b.classList.remove('dis'); });
+    };
+  }
+  function modeEndScreen(res) {
+    const L = SD.lobby, daily = res.mode === 'daily', mapId = G.mapId;
+    modal(`${ribbon(daily ? '오늘의 도전 끝' : '무한 영업 끝', '#4aa3ff')}
+      <div class="jua h2">${G.map.name}${res.newBest ? ' · 새 기록!' : ''}</div>
+      <div class="stats"><div><b>${res.cleared}</b>정리한 웨이브</div><div><b>${G.stats.cleaned}</b>닦은 그릇</div><div><b>${res.best}</b>${daily ? '오늘 최고' : '내 최고'}</div></div>
+      <div class="rwrow">${L.rewardChips(res.rewards)}<span class="rw">경험치 +${res.exp}</span>${res.lvUp ? '<span class="rw" style="background:#ffc93c">레벨 업!</span>' : ''}</div>
+      ${daily ? '<div class="lbl center" id="mRank">랭킹에 올리는 중…</div>' : res.next ? `<div class="lbl center">${res.next}웨이브를 넘기면 도구 부품 +${SD.meta.ECON.ENDLESS_MS_PARTS}</div>` : ''}
+      ${doubleBtn()}
+      <div class="row2"><div class="btn" id="mLobby">로비로</div><div class="btn big" id="mNext" style="height:44px">${daily ? '랭킹 보기' : '다시 하기'}</div></div>`, (m) => {
+      bindDouble(m);
+      m.querySelector('#mLobby').onclick = () => { closeModal(); startScreen(); };
+      m.querySelector('#mNext').onclick = () => { closeModal(); if (daily) { startScreen(); SD.lobby.showRank(); } else { G = null; if (!startMode('endless', mapId)) startScreen(); } };
+      if (daily && SD.rank) SD.rank.submit(res.day, res.bestScore, res.best).then((r) => { const e = m.querySelector('#mRank'); if (e) e.textContent = r && r.ok ? `오늘 ${r.rank}위 · ${r.total}명 참가` : '랭킹에 올리지 못했어요. 기록은 이 기기에 남아 있어요'; });
+    });
   }
   function reviveScreen() {
     const half = Math.ceil(G.maxHearts / 2), adFree = SD.meta.p && SD.meta.p.adFree;
@@ -2625,9 +3049,21 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       m.querySelector('#rvNo').onclick = () => { closeModal(); endScreen(false); };
     });
   }
+  // 패배한 날 한 번, 스타터팩을 안 샀으면 권한다. 결제는 상점에서만 하도록 여기서는 상점으로 보내기만 한다
+  function starterOffer(next) {
+    const M = SD.meta, pr = M.PRODUCTS.starter; M.markStarterOffer();
+    modal(`${ribbon('스타터팩', '#ff9f43')}<div class="pen sub">재료를 키우면 훨씬 수월해져요</div>
+      <div class="guest"><span class="tag" style="background:#ff6b5b">한 번만</span><div><div class="jua gn">${pr.name} · ${pr.price.toLocaleString('ko-KR')}원</div><div class="gd">${pr.desc}</div></div></div>
+      <div class="btn big go" id="soGo">상점에서 보기</div>
+      <div class="btn" id="soNo">괜찮아요</div>`, (m) => {
+      m.querySelector('#soGo').onclick = () => { closeModal(); startScreen(); SD.lobby.show('shop'); };
+      m.querySelector('#soNo').onclick = () => { closeModal(); next(); };
+    });
+  }
   function endScreen(win) {
     mq.length = 0;
     const res = settle(win), L = SD.lobby;
+    if (res.mode) { modeEndScreen(res); return; }
     const combos = Object.entries(G.stats.combos).map(([k, v]) => `${D.COMBOS[k].name.replace('!', '')} ${v}`).join(' · ') || '없음';
     const stars = win ? `<div class="bigstars">${[1, 2, 3].map(i => L.starS(res.stars >= i, 44)).join('')}</div>` : '';
     const chest = res.rewards.filter(r => r.type === 'chest').map(L.chestHtml).join('');
@@ -2639,9 +3075,12 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       <div class="rwrow">${L.rewardChips(res.rewards)}<span class="rw">경험치 +${res.exp}</span>${res.lvUp ? '<span class="rw" style="background:#ffc93c">레벨 업!</span>' : ''}</div>
       ${chest}
       <div class="lbl">콤보: ${combos}</div>
+      ${doubleBtn()}
       <div class="row2"><div class="btn" id="mLobby">로비로</div><div class="btn big" id="mNext" style="height:44px">${nextOk ? '다음 스테이지' : '다시 하기'}</div></div>`, (m) => {
-      m.querySelector('#mLobby').onclick = () => { closeModal(); startScreen(); };
-      m.querySelector('#mNext').onclick = () => { closeModal(); G = null; if (!startRun(mapId, nextOk ? stage + 1 : stage)) SD.lobby.show(); };
+      bindDouble(m);
+      const leave = (fn) => { closeModal(); if (!win && SD.meta.starterOfferDue()) starterOffer(fn); else fn(); };
+      m.querySelector('#mLobby').onclick = () => leave(() => startScreen());
+      m.querySelector('#mNext').onclick = () => leave(() => { G = null; if (!startRun(mapId, nextOk ? stage + 1 : stage)) SD.lobby.show(); });
       m.querySelectorAll('[data-act="odds"]').forEach(b => b.onclick = () => { const t = b.closest('.chestbox').querySelector('.odds'); t.style.display = t.style.display === 'none' ? '' : 'none'; });
     });
   }
@@ -2655,7 +3094,8 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       <div class="row2"><div class="btn" id="pShine">+200 반짝</div><div class="btn" id="pSkip">웨이브 넘기기</div></div>`}`, (m) => {
       m.querySelector('#pGo').onclick = () => { paused = false; closeModal(); };
       bindSnd(m);
-      m.querySelector('#pHome').onclick = () => { paused = false; closeModal(); settle(false); startScreen(); };
+      // 무한 영업·오늘의 도전은 그만둬도 지금까지 기록을 남기고 결과 화면을 보여 준다
+      m.querySelector('#pHome').onclick = () => { paused = false; closeModal(); if (runMode) { G.phase = 'end'; endScreen(false); } else { settle(false); startScreen(); } };
       if (m.querySelector('#pShine')) m.querySelector('#pShine').onclick = () => { G.shine += 200; hud(); };
       if (m.querySelector('#pSkip')) m.querySelector('#pSkip').onclick = () => { if (G.phase === 'wave') { G.spawn.list = []; G.dishes.forEach(d => d.dead = true); } else if (G.phase === 'break' || G.phase === 'ready') G.startWave(); paused = false; closeModal(); };
     });
@@ -2686,6 +3126,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     SD.sound && SD.sound.setBgm('run');
     ui.sel = null; ui.drag = null; seenTypes = new Set(['plate', 'cup', 'mug', 'pot', 'spore']);
     paused = false;
+    if (speed === 4 && !SD.meta.canSpeed4()) { speed = 2; store.set('sd.speed', speed); }
     hud();
   }
 
@@ -2737,16 +3178,31 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   cv.addEventListener('pointercancel', () => { ui.drag = null; ui.hover = null; ui.dragTargets = null; });
 
   const on = (id, fn) => $(id).addEventListener('click', () => { if (!G || modalOpen) return; fn(); hud(); });
-  on('#bSummon', () => G.summon());
+  // 소환은 꾹 누르면 연달아 나온다 (0.35초 뒤부터 0.09초마다). 못 부르게 되면 멈춘다
+  (function () {
+    const b = $('#bSummon'); let t1 = null, t2 = null;
+    const stop = () => { clearTimeout(t1); clearInterval(t2); t1 = t2 = null; };
+    const once = () => { if (!G || modalOpen) return false; const r = G.summon(); hud(); return !!r; };
+    b.addEventListener('pointerdown', (e) => { if (e.button) return; stop(); if (!once()) return; t1 = setTimeout(() => { t2 = setInterval(() => { if (!once()) stop(); }, 90); }, 350); });
+    for (const k of ['pointerup', 'pointerleave', 'pointercancel']) b.addEventListener(k, stop);
+    b.addEventListener('contextmenu', (e) => e.preventDefault());
+    window.addEventListener('blur', stop);
+  })();
   on('#bLv', () => { if (!G.levelUp()) toast(G.lvCost() == null ? '소환 레벨 최대예요' : '반짝이 부족해요'); });
   on('#bMerge', () => { const n = G.bulkMerge(); const b = G.lastBulk || {}; if (n) toast(b.recipes ? (b.merged ? `${b.merged}번 합성 · 비법 ${b.recipes}개` : `비법 ${b.recipes}개 만들었어요`) : `${n}번 합성!`); });
-  on('#bRecycle', () => { if (ui.sel != null) { G.recycle(ui.sel); ui.sel = null; } });
+  on('#bRecycle', () => { if (ui.sel != null && G.cells[ui.sel] && G.cells[ui.sel].unit) { G.recycle(ui.sel); ui.sel = null; } else if (G.canRecycleLow()) { const n = G.recycleLow(); if (n) toast(`1성 ${n}개 재활용! 다시 소환해요`); } });
   on('#dTap', () => { if (!G.useTap()) toast(G.phase !== 'wave' ? '웨이브 중에만 써요' : '아직 쿨타임이에요'); });
   on('#dPlug', () => { if (!G.usePlug()) toast(G.devices.plug.uses <= 0 ? '다 썼어요' : G.phase !== 'wave' ? '웨이브 중에만 써요' : '이미 막는 중이에요'); });
   on('#dWok', () => { if (!G.useWok()) toast(G.phase !== 'wave' ? '웨이브 중에만 써요' : '아직 화구가 식는 중이에요'); });
   on('#bWave', () => G.startWave());
+  on('#receipt', () => runInfoScreen());
   on('#chalk', () => { if (G.map.situations) { const k = G.sit || G.sitNext; toast(`${D.SITUATIONS[k].name}: ${D.SITUATIONS[k].desc}`); } });
-  $('#speed').addEventListener('click', () => { speed = speed === 1 ? 2 : speed === 2 ? 4 : 1; store.set('sd.speed', speed); hud(); });
+  // 4배속은 상점 상품(4배속 또는 광고 제거 + 4배속 묶음). 웹판은 결제가 없어서 열려 있다
+  $('#speed').addEventListener('click', () => {
+    if (speed === 2 && !SD.meta.canSpeed4()) { speed = 1; toast('4배속은 상점에서 열 수 있어요'); }
+    else speed = speed === 1 ? 2 : speed === 2 ? 4 : 1;
+    store.set('sd.speed', speed); hud();
+  });
   $('#pause').addEventListener('click', () => { if (G && !modalOpen) pauseScreen(); });
 
   /* ---------- loop ---------- */
@@ -2774,7 +3230,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   SD.meta.load();
   fit();
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => SD.preload(D.MAP_ORDER)).then(() => { startScreen(); });
-  SD.ui = { modal, closeModal, toast, startRun, codex, get G() { return G; } };
+  SD.ui = { modal, closeModal, toast, startRun, startMode, codex, fit, get G() { return G; } };
   SD.debug = { get G() { return G; }, ui, setSpeed: (s) => { speed = s; }, newGame };
 })(window);
 
@@ -2785,7 +3241,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   const SD = g.SD, D = SD.DATA, A = g.SD_ART, M = SD.meta, INK = A.INK;
   const S = `stroke="${INK}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"`;
   const el = document.getElementById('lobby');
-  let tab = 'play', viewMap = null, selIng = null, noteTab = 'recipe', timer = null;
+  let tab = 'play', viewMap = null, selIng = null, noteTab = 'recipe', timer = null, endMap = null, adBusy = false;
 
   /* ---------- 아이콘 ---------- */
   const ing = (k, s) => `<span class="ii" style="width:${s}px;height:${s}px">${A.ing(k, s)}</span>`;
@@ -2802,6 +3258,24 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     shop: `<svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 10h16v10H4z" fill="#fff" ${S}/><path d="M3 5h18l1 5H2z" fill="#ff6b5b" ${S}/><path d="M7 5l-1 5M12 5v5M17 5l1 5" ${S}/><rect x="9.5" y="14" width="5" height="6" fill="#ffc93c" ${S}/></svg>`,
     kitchen: `<svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 10h16v7a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z" fill="#9aa5ad" ${S}/><path d="M2 10h20M2 12H4M20 12h2" ${S}/><path d="M9 6c-1-1.5 1-2 0-3.5M14 6c-1-1.5 1-2 0-3.5" stroke="#9aa5ad" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`
   };
+  // 도구 부품(육각 너트), 단골 패스(도장 쿠폰), 도전(트로피)
+  const partIcon = (s = 18) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M12 2.6l8.1 4.7v9.4L12 21.4l-8.1-4.7V7.3z" fill="#c9d1d6" ${S}/><circle cx="12" cy="12" r="3.4" fill="#fff" ${S}/></svg>`;
+  const passIcon = (s = 44) => `<svg viewBox="0 0 48 48" width="${s}" height="${s}"><path d="M6 12h36v8a4 4 0 0 0 0 8v8H6v-8a4 4 0 0 0 0-8z" fill="#ffd9a8" ${S}/><path d="M17 13v22" stroke="${INK}" stroke-width="2" stroke-dasharray="2.5 3"/><circle cx="30" cy="24" r="7" fill="#ff6b5b" ${S}/><path d="M26.8 24l2.2 2.2 4-4.2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const ffIcon = (s = 34) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M3 6.5l8 5.5-8 5.5zM12 6.5l8 5.5-8 5.5z" fill="#ffc93c" ${S}/></svg>`;
+  const noAdIcon = (s = 34) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}"><rect x="3" y="5" width="18" height="13" rx="2" fill="#fff" ${S}/><path d="M10 9l5 2.5-5 2.5z" fill="#ff6b5b" ${S} stroke-width="1.6"/><path d="M4 20L20 4" stroke="#ff6b5b" stroke-width="3" stroke-linecap="round"/></svg>`;
+  // 주방 도구 그림 (스티커 만화풍: 갈색 외곽선, 단색 채움, 흰 하이라이트 한 줄)
+  const TA = (inner, s) => `<svg viewBox="0 0 48 48" width="${s}" height="${s}">${inner}</svg>`;
+  const TOOL_ART = {
+    cup: `<path d="M10 9h24l-3 29a3 3 0 0 1-3 2.6H16a3 3 0 0 1-3-2.6z" fill="#eefafd" ${S}/><path d="M11.6 24h20.8l-1.4 14a3 3 0 0 1-3 2.6H16a3 3 0 0 1-3-2.6z" fill="#7fd6ff" ${S}/><path d="M33.4 15H38a4 4 0 0 1 4 4v4a4 4 0 0 1-4 4h-5.8" fill="none" ${S}/><path d="M15 15h5M15.5 20h3.4M16.6 29h5M17 34h3.4" stroke="#ff6b5b" stroke-width="2" stroke-linecap="round"/>`,
+    shelf: `<rect x="12" y="11" width="10" height="15" rx="2" fill="#fff6b8" ${S}/><rect x="13.5" y="7.5" width="7" height="4.5" rx="1.2" fill="#ff6b5b" ${S}/><rect x="26" y="16" width="11" height="10" rx="2" fill="#7fd6ff" ${S}/><path d="M11 31v9l9-9M37 31v9l-9-9" fill="#f2c48a" ${S}/><rect x="4" y="26" width="40" height="6" rx="2" fill="#d99a52" ${S}/><path d="M15 15v6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`,
+    timer: `<rect x="21" y="4" width="6" height="6" rx="1.5" fill="#9aa5ad" ${S}/><circle cx="24" cy="26" r="16" fill="#fff" ${S}/><path d="M8 26a16 16 0 0 1 32 0z" fill="#ff6b5b" ${S}/><path d="M24 13.5v3M15.2 17.2l2.1 2.1M32.8 17.2l-2.1 2.1" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M24 26l7 6" ${S}/><circle cx="24" cy="26" r="2.6" fill="${INK}"/>`,
+    bell: `<path d="M35 9V5M39.5 12l3-3M41 18h4" stroke="#ff9f43" stroke-width="2.6" stroke-linecap="round"/><rect x="21.5" y="11" width="5" height="7" rx="2" fill="#ffc93c" ${S}/><path d="M8 34a16 16 0 0 1 32 0z" fill="#dfe6ea" ${S}/><rect x="5" y="34" width="38" height="7" rx="3.5" fill="#8d7b6f" ${S}/><path d="M14 30a10 10 0 0 1 6-8" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
+    rag: `<path d="M7 13h29a5 5 0 0 1 5 5v21H12a5 5 0 0 1-5-5z" fill="#fff" ${S}/><path d="M8 21h32M8 30h32" stroke="#4aa3ff" stroke-width="3.4"/><path d="M17 14v24M29 14v24" stroke="#4aa3ff" stroke-width="3.4" opacity=".5"/><path d="M7 13h29a5 5 0 0 1 5 5v21H12a5 5 0 0 1-5-5z" fill="none" ${S}/><path d="M33 39c0-5 3-8 8-8" fill="none" ${S}/>`,
+    funnel: `<path d="M6 13l13 16v8l10 4V29l13-16z" fill="#ff9f43" ${S}/><ellipse cx="24" cy="13" rx="18" ry="4.5" fill="#ffd9a8" ${S}/><path d="M13 20l5 6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>`,
+    memo: `<path d="M8 9h32v23l-9 9H8z" fill="#fff6b8" ${S}/><path d="M40 32h-9v9z" fill="#ffe08a" ${S}/><path d="M14 19h20M14 25h20M14 31h10" stroke="${INK}" stroke-width="2.2" stroke-linecap="round" opacity=".45"/><rect x="18" y="4" width="12" height="8" rx="1.6" fill="#ff6b5b" ${S}/>`,
+    apron: `<path d="M17 5c0 5 3 8 7 8s7-3 7-8" fill="none" ${S}/><path d="M16 12h16l3 8 6 2v18a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3V22l6-2z" fill="#2ec4b6" ${S}/><rect x="16" y="27" width="16" height="10" rx="2.5" fill="#fff" ${S}/><path d="M7 25H3M41 25h4" ${S}/><path d="M12 24v9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>`
+  };
+  const toolArt = (id, s = 40) => TA(TOOL_ART[id] || '', s);
   const fam = (k) => A.FAMILY[A.ING[k].family];
   const ROLE = { aoe: '범위', single: '단일', support: '지원', slow: '둔화' };
   const num = (n) => Number(n).toLocaleString('ko-KR');
@@ -2812,7 +3286,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   /* ---------- 보상 표시 ---------- */
   function rewardChips(rw) {
     const lb = (r) => r.label ? `<small class="rwl">${r.label}</small>` : '';
-    return rw.filter(r => r.type !== 'chest').map(r => lb(r) + (r.type === 'coffee' ? `<span class="rw">${coffee(18)}+${r.n}</span>` : r.type === 'tips' ? `<span class="rw">${tip(18)}+${num(r.n)}</span>` : r.type === 'maxPlus' ? `<span class="rw">${coffee(18)}최대치 +${r.n}</span>` : r.type === 'adFree' ? `<span class="rw">광고 제거</span>` : r.type === 'deckShards' ? r.keys.map(k => `<span class="rw">${shard(k, 18)}x${r.n}</span>`).join('') : '')).join('');
+    return rw.filter(r => r.type !== 'chest').map(r => lb(r) + (r.type === 'coffee' ? `<span class="rw">${coffee(18)}+${r.n}</span>` : r.type === 'tips' ? `<span class="rw">${tip(18)}+${num(r.n)}</span>` : r.type === 'maxPlus' ? `<span class="rw">${coffee(18)}최대치 +${r.n}</span>` : r.type === 'adFree' ? `<span class="rw">광고 제거</span>` : r.type === 'speed4' ? `<span class="rw">4배속</span>` : r.type === 'pass' ? `<span class="rw">단골 패스</span>` : r.type === 'parts' ? `<span class="rw">${partIcon(18)}도구 부품 +${r.n}</span>` : r.type === 'deckShards' ? r.keys.map(k => `<span class="rw">${shard(k, 18)}x${r.n}</span>`).join('') : r.type === 'shardList' ? r.list.map(s => `<span class="rw">${shard(s.k, 18)}x${s.n}</span>`).join('') : '')).join('');
   }
   function chestHtml(c) {
     return `<div class="chestbox"><div style="display:flex;align-items:center;gap:8px">${box(c.tier, 44)}<span class="jua" style="font-size:17px">${M.CHESTS[c.tier].name}</span><span class="link" data-act="odds" data-tier="${c.tier}">확률 보기</span></div>
@@ -2843,12 +3317,13 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   }
   function tabsHtml() {
     const L = [['play', '영업'], ['ing', '재료'], ['note', '비법 노트'], ['shop', '상점'], ['kitchen', '주방']];
-    const dot = { shop: !M.p.day.freeChest, kitchen: M.kitchenPending().hours >= 2, ing: M.allIngs().some(k => (M.isUnlocked(k) ? (M.lvCost(k) && (M.p.shards[k] || 0) >= M.lvCost(k).shards && M.p.tips >= M.lvCost(k).tips) : (M.p.shards[k] || 0) >= M.ECON.UNLOCK_SHARDS)) };
+    const dot = { shop: !M.p.day.freeChest || M.passState().claimable > 0, kitchen: M.kitchenPending().hours >= 2, ing: M.allIngs().some(k => (M.isUnlocked(k) ? (M.lvCost(k) && (M.p.shards[k] || 0) >= M.lvCost(k).shards && M.p.tips >= M.lvCost(k).tips) : (M.p.shards[k] || 0) >= M.ECON.UNLOCK_SHARDS)) };
     return `<div class="ltabs">${L.map(([k, n]) => `<div class="ltab ${k === tab ? 'on' : ''}" data-act="tab" data-t="${k}">${TI[k]}<span>${n}</span>${dot[k] && k !== tab ? '<span class="dot"></span>' : ''}</div>`).join('')}</div>`;
   }
   function sideIcons() {
     const att = M.attendState();
-    const L = [['attend', '출석', '<path d="M5 6h14v14H5z" fill="#fff" ' + S + '/><path d="M5 6h14v4H5z" fill="#ff6b5b" ' + S + '/><path d="M9 3v5M15 3v5M9 15l2 2 4-4" ' + S + '/>', !att.claimedToday],
+    const L = [['challenge', '도전', '<path d="M7.5 4h9v5.5a4.5 4.5 0 0 1-9 0z" fill="#ffc93c" ' + S + '/><path d="M7.5 6H4.5v.8A3 3 0 0 0 7.5 9.8M16.5 6h3v.8a3 3 0 0 1-3 3M12 14v4M8 20h8" fill="none" ' + S + '/>', M.modeUnlocked() && M.dailyInfo().free],
+      ['attend', '출석', '<path d="M5 6h14v14H5z" fill="#fff" ' + S + '/><path d="M5 6h14v4H5z" fill="#ff6b5b" ' + S + '/><path d="M9 3v5M15 3v5M9 15l2 2 4-4" ' + S + '/>', !att.claimedToday],
       ['missions', '미션', '<path d="M6 4h12v16H6z" fill="#fff" ' + S + '/><path d="M9 9l1.5 1.5L13 8M9 14l1.5 1.5L13 13M15 9h1M15 14h1" ' + S + '/>', M.missionBadge()],
       ['mail', '우편', '<path d="M3 6h18v12H3z" fill="#fff" ' + S + '/><path d="M3 6l9 7 9-7" fill="none" ' + S + '/>', M.p.mail.length > 0],
       ['sound', '소리', '<path d="M4 9h4l5-4v14l-5-4H4z" fill="#fff" ' + S + '/>' + (SD.sound && (SD.sound.sfx || SD.sound.bgm) ? '<path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" ' + S + '/>' : '<path d="M16 9l5 6M21 9l-5 6" ' + S + '/>'), false]];
@@ -2887,7 +3362,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
           <div class="sinfo">
             <div class="jua sname"><span class="sno" style="background:${map.color}">${mi + 1}-${st}</span>${map.name}</div>
             <div class="jua ssub">${M.stageName(viewMap, st)}</div>
-            <div class="bossline">${st === 5 ? `<span class="bossic">${A.boss(map.final, 34)}</span>` : ''}${D.GUEST_COUNT[st] ? `<span class="tag" style="background:#ff9f43">까다로운 손님 ${D.GUEST_COUNT[st]}명</span>` : ''}<span class="tag" style="background:#a77bf3">W7 ${bname(map.mid)}</span><span class="tag" style="background:${boss.lastStrong ? '#a77bf3' : '#ff6b5b'}">W15 ${bname(boss.last)}${boss.lastStrong ? ' 강화' : ''}</span></div>
+            <div class="bossline">${st === 5 ? `<span class="bossic">${A.boss(map.final, 34)}</span>` : ''}${D.GUEST_COUNT[st] ? `<span class="tag" style="background:#ff9f43">까다로운 손님 ${D.GUEST_COUNT[st]}명</span>` : ''}<span class="tag" style="background:#a77bf3">W7 ${bname(map.mid)}</span><span class="tag" style="background:${boss.lastStrong ? '#a77bf3' : '#ff6b5b'}">W${D.wavesOf(viewMap, st)} ${bname(boss.last)}${boss.lastStrong ? ' 강화' : ''}</span></div>
             <div class="sstars2">${starS(stars > 0, 22)}${starS(stars > 1, 22)}${starS(stars > 2, 22)}</div>
           </div>
           ${open ? '' : `<div class="slock"><div>${lock(30)}</div><div class="jua">${lockMsg}</div></div>`}
@@ -2971,25 +3446,32 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   function shopTab() {
     const P = M.p, d = P.day, E = M.ECON, WEB = window.SD_PLATFORM === 'web';
     const adBtn = (n, left) => `<div class="btn sm" style="flex-direction:column;gap:0;line-height:1">${P.adFree ? '바로 받기' : '광고 보기'}<small>${left}/${n} 남음</small></div>`;
+    const ps = M.passState(), days = Math.max(1, Math.ceil(ps.endMs / 864e5)), cLeft = M.adLeft('chest'), rLeft = M.adLeft('reroll');
+    const prod = (id, ic) => { const pr = M.PRODUCTS[id], own = M.owned(id); return `<div class="card pcard ${own ? 'used' : ''}" data-act="buy" data-id="${id}"><div class="pic">${ic}</div><div class="ptx"><span class="jua">${pr.name}</span><small class="dim">${pr.desc}</small></div><div class="btn sm">${own ? '보유 중' : num(pr.price) + '원'}</div></div>`; };
     return `<div class="lscroll">
-      <div class="sec">오늘의 무료 <small>매일 오전 5시 초기화</small></div>
-      <div class="${WEB ? '' : 'g3'}">
-        ${WEB ? `<div class="card fwide ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 50)}<div style="flex:1"><div class="jua" style="font-size:18px">무료 상자</div><div class="pdesc">재료 조각과 팁이 들어 있어요</div></div><div class="btn sm ${d.freeChest ? '' : 'go'}" style="width:84px;height:36px">${d.freeChest ? '내일 또' : '받기'}</div></div>` : `<div class="card fcard ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 50)}<span class="jua">무료 상자</span><div class="btn sm ${d.freeChest ? '' : 'go'}">${d.freeChest ? '내일 또' : '받기'}</div></div>`}
-        ${WEB ? '' : `<div class="card fcard ${d.adCoffee >= E.AD_COFFEE_CAP ? 'used' : ''}" data-act="adCoffee">${coffee(44)}<span class="jua">커피 +${E.AD_COFFEE}</span>${adBtn(E.AD_COFFEE_CAP, E.AD_COFFEE_CAP - d.adCoffee)}</div>
-        <div class="card fcard ${d.adTip >= E.AD_TIP_CAP ? 'used' : ''}" data-act="adTip">${tip(44)}<span class="jua">팁 +${E.AD_TIP}</span>${adBtn(E.AD_TIP_CAP, E.AD_TIP_CAP - d.adTip)}</div>`}
+      <div class="card passcard ${ps.claimable ? 'hot' : ''}" data-act="pass">${passIcon(46)}<div style="flex:1;min-width:0"><div class="jua" style="font-size:18px">단골 패스 <small class="dim" style="font-family:Pretendard;font-size:11px;font-weight:800">${ps.lv}/${E.PASS_LEVELS}단계 · ${days}일 남음</small></div><div class="bar" style="margin-top:5px"><i style="width:${Math.round(100 * ps.into / ps.step)}%;background:#ff9f43"></i></div></div><div class="btn sm ${ps.claimable ? 'go' : ''}" style="width:64px;height:36px">${ps.claimable ? '받기 ' + ps.claimable : '보기'}</div></div>
+      <div class="sec" style="margin-top:12px">오늘의 무료 <small>매일 오전 5시 초기화</small></div>
+      <div class="${WEB ? '' : 'g4'}">
+        ${WEB ? `<div class="card fwide ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 50)}<div style="flex:1"><div class="jua" style="font-size:18px">무료 상자</div><div class="pdesc">재료 조각과 팁이 들어 있어요</div></div><div class="btn sm ${d.freeChest ? '' : 'go'}" style="width:84px;height:36px">${d.freeChest ? '내일 또' : '받기'}</div></div>` : `<div class="card fcard ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 44)}<span class="jua">무료 상자</span><div class="btn sm ${d.freeChest ? '' : 'go'}">${d.freeChest ? '내일 또' : '받기'}</div></div>`}
+        ${WEB ? '' : `<div class="card fcard ${cLeft <= 0 ? 'used' : ''}" data-act="adChest">${box('wood', 44)}<span class="jua">상자 더</span>${adBtn(E.AD_CAPS.chest, cLeft)}</div>
+        <div class="card fcard ${d.adCoffee >= E.AD_COFFEE_CAP ? 'used' : ''}" data-act="adCoffee">${coffee(40)}<span class="jua">커피 +${E.AD_COFFEE}</span>${adBtn(E.AD_COFFEE_CAP, E.AD_COFFEE_CAP - d.adCoffee)}</div>
+        <div class="card fcard ${M.adShardLeft() <= 0 ? 'used' : ''}" data-act="adShard">${shard(P.deck[0], 38)}<span class="jua">조각 +${E.AD_SHARD_KINDS * E.AD_SHARD_N}</span>${adBtn(E.AD_SHARD_CAP, M.adShardLeft())}</div>`}
       </div>
-      <div class="sec" style="margin-top:12px">조각 가게 <small id="lShopT">${mmss(M.shopNextMs())} 뒤 바뀜</small><span class="btn sm" style="margin-left:auto;width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="reroll">새로고침 ${tip(14)}${E.SHOP_REROLL}</span></div>
+      <div class="sec" style="margin-top:12px">조각 가게 <small id="lShopT">${mmss(M.shopNextMs())} 뒤 바뀜</small><span style="margin-left:auto;display:flex;gap:5px">${WEB || rLeft <= 0 ? '' : `<span class="btn sm" style="width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="adReroll">${P.adFree ? '무료' : '광고'} 새로고침 ${rLeft}</span>`}<span class="btn sm" style="width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="reroll">새로고침 ${tip(14)}${E.SHOP_REROLL}</span></span></div>
       <div class="g4">${P.shop.slots.map((s, i) => { const bought = P.shop.bought.includes(i), un = M.isUnlocked(s.k); return `<div class="card scard ${bought ? 'used' : ''}" data-act="shopBuy" data-i="${i}">${un ? '' : '<span class="tag newtag" style="background:#a77bf3">새 재료</span>'}${shard(s.k, 38)}<span class="sname2">${A.ING[s.k].name} x${s.n}</span><div class="btn sm prow">${bought ? '구매 완료' : tip(14) + num(s.price)}</div></div>`; }).join('')}</div>
       ${WEB ? '' : `<div class="sec" style="margin-top:12px">상품 <small>토스 결제 연결 전 · 지금은 테스트로 바로 지급</small></div>
       ${P.bought.starter ? '' : `<div class="card pstarter" data-act="buy" data-id="starter"><span class="tag" style="position:absolute;top:-9px;left:12px;background:#ff6b5b">한 번만</span>${box('gold', 54)}<div style="flex:1"><div class="jua" style="font-size:18px">스타터팩</div><div class="pdesc">${M.PRODUCTS.starter.desc}</div></div><div class="btn" style="height:42px;width:78px;background:#ffc93c">${num(M.PRODUCTS.starter.price)}원</div></div>`}
-      <div class="g3" style="margin-top:10px">${['coffee50', 'maxplus', 'adfree'].map(id => { const pr = M.PRODUCTS[id], own = pr.once && P.bought[id]; const ic = id === 'coffee50' ? coffee(40) : id === 'maxplus' ? `<span style="position:relative">${coffee(40)}<span class="jua plusbadge">+10</span></span>` : `<svg viewBox="0 0 24 24" width="40" height="40"><rect x="3" y="5" width="18" height="13" rx="2" fill="#fff" ${S}/><path d="M10 9l5 2.5-5 2.5z" fill="#ff6b5b" ${S} stroke-width="1.6"/><path d="M4 20L20 4" stroke="#ff6b5b" stroke-width="3" stroke-linecap="round"/></svg>`; return `<div class="card fcard ${own ? 'used' : ''}" data-act="buy" data-id="${id}">${ic}<span class="jua">${pr.name}</span><small class="dim">${pr.desc}</small><div class="btn sm">${own ? '보유 중' : num(pr.price) + '원'}</div></div>`; }).join('')}</div>`}
+      ${P.adFree || P.speed4 ? '' : `<div class="card pstarter" data-act="buy" data-id="combo" style="margin-top:${P.bought.starter ? 10 : 16}px"><span class="tag" style="position:absolute;top:-9px;left:12px;background:#5cc96b">묶음 할인</span><span style="display:flex;flex:none">${noAdIcon(38)}${ffIcon(38)}</span><div style="flex:1"><div class="jua" style="font-size:17px">광고 제거 + 4배속</div><div class="pdesc">따로 사면 <s>${num(M.PRODUCTS.adfree.price + M.PRODUCTS.speed4.price)}원</s> · ${num(M.PRODUCTS.adfree.price + M.PRODUCTS.speed4.price - M.PRODUCTS.combo.price)}원 할인</div></div><div class="btn" style="height:42px;width:78px;background:#ffc93c">${num(M.PRODUCTS.combo.price)}원</div></div>`}
+      <div class="g2">${prod('adfree', noAdIcon(34))}${prod('speed4', ffIcon(34))}${prod('shards10', shard(P.deck[0], 32))}${prod('shards30', `<span style="position:relative;margin-right:10px">${shard(P.deck[0], 32)}<span class="jua plusbadge">x3</span></span>`)}</div>`}
     </div>`;
   }
 
   /* ---------- 주방 ---------- */
   function kitchenTab() {
-    const P = M.p, pend = M.kitchenPending(), up = M.kitchenUpCost(), E = M.ECON;
+    const P = M.p, pend = M.kitchenPending(), up = M.kitchenUpCost(), E = M.ECON, adOk = SD.ads.available(), sLeft = M.adLeft('sweep');
     const sweeps = []; for (const m of D.MAP_ORDER) for (let s = 1; s <= 5; s++) if (M.starsOf(m, s) >= 3) sweeps.push([m, s]);
+    const slots = M.toolSlots();
+    const tools = Object.entries(D.TOOLS).map(([id, t]) => { const own = M.hasTool(id), on = P.toolEq.includes(id); return `<div class="card tcard ${on ? 'on' : ''} ${own ? '' : 'lockd'}" data-act="tool" data-id="${id}"><div class="tic">${toolArt(id, 40)}</div><div class="ttx"><span class="jua">${t.name}</span><small>${t.desc}</small></div>${on ? '<span class="tag ton" style="background:#5cc96b">드는 중</span>' : own ? '' : `<span class="tag ton" style="background:#8d7b6f">${partIcon(12)}${t.cost}</span>`}</div>`; }).join('');
     return `<div class="lscroll">
       <div class="card kcard">
         <div style="display:flex;align-items:center;gap:12px">
@@ -3000,13 +3482,16 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
         <div class="dbtns"><div class="btn go" data-act="kCollect">받기</div><div class="btn" data-act="kUp" style="flex-direction:column;gap:0">주방 확장 ${up == null ? '<small>최대</small>' : `<small style="display:flex;align-items:center;gap:2px">${tip(13)}${num(up)} · 생산 +25%</small>`}</div></div>
         <div class="lbl dim" style="margin-top:6px">게임을 꺼 둬도 최대 ${E.KITCHEN_CAP_H}시간까지 쌓여요</div>
       </div>
+      <div class="sec" style="margin-top:14px">주방 도구 <small>판에 ${slots}개 들고 가요 (${P.toolEq.length}/${slots})</small><span class="partchip">${partIcon(16)}${P.parts}</span></div>
+      <div class="g2">${tools}</div>
+      <div class="lbl dim" style="margin-top:6px">도구 부품은 오늘의 도전, 무한 영업 기록, 일일 미션, 단골 패스에서 얻어요${P.lv < E.TOOL_SLOT3_LV ? ` · 레벨 ${E.TOOL_SLOT3_LV}부터 3개를 들어요` : ''}</div>
       <div class="sec" style="margin-top:14px">소탕 <small>별 3개 스테이지 · 바로 보상 (나무 상자)</small></div>
-      ${sweeps.length ? sweeps.map(([m, s]) => `<div class="t2row"><span class="tag" style="background:${D.MAPS[m].color}">${D.MAPS[m].name}</span><span class="jua">${D.MAP_ORDER.indexOf(m) + 1}-${s} ${M.stageName(m, s)}</span><div class="btn sm" style="margin-left:auto;width:auto;padding:0 10px;flex-direction:row;gap:3px;white-space:nowrap" data-act="sweepAt" data-m="${m}" data-s="${s}">소탕 ${M.isFree(m) ? '무료' : coffee(14) + '5'}</div></div>`).join('') : `<div class="lbl dim" style="margin-top:8px">아직 별 3개 스테이지가 없어요. 만족도를 16 이상 남기고 클리어하면 별 3개예요.</div>`}
+      ${sweeps.length ? sweeps.map(([m, s]) => `<div class="t2row"><span class="tag" style="background:${D.MAPS[m].color}">${D.MAPS[m].name}</span><span class="jua">${D.MAP_ORDER.indexOf(m) + 1}-${s} ${M.stageName(m, s)}</span><span style="margin-left:auto;display:flex;gap:5px">${adOk && sLeft > 0 && !M.isFree(m) ? `<span class="btn sm" style="width:auto;padding:0 8px;flex-direction:row;white-space:nowrap" data-act="sweepAd" data-m="${m}" data-s="${s}">${P.adFree ? '무료' : '광고'} 소탕 ${sLeft}</span>` : ''}<span class="btn sm" style="width:auto;padding:0 10px;flex-direction:row;gap:3px;white-space:nowrap" data-act="sweepAt" data-m="${m}" data-s="${s}">소탕 ${M.isFree(m) ? '무료' : coffee(14) + '5'}</span></span></div>`).join('') : `<div class="lbl dim" style="margin-top:8px">아직 별 3개 스테이지가 없어요. 만족도를 16 이상 남기고 클리어하면 별 3개예요.</div>`}
     </div>`;
   }
 
   /* ---------- 출석 · 미션 · 우편 ---------- */
-  const itemText = (it) => [it.coffee ? `${coffee(16)}${it.coffee}` : '', it.tips ? `${tip(16)}${num(it.tips)}` : '', it.chest ? `${box(it.chest, 18)}${M.CHESTS[it.chest].name}` : ''].filter(Boolean).join(' ');
+  const itemText = (it) => [it.coffee ? `${coffee(16)}${it.coffee}` : '', it.tips ? `${tip(16)}${num(it.tips)}` : '', it.chest ? `${box(it.chest, 18)}${M.CHESTS[it.chest].name}` : '', it.parts ? `${partIcon(16)}부품 ${it.parts}` : '', it.deckShards ? `덱 조각 x${it.deckShards}` : ''].filter(Boolean).join(' ');
   function attendModal() {
     const st = M.attendState();
     SD.ui.modal(`<div class="ribbon" style="background:#ffc93c;color:${INK};text-shadow:none">출석 보상</div>
@@ -3014,12 +3499,86 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       <div class="btn big" data-act="${st.claimedToday ? '' : 'attendClaim'}" ${st.claimedToday ? 'data-close' : ''}>${st.claimedToday ? '내일 또 와요' : '받기'}</div>`, bindModal);
   }
   function missionModal() {
-    SD.ui.modal(`<div class="ribbon" style="background:#a77bf3">오늘의 미션</div>${M.missionState().map(ms => `<div class="mrow"><div style="flex:1"><div class="jua" style="font-size:15px">${ms.name}</div><div class="bar" style="margin-top:4px"><i style="width:${Math.round(100 * ms.prog / ms.goal)}%;background:#a77bf3"></i></div><small class="dim">${ms.prog}/${ms.goal} · ${itemText(ms.reward)}</small></div><div class="btn sm ${ms.done && !ms.claimed ? 'go' : ''}" style="width:72px" data-act="${ms.done && !ms.claimed ? 'mClaim' : ''}" data-id="${ms.id}">${ms.claimed ? '완료' : ms.done ? '받기' : '진행 중'}</div></div>`).join('')}${M.missionBadge() ? '<div class="btn big go" data-act="mAll">모두 받기</div>' : '<div class="btn big" data-close>닫기</div>'}`, bindModal);
+    SD.ui.modal(`<div class="ribbon" style="background:#a77bf3">오늘의 미션</div>${M.missionState().map(ms => `<div class="mrow"><div style="flex:1"><div class="jua" style="font-size:15px">${ms.name} <small class="dim" style="display:inline;font-family:Pretendard;font-size:10px;font-weight:800">${ms.tier}/${ms.tiers}단계</small></div><div class="bar" style="margin-top:4px"><i style="width:${Math.round(100 * ms.prog / ms.goal)}%;background:#a77bf3"></i></div><small class="dim">${ms.prog}/${ms.goal} · ${itemText(ms.reward)}</small></div><div class="btn sm ${ms.done && !ms.claimed ? 'go' : ''}" style="width:72px" data-act="${ms.done && !ms.claimed ? 'mClaim' : ''}" data-id="${ms.id}">${ms.claimed ? '완료' : ms.done ? '받기' : '진행 중'}</div></div>`).join('')}${M.missionBadge() ? '<div class="btn big go" data-act="mAll">모두 받기</div>' : '<div class="btn big" data-close>닫기</div>'}`, bindModal);
   }
   function mailModal() {
     const L = M.p.mail;
     SD.ui.modal(`<div class="ribbon" style="background:#4aa3ff">우편함</div>${L.length ? L.map(m => `<div class="mrow"><div style="flex:1"><div class="jua" style="font-size:15px">${m.title}</div><small class="dim">${m.body || ''}</small><div style="font-size:12px;font-weight:800;margin-top:3px">${itemText(m.items)}</div></div><div class="btn sm go" style="width:64px" data-act="mailOne" data-id="${m.id}">받기</div></div>`).join('') + '<div class="btn big" data-act="mailAll">모두 받기</div>' : '<div class="lbl center dim" style="padding:20px 0">우편이 없어요</div><div class="btn big" data-close>닫기</div>'}`, bindModal);
   }
+
+  /* ---------- 도전 (오늘의 도전 · 무한 영업) · 랭킹 ---------- */
+  function challengeModal() {
+    if (!M.modeUnlocked()) { toast('기본 주방 5스테이지를 깨면 도전이 열려요'); return; }
+    const P = M.p, di = M.dailyInfo(), map = D.MAPS[di.map], maps = M.endlessMaps(), adOk = SD.ads.available();
+    if (!maps.includes(endMap)) endMap = maps[maps.length - 1];
+    const next = M.endlessNext(endMap);
+    const dBtn = di.free ? `<div class="btn big go" data-act="dailyGo">도전하기</div>`
+      : (adOk && di.adLeft > 0) ? `<div class="btn big" data-act="dailyAd">${P.adFree ? '다시 도전' : '광고 보고 다시 도전'} (${di.adLeft}번 남음)</div>` : `<div class="btn big dis">내일 또 도전해요</div>`;
+    SD.ui.modal(`<div class="ribbon" style="background:#4aa3ff">도전</div>
+      <div class="card chcard"><div class="chh"><span class="tag" style="background:#ff6b5b">오늘의 도전</span><span class="jua">${map.name}</span><span class="link" data-act="rank">랭킹 보기</span></div>
+        <div class="chd">모두 같은 판이에요. 끝없이 밀려오는 그릇을 몇 웨이브까지 버티는지 겨뤄요.</div>
+        <div class="chg">${di.guests.map(x => `<span class="tago">${D.GUESTS[x.id].name}</span>`).join('')}</div>
+        <div class="chd">오늘 내 최고 <b>${di.bestWave ? di.bestWave + '웨이브' : '기록 없음'}</b>${di.tries ? '' : ` · 참가하면 ${partIcon(13)}부품 +1`}</div>${dBtn}</div>
+      <div class="card chcard"><div class="chh"><span class="tag" style="background:#a77bf3">무한 영업</span><span class="jua">${D.MAPS[endMap].name}</span>${maps.length > 1 ? '<span class="link" data-act="endMap">음식점 바꾸기</span>' : ''}</div>
+        <div class="chd">5스테이지를 깬 음식점에서 끝없이 영업해요. 내 최고 <b>${M.endlessBest(endMap)}웨이브</b>${next ? ` · ${next}웨이브를 넘기면 ${partIcon(13)}부품 +${M.ECON.ENDLESS_MS_PARTS}` : ''}</div>
+        <div class="btn big" data-act="endGo" style="gap:6px">무한 영업 시작 <small style="opacity:1;font-size:13px">${coffee(16)}${M.ECON.MODE_COFFEE}</small></div></div>
+      <div class="btn" data-close>닫기</div>`, bindModal);
+  }
+  function rankModal() {
+    const day = M.dayISO();
+    SD.ui.modal(`<div class="ribbon" style="background:#ffc93c;color:${INK};text-shadow:none">오늘의 도전 랭킹</div>
+      <div class="lbl center">내 이름 <b id="rkName">${M.rankName()}</b> <span class="link" data-act="rankName">다른 이름</span></div>
+      <div class="rklist" id="rkList"><div class="lbl center dim" style="padding:26px 0">불러오는 중…</div></div>
+      <div class="btn big" data-close>닫기</div>`, (m) => {
+      bindModal(m);
+      SD.rank.top(day).then((r) => {
+        const bx = m.querySelector('#rkList'); if (!bx) return;
+        if (!r) { bx.innerHTML = '<div class="lbl center dim" style="padding:26px 0">랭킹을 불러오지 못했어요. 잠시 뒤에 다시 열어 주세요</div>'; return; }
+        const row = (x, me) => `<div class="rkrow ${me ? 'me' : ''}"><b>${x.rank}</b><span>${x.name}</span><i>${x.wave}웨이브</i></div>`;
+        const top = r.top || [];
+        bx.innerHTML = (top.length ? top.map(x => row(x, x.me)).join('') : '<div class="lbl center dim" style="padding:26px 0">아직 기록이 없어요. 첫 번째로 도전해 보세요</div>')
+          + (r.me && !top.some(x => x.me) ? '<div class="rkgap">⋮</div>' + row(r.me, true) : '')
+          + (r.total ? `<div class="lbl center dim" style="margin-top:6px">오늘 ${r.total}명 참가</div>` : '');
+      });
+    });
+  }
+
+  /* ---------- 단골 패스 ---------- */
+  function passModal() {
+    const st = M.passState(), E = M.ECON, WEB = window.SD_PLATFORM === 'web', days = Math.max(1, Math.ceil(st.endMs / 864e5));
+    const cell = (it, got, open, shut) => `<div class="pcell ${got ? 'got' : ''} ${open && !shut ? '' : 'wait'}">${itemText(it)}${shut ? ' ' + lock(10) : ''}</div>`;
+    SD.ui.modal(`<div class="ribbon" style="background:#ff9f43">단골 패스</div>
+      <div class="lbl center"><b>${st.lv}/${E.PASS_LEVELS}단계</b> · ${days}일 뒤 새 시즌</div>
+      <div class="bar"><i style="width:${Math.round(100 * st.into / st.step)}%;background:#ff9f43"></i></div>
+      <div class="lbl center dim">영업 · 미션 · 출석 · 도전을 하면 점수가 쌓여요${st.lv >= E.PASS_LEVELS ? '' : ` (다음 단계까지 ${st.step - st.into}점)`}</div>
+      ${WEB ? '' : `<div class="lbl center">${st.premium ? '단골 줄 열림 · 이번 시즌 동안 주방 도구를 하나 더 들어요' : '단골 줄을 열면 이번 시즌 동안 <b>주방 도구를 하나 더</b> 들어요'}</div>`}
+      <div class="prow2 phd ${WEB ? 'one' : ''}"><b></b><span>무료</span>${WEB ? '' : `<span>단골${st.premium ? '' : ' ' + lock(10)}</span>`}</div>
+      <div class="plist ${WEB ? 'one' : ''}">${st.rows.map(x => `<div class="prow2 ${x.open ? 'open' : ''}"><b>${x.lv}</b>${cell(x.free, x.gotF, x.open, false)}${WEB ? '' : cell(x.paid, x.gotP, x.open, !st.premium)}</div>`).join('')}</div>
+      ${st.claimable ? '<div class="btn big go" data-act="passClaim">보상 받기</div>' : ''}
+      ${st.premium || WEB ? '' : `<div class="btn big" data-act="buy" data-id="pass">단골 줄 열기 ${num(M.PRODUCTS.pass.price)}원</div>`}
+      <div class="btn" data-close>닫기</div>`, bindModal);
+  }
+
+  /* ---------- 주방 도구 ---------- */
+  function toolModal(id) {
+    const t = D.TOOLS[id], P = M.p, enough = P.parts >= t.cost;
+    SD.ui.modal(`<div class="ribbon" style="background:#8d7b6f">주방 도구</div>
+      <div style="display:flex;justify-content:center">${toolArt(id, 84)}</div>
+      <div class="jua h1" style="text-align:center;font-size:24px">${t.name}</div>
+      <div class="lbl center" style="font-size:14px">${t.desc}</div>
+      <div class="lbl center dim">가진 부품 ${partIcon(13)}${P.parts} · 필요 ${t.cost}</div>
+      <div class="btn big ${enough ? 'go' : 'dis'}" data-act="toolBuy" data-id="${id}" style="gap:6px">${enough ? '부품으로 만들기' : `부품이 ${t.cost - P.parts}개 모자라요`}</div>
+      <div class="btn" data-close>닫기</div>`, bindModal);
+  }
+  // 광고를 끝까지 본 뒤에만 fn 실행. 광고 제거를 샀으면 바로
+  function withAd(kind, left, fn) {
+    if (!SD.ads.available() || adBusy) return;
+    if (left <= 0) { toast('오늘은 다 봤어요'); return; }
+    adBusy = true;
+    SD.ads.show(kind).then((ok) => { adBusy = false; if (!ok) { toast('광고를 끝까지 봐야 받을 수 있어요'); return; } fn(); render(); });
+  }
+  const adTitle = (t) => M.p.adFree || !SD.ads.isTest ? t : t + ' (테스트 광고)';
+  const closeIfOpen = () => { if (document.querySelector('#modal.show')) SD.ui.closeModal(); };
 
   /* ---------- 동작 ---------- */
   function res(r, okMsg) { if (!r.ok) { if (r.why) toast(r.why); return false; } if (okMsg) toast(okMsg); return true; }
@@ -3028,6 +3587,20 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     switch (a) {
       case 'tab': tab = ds.t; break;
       case 'goShop': tab = 'shop'; break;
+      case 'challenge': challengeModal(); return;
+      case 'dailyGo': SD.ui.closeModal(); SD.ui.startMode('daily'); return;
+      case 'dailyAd': withAd('daily', M.adLeft('daily'), () => { closeIfOpen(); SD.ui.startMode('daily', null, true); }); return;
+      case 'endGo': SD.ui.closeModal(); SD.ui.startMode('endless', endMap); return;
+      case 'endMap': { const L = M.endlessMaps(); endMap = L[(L.indexOf(endMap) + 1) % L.length]; SD.ui.closeModal(); challengeModal(); return; }
+      case 'rank': SD.ui.closeModal(); rankModal(); return;
+      case 'rankName': { const n = M.rankReroll(), e = document.querySelector('#rkName'); if (e) e.textContent = n; toast('다음 기록부터 이 이름으로 올라가요'); return; }
+      case 'pass': passModal(); return;
+      case 'passClaim': { const r = M.claimPass(); SD.ui.closeModal(); if (res(r)) showRewards('단골 패스 보상', r.rewards, '#ff9f43'); break; }
+      case 'tool': { if (!M.hasTool(ds.id)) { toolModal(ds.id); return; } const r = M.toggleTool(ds.id); if (res(r)) toast(`${D.TOOLS[ds.id].name} ${r.on ? '들고 가요' : '내려놨어요'}`); break; }
+      case 'toolBuy': { const r = M.buyTool(ds.id); if (!r.ok) { if (r.why) toast(r.why); return; } SD.ui.closeModal(); toast(`${D.TOOLS[ds.id].name} 완성! ${r.equipped ? '바로 들고 가요' : '눌러서 바꿔 들 수 있어요'}`); break; }
+      case 'adChest': withAd('chest', M.adLeft('chest'), () => { const r = M.adChest(); if (res(r)) showRewards(adTitle('상자 하나 더'), [{ type: 'chest', tier: 'wood', items: r.items }]); }); return;
+      case 'adReroll': withAd('reroll', M.adLeft('reroll'), () => { res(M.adReroll(), '조각 가게를 새로 채웠어요'); }); return;
+      case 'sweepAd': { const m = ds.m, s = +ds.s; withAd('sweep', M.adLeft('sweep'), () => { const r = M.sweep(m, s, true); if (res(r)) showRewards(adTitle('소탕 완료'), r.rewards); }); return; }
       case 'mv': if (!moveView(+(ds.dm || 0), +(ds.ds || 0))) return; break;
       case 'stage': { const s = +ds.s; if (s === viewStage) return; moveView(0, s - viewStage); break; }
       case 'lockedStart': toast('아직 잠긴 스테이지예요'); return;
@@ -3041,10 +3614,10 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       case 'note': noteTab = ds.n; break;
       case 'recipe': if (ds.id) recipeModal(ds.id); return;
       case 'free': { const r = M.freeChest(); if (res(r)) showRewards('무료 상자', [{ type: 'chest', tier: 'wood', items: r.items }]); break; }
-      case 'adCoffee': case 'adTip': if (window.SD_PLATFORM === 'web') return; { const r = M.adReward(a === 'adCoffee' ? 'coffee' : 'tips'); if (res(r)) showRewards(P.adFree ? '광고 보상' : '광고 보상 (테스트 광고)', r.rewards); break; }
+      case 'adCoffee': case 'adShard': { const kind = a === 'adCoffee' ? 'coffee' : 'shards', left = kind === 'coffee' ? M.ECON.AD_COFFEE_CAP - P.day.adCoffee : M.adShardLeft(); withAd(kind, left, () => { const r = M.adReward(kind); if (res(r)) showRewards(adTitle('광고 보상'), r.rewards); }); return; }
       case 'shopBuy': res(M.shopBuy(+ds.i), '샀어요!'); break;
       case 'reroll': res(M.shopReroll(), '조각 가게를 새로 채웠어요'); break;
-      case 'buy': if (window.SD_PLATFORM === 'web') return; { const r = M.buyProduct(ds.id); if (res(r)) showRewards('(테스트) 결제 완료', r.rewards, '#ff9f43'); break; }
+      case 'buy': if (window.SD_PLATFORM === 'web') return; { const r = M.buyProduct(ds.id); if (res(r)) { closeIfOpen(); showRewards('(테스트) 결제 완료', r.rewards, '#ff9f43'); } break; }
       case 'odds': oddsModal(ds.tier); return;
       case 'kCollect': { const r = M.kitchenCollect(); if (res(r)) toast(`팁 +${num(r.rewards[0].n)}`); break; }
       case 'kUp': res(M.kitchenUp(), '주방 확장!'); break;
@@ -3101,7 +3674,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   SD.lobby = {
     show(t) { if (t) tab = t; el.style.display = 'block'; render(); clearInterval(timer); timer = setInterval(tickTop, 1000); },
     hide() { el.style.display = 'none'; clearInterval(timer); },
-    render, showRewards, chestHtml, rewardChips, starS, get tab() { return tab; }
+    render, showRewards, chestHtml, rewardChips, starS, showRank: rankModal, toolArt, get tab() { return tab; }
   };
 })(window);
 
@@ -3152,9 +3725,12 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     { id: 'wave', when: (G) => G.phase === 'ready', done: (G) => G.phase !== 'ready', target: '#bWave', text: () => '준비됐으면 <b>설거지 시작!</b>' },
     { id: 'hearts', when: (G) => G.phase === 'wave', done: (G, t) => t > 5, target: '#hearts', tap: true, text: () => '재료가 지나가는 그릇을 닦아요. 그릇이 끝까지 가면 <b>하트</b>가 줄어요' },
     { id: 'bulk', opt: true, when: (G) => G.mergePairs() >= 2, done: (G, t) => G.mergePairs() < 2 || t > 7, target: '#bMerge', tap: true, text: () => '합칠 게 많으면 <b>일괄 합성</b> 한 번이면 돼요' },
+    { id: 'hold', opt: true, when: (G) => G.stats.summons >= 6 && G.shine >= G.summonCost() * 5 && G.emptyCells().length >= 3, done: (G, t) => t > 6 || G.shine < G.summonCost() * 2 || !G.emptyCells().length, target: '#bSummon', tap: true, text: () => '<b>소환</b>을 꾹 누르면 연달아 불러요' },
+    { id: 'recycle', opt: true, when: (G) => G.canRecycleLow() && G.mergePairs() === 0 && G.shine >= G.summonCost() * 3, done: (G, t) => t > 8 || !G.canRecycleLow(), target: '#bRecycle', tap: true, text: () => '조리대가 꽉 찼으면 <b>재활용</b>으로 1성을 한 번에 비우고 다시 소환해요' },
     { id: 'hints', opt: true, when: (G) => hintCell(G) != null, done: (G, t) => t > 9, tap: true, cell: hintCell,
       text: () => `<div class="tlg"><span>${BADGE.merge}같은 재료 짝</span><span>${BADGE.fresh}새 비법 짝</span><span>${BADGE.known}아는 비법 짝</span></div>칸을 <b>탭</b>하면 짝이 점선으로 보여요` },
-    { id: 'hybrid', opt: true, when: (G) => !!hybridPair(G), done: (G, t) => G.stats.recipes.length > 0 || (!hybridPair(G) && t > 1), pair: hybridPair, text: () => '서로 다른 <b>3성 재료</b>를 겹치면 <b>살림 비법</b>이 생겨요' }
+    // 첫 비법을 실제로 만들 때까지 끝내지 않는다. 짝이 사라지면 숨었다가 다음에 짝이 생길 때 다시 알려 준다 (revisit)
+    { id: 'hybrid', opt: true, revisit: true, when: (G) => !!hybridPair(G), done: (G) => G.stats.recipes.length > 0 || Object.keys((SD.ui && SD.ui.codex && SD.ui.codex.recipes) || {}).length > 0, pair: hybridPair, text: () => '서로 다른 <b>3성 재료</b>를 겹치면 <b>살림 비법</b>이 생겨요' }
   ];
 
   // 앞 4단계는 순서대로, 뒤 2단계(opt)는 조건이 맞을 때 한 번씩. 진행은 프로필(tutDone)에 저장돼 판을 나가도 이어진다
@@ -3165,7 +3741,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   function pick(G) {
     const d = doneSet();
     for (const s of STEPS) if (!s.opt && !d.has(s.id)) { if (s.when(G)) return s; if (s.done(G, 0)) { markDone(s.id); continue; } return null; }
-    if (cur && cur.opt && !d.has(cur.id)) return cur;   // 보여주기 시작한 단계는 끝날 때까지 유지
+    if (cur && cur.opt && !d.has(cur.id) && (!cur.revisit || cur.when(G))) return cur;   // 보여주기 시작한 단계는 끝날 때까지 유지
     for (const s of STEPS) if (s.opt && !d.has(s.id) && s.when(G)) return s;
     return null;
   }
@@ -3192,7 +3768,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     const tn = tsel && $(tsel);
     const pair = s.pair && s.pair(G);
     const cell = s.cell && s.cell(G);
-    let by;
+    let by, low = false;   // low: 조리대 위 재료를 가리지 않게 말풍선을 조리대 아래(버튼 판 바로 위)에 둔다
     if (tn && tn.offsetParent !== null) {
       const r = stageRect(tn);
       Object.assign(ring.style, { display: 'block', left: (r.x - 5) + 'px', top: (r.y - 5) + 'px', width: (r.w + 10) + 'px', height: (r.h + 10) + 'px' });
@@ -3200,7 +3776,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     } else if (cell != null && G.cells[cell]) {
       const cc = G.cells[cell];
       Object.assign(ring.style, { display: 'block', left: (cc.x - 6) + 'px', top: (cc.y - 6) + 'px', width: '68px', height: '68px' });
-      by = cc.y > 330 ? cc.y - 120 : cc.y + 70;
+      low = true;
     } else ring.style.display = 'none';
     if (pair) {
       const a = G.cells[pair[0]], b = G.cells[pair[1]];
@@ -3209,10 +3785,11 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       const p = (performance.now() % 1400) / 1400, q = Math.min(1, p * 1.3), u = 1 - q;
       const hx = u * u * a.cx + 2 * u * q * mx + q * q * b.cx, hy = u * u * a.cy + 2 * u * q * my + q * q * b.cy;
       Object.assign(hand.style, { display: 'block', left: (hx - 12) + 'px', top: (hy - 4) + 'px', opacity: p > 0.85 ? 0 : 1 });
-      by = Math.max(a.cy, b.cy) + 46 > 560 ? Math.min(a.cy, b.cy) - 110 : Math.max(a.cy, b.cy) + 46;
+      low = true;
     } else { arrow.style.display = 'none'; hand.style.display = 'none'; }
+    if (low) by = 598 - (bub.offsetHeight || 56);
     if (by == null) by = 140;
-    bub.style.top = Math.max(60, Math.min(540, by)) + 'px';
+    bub.style.top = Math.max(60, Math.min(546, by)) + 'px';
   }
 
   // 실제 흐른 시간으로 센다 (탭이 가려져 rAF가 멈춰도 setInterval로 이어감)
