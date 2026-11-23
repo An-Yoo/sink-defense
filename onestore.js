@@ -1,4 +1,4 @@
-// 싱크대 수비대 원스토어(ONEplay 웹게임) 연동
+// 싱크대를 부탁해 원스토어(ONEplay 웹게임) 연동
 // - 원스토어 H5 Game SDK 수명주기: initializeAsync → setLoadingProgress → startGameAsync
 // - exit/pause 이벤트에서 바로 저장, 뒤로가기: 열린 창 닫기 → 영업 중이면 일시정지 → 다른 탭이면 영업 탭 → 원스토어 기본 종료 확인
 // 일반 브라우저에서는 SDK가 { err }를 돌려주므로 아무것도 하지 않고 게임만 실행된다.

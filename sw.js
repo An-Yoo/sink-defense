@@ -1,4 +1,4 @@
-// 싱크대 수비대 서비스 워커: 항상 네트워크 먼저, 끊겼을 때만 마지막 본 화면을 보여 준다
+// 싱크대를 부탁해 서비스 워커: 항상 네트워크 먼저, 끊겼을 때만 마지막 본 화면을 보여 준다
 const CACHE = 'sd-v1';
 self.addEventListener('install', (e) => {
   self.skipWaiting();

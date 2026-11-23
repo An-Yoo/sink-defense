@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>싱크대 수비대</title>
+<title>싱크대를 부탁해</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Pen+Script&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
@@ -220,7 +220,10 @@
   #tut .tbub .tt{flex:1;word-break:keep-all}#tut .tbub b{color:#e8653f}
   #tut .tlg{display:flex;flex-direction:column;gap:3px;margin-bottom:4px}#tut .tlg span{display:flex;align-items:center;gap:6px}#tut .tlg svg{flex-shrink:0}
   #tut .tskip{font-size:11px;font-weight:800;opacity:.5;white-space:nowrap;cursor:pointer;padding:2px 0 2px 6px}
-  .guest{display:flex;align-items:center;gap:10px;background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;margin:6px 0;box-shadow:0 3px 0 var(--ink)}.guest .gn{font-size:17px}.guest .gd{font-size:12.5px;font-weight:700;opacity:.75}
+  .bvlist{display:flex;flex-direction:column;gap:9px;max-height:470px;overflow-y:auto;margin:0 -4px;padding:2px 4px 6px}.bvrow{background:#fff;border:2.5px solid var(--ink);border-radius:14px;box-shadow:0 3px 0 var(--ink);padding:8px}.bvrow.done{opacity:.6}.bvhead{display:flex;align-items:center;gap:6px;font-size:17px;margin-bottom:6px}.bvhead small{font-size:13px;opacity:.7}.bvpair{display:flex;gap:7px}.bvcard{flex:1;border:2.5px solid var(--ink);border-radius:11px;padding:6px 7px 7px;cursor:pointer;display:flex;flex-direction:column;gap:2px;box-shadow:0 3px 0 var(--ink)}.bvcard.A{background:#d6f5f1}.bvcard.B{background:#ffe9d6}.bvcard:active{transform:translateY(2px)}.bvcard.on{outline:3px solid #ffb800}.bvcard .bl{font-size:12px;width:20px;height:20px;border:2px solid var(--ink);border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}.bvcard b{font-weight:400;font-size:16px}.bvcard small{font-size:11.5px;font-weight:800;line-height:1.3;color:#5b4a3f}
+.bosstip{display:flex;align-items:center;gap:8px;background:#fff6d6;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:800;line-height:1.35}
+@keyframes devpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}.dev.pulse .ic{animation:devpulse .7s ease-in-out infinite;background:#fff3b0;box-shadow:0 0 0 4px #ffd84d,0 3px 0 var(--ink)}
+.guest{display:flex;align-items:center;gap:10px;background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;margin:6px 0;box-shadow:0 3px 0 var(--ink)}.guest .gn{font-size:17px}.guest .gd{font-size:12.5px;font-weight:700;opacity:.75}
   #receipt .gl{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:2px}.tago{background:#ff9f43;color:#fff;border:1.5px solid var(--ink);border-radius:6px;padding:0 4px;font-family:Jua;font-size:10.5px;line-height:15px}
   .dim{opacity:.55}
   .rwl{font-size:10px;font-weight:800;opacity:.6;margin-right:-3px;align-self:center}
@@ -286,7 +289,7 @@
   <div id="modal"></div>
 </div>
 <script>
-/* 싱크대 수비대 - 공용 아트 정의 (코드로 그린 SVG)
+/* 싱크대를 부탁해 - 공용 아트 정의 (코드로 그린 SVG)
  * 스타일 규칙
  *  - 외곽선 #3b2f2f, 두께 2.4 (디테일 1.6), 끝·모서리 둥글게
  *  - 단색 채움 + 흰 하이라이트 한 줄. 그라데이션·블러·발광 없음
@@ -769,6 +772,26 @@
       `<path d="M12 24a20 20 0 0 1 6-7" stroke="#6b4a35" stroke-width="3" fill="none" stroke-linecap="round"/>` +
       bossFace('#fff', 30, 32, '#fff') },
 
+    // 1.3 기본 주방 보스 2종
+    rice_pot: { name: '눌어붙은 밥솥', tier: 'mid', cuisine: 'base', svg:
+      `<path d="M22 9c-2-3 2-4 0-7M32 8c-2-3 2-4 0-7M42 9c-2-3 2-4 0-7" fill="none" stroke="#9aa5ad" stroke-width="2.2" stroke-linecap="round"/>` +
+      `<rect x="2" y="28" width="9" height="7" rx="3" fill="#8e9aa5" ${OB}/><rect x="53" y="28" width="9" height="7" rx="3" fill="#8e9aa5" ${OB}/>` +
+      `<circle cx="32" cy="35" r="25" fill="#cfd8df" ${OB}/>` +
+      `<circle cx="32" cy="35" r="20.5" fill="#fffaf0" ${OB}/>` +
+      `<path d="M14 40c3 7 10 11 18 11s15-4 18-11c-4 4-10 6-18 6s-14-2-18-6z" fill="#c98a3a" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>` +
+      `<path d="M17 27c2-4 5-6 9-7.5" stroke="#e0b46a" stroke-width="4" fill="none" stroke-linecap="round"/>` +
+      `<ellipse cx="44" cy="24" rx="2.2" ry="1.3" fill="#fff" stroke="${INK}" stroke-width="1.2" transform="rotate(-30 44 24)"/><ellipse cx="20" cy="44" rx="2" ry="1.2" fill="#fff" stroke="${INK}" stroke-width="1.2" transform="rotate(20 20 44)"/>` +
+      HL('M11 26a22 22 0 0 1 8-10') + bossFace(INK, 32, 33, '#fff') },
+
+    pot_lid: { name: '굴러다니는 냄비 뚜껑', tier: 'mid', cuisine: 'base', svg:
+      `<circle cx="32" cy="32" r="28" fill="#9aa5ad" ${OB}/>` +
+      `<circle cx="32" cy="32" r="23" fill="#d5ecff" ${OB}/>` +
+      `<path d="M18 18a20 20 0 0 1 13-6" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>` +
+      `<path d="M40 50c3-1.5 6-4 7.5-7" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>` +
+      `<rect x="26" y="7" width="12" height="7" rx="3.5" fill="#3b2f2f" stroke="${INK}" stroke-width="2"/>` +
+      `<circle cx="14" cy="40" r="2.4" fill="#e0a052" stroke="${INK}" stroke-width="1.4"/><circle cx="50" cy="26" r="1.9" fill="#e0a052" stroke="${INK}" stroke-width="1.4"/>` +
+      bossFace(INK, 32, 32, '#fff') },
+
     lasagna: { name: '라자냐 오븐 그릇', tier: 'final', cuisine: 'we', svg:
       `<rect x="1" y="26" width="8" height="12" rx="3" fill="#c9532f" ${OB}/><rect x="55" y="26" width="8" height="12" rx="3" fill="#c9532f" ${OB}/>` +
       `<rect x="6" y="9" width="52" height="46" rx="9" fill="#e8653f" ${OB}/>` +
@@ -850,7 +873,7 @@
 
 </script>
 <script>
-/* 싱크대 수비대 - 게임 데이터 (밸런스 수치는 전부 여기서 조정) */
+/* 싱크대를 부탁해 - 게임 데이터 (밸런스 수치는 전부 여기서 조정) */
 (function (g) {
   const SD = g.SD = g.SD || {};
 
@@ -870,17 +893,22 @@
       name: '기본 주방', shape: 'U자 싱크대', cuisine: 'base', hpMul: 1.2, color: '#2ec4b6',
       paths: [[[40, 186], [40, 548], [350, 548], [350, 206]]],
       cells: (() => { const GX = [76, 138, 200, 262], GY = [204, 266, 328, 390, 452]; const T = { '0,0': 'shelf', '1,1': 'tap', '3,0': 'board', '2,2': 'gas', '0,2': 'window', '3,2': 'rack' }; const P = { '0,3': 160, '3,3': 160 }; const out = []; GY.forEach((y, r) => GX.forEach((x, c) => out.push(C(x, y, { L: r === 4, t: T[c + ',' + r], p: P[c + ',' + r] })))); return out; })(),
-      devices: { tap: R(80, 524, 260, 572), plug: R(270, 400, 374, 572) },
+      // 1.3: 장치 구역을 재료 사거리 안(왼쪽·오른쪽 레일)으로 옮김. 예전 아래 레일 구석은 닿는 재료가 1칸뿐이었다
+      devices: { tap: R(16, 262, 64, 486), plug: R(326, 280, 374, 392) },
       entries: [[40, 183]], exit: [350, 199],
       mid: 'tray', final: 'grill', situations: null,
+      // 1.3: 기본 주방은 스테이지마다 보스가 다르다 [7웨이브, 마지막 웨이브]. 1-1은 그냥 보스, 1-2부터 수도관·배수구 마개로 풀어야 하는 보스
+      bossHpMul: { grill: 2.5 },   // 기본 주방에서만 불판 체력 2.5배 (한식당 불판은 그대로)
+      stageBosses: { 1: ['tray', 'tray'], 2: ['tray', 'rice_pot'], 3: ['rice_pot', 'pot_lid'], 4: ['pot_lid', 'rice_pot'], 5: ['pot_lid', 'grill'] },
       pool: (w) => [['plate', 6], ['cup', w >= 2 ? 3 : 0], ['mug', w >= 3 ? 3 : 0], ['pot', w >= 4 ? 2 : 0], ['board', w >= 6 ? 2 : 0], ['fryingpan', w >= 7 ? 1 : 0], ['plate_hard', w >= 8 ? 2 : 0]]
     },
     kr: {
       name: '한식당', shape: '수저', cuisine: 'kr', hpMul: 1.45, color: '#2f7fe0',
       paths: [[[142, 186], [142, 314], ...arcPts(195, 445, 163, 138, 251, -71, 5).slice(1), [248, 186]]],
       cells: [C(167, 204, { t: 'shelf' }), C(167, 266, { t: 'board' }), C(105, 360), C(167, 360, { t: 'window' }), C(229, 360), C(74, 422, { t: 'tap' }), C(136, 422), C(198, 422), C(260, 422, { t: 'gas' }), C(136, 484, { p: 160 }), C(198, 484, { t: 'rack' }), C(52, 200), C(52, 262, { L: 1 }), C(282, 200), C(282, 262, { L: 1 })],
-      devices: { tap: R(90, 548, 300, 600), plug: R(225, 186, 272, 320) },
+      devices: { tap: R(11, 270, 166, 442), plug: R(224, 226, 361, 402) },
       entries: [[142, 183]], exit: [248, 183],
+      bossHpMul: { stockpot: 4, grill: 3.5 },   // 1.3: 보스가 몇 초 만에 녹던 것을 고침 (아무거나 봇과 장치·비법 쓰는 봇의 차이가 나게)
       mid: 'stockpot', final: 'grill', situations: ['normal', 'hot', 'boiler', 'rush', 'vent', 'banchan'],
       pool: (w) => [['banchan', 7], ['plate', 4], ['cup', w >= 2 ? 2 : 0], ['dolsot', w >= 3 ? 2 : 0], ['ttukbaegi', w >= 4 ? 2 : 0], ['mug', w >= 3 ? 2 : 0], ['board', w >= 6 ? 2 : 0], ['fryingpan', w >= 7 ? 1 : 0], ['pot_black', w >= 8 ? 1 : 0]]
     },
@@ -888,8 +916,9 @@
       name: '중식당', shape: '중식도', cuisine: 'cn', hpMul: 1.15, color: '#e8402f',
       paths: [[[40, 186], [40, 445], [140, 445], [140, 578], [250, 578], [250, 445], [350, 445], [350, 196]]],
       cells: [C(74, 236, { t: 'gas' }), C(136, 236), C(198, 236), C(260, 236, { t: 'shelf' }), C(74, 298), C(136, 298, { t: 'tap' }), C(198, 298, { p: 160 }), C(260, 298), C(74, 360, { t: 'window' }), C(136, 360), C(198, 360, { t: 'board' }), C(260, 360, { L: 1 }), C(167, 470, { L: 1, t: 'rack' })],
-      devices: { wok: { x: 297, y: 214, r: 100 }, tap: R(115, 555, 275, 602), plug: R(117, 445, 163, 600) },
+      devices: { wok: { x: 297, y: 214, r: 100 }, tap: R(16, 270, 89, 469), plug: R(326, 232, 374, 456) },
       entries: [[40, 183]], exit: [350, 193],
+      bossHpMul: { dimsum_tower: 3, jjajang_wok: 2.5 },
       mid: 'dimsum_tower', final: 'jjajang_wok', situations: ['normal', 'hot', 'boiler', 'rush', 'vent', 'fire'],
       pool: (w) => [['plate', 4], ['jjajang', 5], ['dimsum', 3], ['wok', w >= 3 ? 2 : 0], ['cup', 2], ['pot', w >= 4 ? 2 : 0], ['wrapped', w >= 4 ? 2 : 0], ['coated', w >= 6 ? 2 : 0], ['cup_hard', w >= 7 ? 1 : 0]]
     },
@@ -897,8 +926,9 @@
       name: '일식당', shape: '회전초밥 레일', cuisine: 'jp', hpMul: 2.2, speedMul: 1.8, color: '#2c3e6b', loops: 2,
       paths: [(() => { const L = sushiLoop(); return [[40, 186], [40, 236], ...L, ...L.slice(1), [290, 230], [338, 236], [350, 196]]; })()],
       cells: (() => { const GX = [76, 138, 200, 262], GY = [262, 324, 386, 448]; const T = { '0,0': 'shelf', '2,1': 'tap', '3,0': 'board', '1,2': 'gas', '0,2': 'window', '3,2': 'rack' }; const P = { '1,0': 160 }; const out = []; GY.forEach((y, r) => GX.forEach((x, c) => out.push(C(x, y, { L: r === 3, t: T[c + ',' + r], p: P[c + ',' + r] })))); return out; })(),
-      devices: { tap: R(90, 537, 300, 584), plug: R(150, 206, 300, 254) },
+      devices: { tap: R(16, 290, 64, 500), plug: R(150, 206, 300, 254) },
       entries: [[40, 183]], exit: [350, 193],
+      bossHpMul: { ramen_don: 3, curry: 2.5 },
       mid: 'ramen_don', final: 'curry', situations: ['normal', 'hot', 'boiler', 'rush', 'vent', 'spin'],
       pool: (w) => [['sushi', 7], ['sushi_red', w >= 3 ? 3 : 1], ['sushi_gold', w >= 4 ? 1 : 0], ['ramen', 3], ['takoyaki', w >= 3 ? 2 : 0], ['cup', 2], ['wrapped', w >= 5 ? 2 : 0], ['board', w >= 6 ? 1 : 0]]
     },
@@ -912,14 +942,19 @@
       cells: [C(104, 206, { t: 'shelf' }), C(104, 268, { t: 'tap' }), C(104, 330), C(230, 206, { t: 'board' }), C(230, 268), C(230, 330, { t: 'gas' }), C(50, 478, { t: 'window' }), C(112, 478), C(50, 540, { L: 1 }), C(112, 540, { p: 160 }), C(222, 478, { t: 'rack' }), C(284, 478), C(222, 540), C(284, 540, { L: 1 })],
       devices: { tap: R(172, 440, 218, 575), plug: R(140, 395, 250, 470) },
       entries: [[70, 183], [195, 183], [320, 183]], exit: [195, 574],
+      bossHpMul: { pizza_pan: 1.6, lasagna: 1.6 },
       mid: 'pizza_pan', final: 'lasagna', situations: ['normal', 'hot', 'boiler', 'rush', 'vent', 'course'],
       pool: (w) => [['salad', 5], ['pasta', 4], ['dessert', w >= 2 ? 3 : 0], ['plate', 3], ['coated', w >= 4 ? 2 : 0], ['wrapped', w >= 6 ? 2 : 0], ['pot_black', w >= 7 ? 1 : 0]]
     }
   };
 
   const TERRAIN = {
-    shelf: { name: '선반' }, tap: { name: '수도' }, board: { name: '도마' },
-    gas: { name: '가스' }, window: { name: '창가' }, rack: { name: '건조대' }
+    shelf: { name: '선반', desc: '여기 놓은 재료는 사거리 +40' },
+    tap: { name: '수도', desc: '여기 놓은 재료가 맞힌 그릇은 불어요(불림)' },
+    board: { name: '도마', desc: '연마 재료(소금·수세미류) 위력 1.3배' },
+    gas: { name: '가스', desc: '온수·스팀 위력 1.5배, 얼음은 0.7배' },
+    window: { name: '창가', desc: '알코올·락스 위력 1.3배' },
+    rack: { name: '건조대', desc: '물 계열(온수·얼음·스팀) 위력 0.7배' }
   };
 
   /* ---------- 재료 16종 ---------- */
@@ -944,25 +979,28 @@
   const STAR_DMG = [0, 1, 2.3, 5, 11];
   const STAR_CD = [0, 1, 0.92, 0.85, 0.78];
 
-  // 3성 분기 진화 (A / B)
+  // 3성 분기 진화 (A / B). 1.3: 수치만 올리던 분기를 공격 방식이 바뀌는 효과로 교체. 분기를 고르면 위력은 공통으로 1.2배 (BRANCH_BASE)
+  // 효과 키: trail(맞은 자리에 상태 웅덩이) mark(얼룩 표시) bounce(튀기) execute(마무리) spreadOnKill(상태 번짐) adjHaste(옆 칸 속도)
+  //          push(밀어내기) bossHunt(보스 노림) cloudSpread(구름 옮기기) split(두 갈래) pierce(관통) tapLink(물줄기 연계)
+  //          freezeEvery(멈추기) vsHard(굳은 그릇) alwaysShatter(늘 파쇄) chainFree(늘 연쇄) aoe/single(공격 방식)
   const OIL = { plate: 2, plate_hard: 2, tray: 2, grill: 2, fryingpan: 2, wok: 2, jjajang: 2, jjajang_wok: 2, lasagna: 2 };
   const BRANCH = {
-    vinegar: { A: { name: '분무기', desc: '범위 1.5배', splashMul: 1.5 }, B: { name: '원액', desc: '단일 공격, 위력 1.8배', single: true, dmgMul: 1.8 } },
-    citric: { A: { name: '구연산수', desc: '범위 공격으로 바뀜', aoe: true }, B: { name: '가루', desc: '위력 1.8배', dmgMul: 1.8 } },
-    lemon: { A: { name: '레몬즙', desc: '공격 속도 1.4배', cdMul: 0.7 }, B: { name: '레몬껍질', desc: '사거리 +40', rangeAdd: 40 } },
-    soda: { A: { name: '가루 뿌리기', desc: '범위 1.5배', splashMul: 1.5 }, B: { name: '페이스트', desc: '단일 공격, 위력 1.8배', single: true, dmgMul: 1.8 } },
-    oxy: { A: { name: '표백 강화', desc: '위력 1.5배', dmgMul: 1.5 }, B: { name: '구름 지속', desc: '산소 구름 지속 2배', cloudMul: 2 } },
-    wsoda: { A: { name: '기름 특화', desc: '기름 그릇·불판·웍에 2배', bonus: OIL }, B: { name: '범위 특화', desc: '범위 1.5배', splashMul: 1.5 } },
-    dish: { A: { name: '거품 지속', desc: '거품과 거품 웅덩이 1.6배 지속', stDurMul: 1.6, puddleMul: 1.6 }, B: { name: '농축', desc: '단일 공격, 위력 1.8배', single: true, dmgMul: 1.8 } },
-    alcohol: { A: { name: '분무', desc: '범위 공격으로 바뀜', aoe: true }, B: { name: '소독 특화', desc: '곰팡이에 2배 더', bonus: { board: 2, spore: 2 } } },
-    bleach: { A: { name: '희석', desc: '범위 공격, 위력 0.8배', aoe: true, dmgMul: 0.8 }, B: { name: '원액', desc: '위력 2배, 공격 느려짐', dmgMul: 2, cdMul: 1.3 } },
-    hot: { A: { name: '끓는 물', desc: '불림 1.6배 지속, 위력 1.3배', stDurMul: 1.6, dmgMul: 1.3 }, B: { name: '미온수', desc: '물 계열 전체 공격 속도 +15%', aura: 'waterHaste' } },
-    ice: { A: { name: '얼음 조각', desc: '굳힘 둔화 30% → 50%', slow: 0.5 }, B: { name: '찬물 헹굼', desc: '범위 공격으로 바뀜', aoe: true } },
-    steam: { A: { name: '고압 스팀', desc: '위력·범위 1.5배', dmgMul: 1.5, splashMul: 1.5 }, B: { name: '스팀 타월', desc: '고장 난 유닛이 바로 복구됨', aura: 'autoUnjam' } },
-    sponge: { A: { name: '극세사', desc: '공격 속도 1.4배', cdMul: 0.7 }, B: { name: '양면', desc: '범위 공격으로 바뀜', aoe: true } },
-    steel: { A: { name: '강철', desc: '위력 1.6배', dmgMul: 1.6 }, B: { name: '둥근 수세미', desc: '범위 공격으로 바뀜', aoe: true } },
-    brush: { A: { name: '병솔', desc: '사거리 +40', rangeAdd: 40 }, B: { name: '칫솔', desc: '25% 확률로 3배 세척', crit: 0.25 } },
-    salt: { A: { name: '굵은소금', desc: '위력 1.6배', dmgMul: 1.6 }, B: { name: '고운소금', desc: '소금물 연쇄 +1번', chainAdd: 1 } }
+    vinegar: { A: { name: '분무기', desc: '맞은 자리에 식초가 2초 고여 지나가는 그릇도 산성', trail: 'acid' }, B: { name: '원액', desc: '맞은 그릇에 얼룩 표시: 3초 동안 모든 세척 +35%', mark: true } },
+    citric: { A: { name: '구연산수', desc: '맞히면 옆 그릇 2개로 튀어요', bounce: 2 }, B: { name: '가루', desc: '체력 25% 아래 그릇은 한 번에 닦아요 (보스 빼고)', execute: 0.25 } },
+    lemon: { A: { name: '레몬즙', desc: '산성 묻은 그릇이 닦이면 주변 그릇에 산성이 번져요', aura: 'spreadAcid' }, B: { name: '레몬껍질', desc: '바로 옆 칸 재료들 공격 속도 +25%', adjHaste: 0.8 } },
+    soda: { A: { name: '가루 뿌리기', desc: '맞은 그릇을 뒤로 밀어내요 (보스는 조금)', push: 22 }, B: { name: '페이스트', desc: '보스를 먼저 노리고 보스에 2배', bossHunt: 2 } },
+    oxy: { A: { name: '표백 강화', desc: '맞은 그릇에 얼룩 표시: 3초 동안 모든 세척 +35%', mark: true }, B: { name: '구름 옮기기', desc: '산소 구름 낀 그릇이 닦이면 구름이 옆 그릇으로 옮겨 가요', aura: 'cloudSpread' } },
+    wsoda: { A: { name: '기름 특화', desc: '기름 그릇·쟁반·불판·웍에 2배', bonus: OIL }, B: { name: '두 갈래', desc: '그릇 둘을 한꺼번에 맞혀요', split: 2 } },
+    dish: { A: { name: '거품 지속', desc: '맞은 자리에 거품이 2초 남아 지나가는 그릇도 거품', trail: 'foam' }, B: { name: '농축', desc: '한 줄로 쏴서 뒤따라오는 그릇 2개까지 뚫어요', single: true, pierce: 2 } },
+    alcohol: { A: { name: '분무', desc: '그릇 둘을 한꺼번에 맞혀요', split: 2 }, B: { name: '소독 특화', desc: '도마·곰팡이 포자에 2배 더', bonus: { board: 2, spore: 2 } } },
+    bleach: { A: { name: '희석', desc: '범위 공격으로 바뀜, 위력 0.8배', aoe: true, dmgMul: 0.8 }, B: { name: '원액', desc: '보스를 먼저 노리고 보스에 2배', bossHunt: 2 } },
+    hot: { A: { name: '끓는 물', desc: '수도 칸이나 수도관 물줄기 위 그릇에 2.5배', tapLink: 2.5 }, B: { name: '미온수', desc: '물 계열 전체 공격 속도 +15%', aura: 'waterHaste' } },
+    ice: { A: { name: '얼음 조각', desc: '세 번 맞힐 때마다 그릇을 1초 멈춰요', freezeEvery: 3 }, B: { name: '찬물 헹굼', desc: '범위 공격으로 바뀜', aoe: true } },
+    steam: { A: { name: '고압 스팀', desc: '맞은 그릇을 뒤로 밀어내요 (보스는 조금)', push: 18 }, B: { name: '스팀 타월', desc: '고장 난 유닛이 바로 복구돼요', aura: 'autoUnjam' } },
+    sponge: { A: { name: '극세사', desc: '한 줄로 닦아 뒤따라오는 그릇 2개까지 뚫어요', pierce: 2 }, B: { name: '양면', desc: '범위 공격으로 바뀜', aoe: true } },
+    steel: { A: { name: '강철', desc: '체력 25% 아래 그릇은 한 번에 닦아요 (보스 빼고)', execute: 0.25 }, B: { name: '둥근 수세미', desc: '범위 공격으로 바뀜', aoe: true } },
+    brush: { A: { name: '병솔', desc: '맞히면 옆 그릇 2개로 튀어요', bounce: 2 }, B: { name: '칫솔', desc: '굳은 그릇(얼음 맞은 그릇)에 3배', vsHard: 3 } },
+    salt: { A: { name: '굵은소금', desc: '굳히지 않아도 늘 파쇄가 터져요', alwaysShatter: true }, B: { name: '고운소금', desc: '불리지 않아도 소금물 연쇄가 터져요', chainFree: true } }
   };
 
   /* ---------- 그릇 ---------- */
@@ -995,7 +1033,7 @@
     pasta: { hp: 48, speed: 90, reward: 3, weak: ['alk'] },
     dessert: { hp: 40, speed: 95, reward: 3, weak: ['water'], hardMul: 2 },
     // 보스
-    tray: { hp: 900, speed: 43, reward: 30, weak: ['soap', 'alk'], boss: 'mid' },
+    tray: { hp: 1800, speed: 43, reward: 30, weak: ['soap', 'alk'], boss: 'mid' },
     grill: { hp: 3200, speed: 38, reward: 60, weak: ['soap', 'water'], resist: ['ice'], boss: 'final', bossJam: 6 },
     stockpot: { hp: 1000, speed: 40, reward: 30, weak: ['alk', 'scrub'], resist: ['acid'], boss: 'mid', kbImmune: true },
     dimsum_tower: { hp: 850, speed: 38, reward: 30, boss: 'mid', tiers: ['acid', 'alk', 'scrub'] },
@@ -1003,7 +1041,17 @@
     ramen_don: { hp: 1000, speed: 40, reward: 30, weak: ['water'], boss: 'mid', needSoak: 0.5 },
     curry: { hp: 3000, speed: 34, reward: 60, weak: ['alk'], resist: ['scrub'], boss: 'final', windowMul: 2, hasteAura: 1.2 },
     pizza_pan: { hp: 1100, speed: 38, reward: 30, weak: ['soap'], boss: 'mid', kbImmune: true, hasteAura: 1.15 },
-    lasagna: { hp: 3300, speed: 32, reward: 60, weak: ['soap', 'water'], boss: 'final', needSoak: 0.6, regen: 0.006 }
+    lasagna: { hp: 3300, speed: 32, reward: 60, weak: ['soap', 'water'], boss: 'final', needSoak: 0.6, regen: 0.006 },
+    // 1.3 기본 주방 보스: 밥솥은 불려야, 냄비 뚜껑은 세워야 잘 닦인다
+    rice_pot: { hp: 5000, speed: 40, reward: 30, weak: ['water', 'scrub'], boss: 'mid', needSoak: 0.5, tapMul: 3 },
+    pot_lid: { hp: 3800, speed: 64, reward: 30, weak: ['alk', 'soap'], boss: 'mid', stopMul: [0.35, 0.6, 2.5] }
+  };
+  // 보스 첫 등장 때 보여 주는 공략 한 줄
+  const BOSS_TIP = {
+    tray: '거품(세제)이나 알칼리(베이킹소다류) 재료로 닦으면 1.5배',
+    rice_pot: '불리기 전엔 절반만 닦여요. 수도관 물줄기 안에서는 3배! 깜빡이는 왼쪽 레일에 오면 수도관을 틀어 주세요',
+    pot_lid: '굴러다니면 35%만 닦여요. 배수구 마개로 막아 세우면 2.5배! 깜빡이는 오른쪽 레일에 오면 눌러 주세요',
+    grill: '세제·물 계열에 약해요. 기름을 튀겨 재료를 고장 내니 탭해서 닦아 주세요'
   };
   const FAMILY_OF = {
     vinegar: 'acid', citric: 'acid', lemon: 'acid', soda: 'alk', oxy: 'alk', wsoda: 'alk',
@@ -1014,7 +1062,8 @@
     jam: '지나가며 유닛에 기름을 튀겨 고장', shieldAura: '주변 그릇에 랩 보호막', immune: '연마로 안 닦임', kbImmune: '밀어내기 면역',
     needSoak: '불리기 전엔 잘 안 닦임', nonWeakMul: '약점 말고는 잘 안 닦임', kbMul: '밀어내기 절반', soakedMul: '불리면 2배로 닦임',
     comboMul: '파쇄에 2배', hardMul: '굳힘 2배 지속', famMul: '물에 약하게, 연마에 2배', split: '다 닦이면 포자 2개로 갈라짐',
-    tiers: '3단: 단마다 약점이 바뀜 (산성 → 알칼리 → 연마)', bossJam: '주기적으로 유닛 2개 고장', hasteAura: '살아 있는 동안 다른 그릇이 빨라짐', regen: '산성이 안 묻어 있으면 조금씩 회복', windowMul: '창가 칸 유닛에 2배'
+    tiers: '3단: 단마다 약점이 바뀜 (산성 → 알칼리 → 연마)', bossJam: '주기적으로 유닛 2개 고장', hasteAura: '살아 있는 동안 다른 그릇이 빨라짐', regen: '산성이 안 묻어 있으면 조금씩 회복', windowMul: '창가 칸 유닛에 2배',
+    stopMul: '굴러다니면 잘 안 닦임 · 멈추면 2.5배', tapMul: '수도관 물줄기 안에서 3배로 닦임'
   };
 
   /* ---------- 웨이브 ---------- */
@@ -1037,8 +1086,10 @@
     const count = 7 + Math.round(Math.min(x, 13) * 1.6);
     const hpMul = HPK * (1 + 0.38 * (x - 1) + 0.06 * (x - 1) * (x - 1)) * (map.hpMul || 1) * (STAGE_MUL[stage] || 1) * (w > 5 ? LATE_HP : 1) * Math.pow(ENDLESS_HP, over);
     const last = w === waves;
-    let boss = w === MID_WAVE ? map.mid : last ? (stage >= 5 || endless ? map.final : map.mid) : null;
-    let bossMul = (last && stage < 5 && !endless) ? 1.8 : 1;
+    const sb = !endless && map.stageBosses && map.stageBosses[stage];
+    let boss = w === MID_WAVE ? (sb ? sb[0] : map.mid) : last ? (sb ? sb[1] : stage >= 5 || endless ? map.final : map.mid) : null;
+    // 마지막 보스가 중간 보스와 같으면 강화판(체력 1.8배)
+    let bossMul = (last && stage < 5 && !endless && (!sb || sb[0] === sb[1])) ? 1.8 : 1;
     let bossLabel = !boss ? '' : w === MID_WAVE ? '중간 보스' : (stage >= 5 || endless) ? '최종 보스' : '마지막 보스';
     if (over > 0 && over % 5 === 0) { boss = (over / 5) % 2 ? map.mid : map.final; bossMul = 1.5; bossLabel = '보스'; }
     return { pool: map.pool(Math.round(x)), count: boss ? Math.round(count * 0.6) : count, hpMul, boss, bossMul, bossLabel, duration: 12 };
@@ -1168,7 +1219,7 @@
   };
 
   SD.DATA = {
-    MAPS, MAP_ORDER: ['basic', 'kr', 'cn', 'jp', 'we'], TERRAIN, ING, STAR_DMG, STAR_CD, BRANCH, DISHES, FAMILY_OF, TRAIT_TEXT,
+    MAPS, MAP_ORDER: ['basic', 'kr', 'cn', 'jp', 'we'], TERRAIN, ING, STAR_DMG, STAR_CD, BRANCH, BRANCH_BASE: 1.2, BOSS_TIP, DISHES, FAMILY_OF, TRAIT_TEXT,
     waveSpec, SITUATIONS, PAIRS, RECIPES, FORBIDDEN, RULES, RULE_ART, COMBOS, TOOLS, ENDLESS_SPEED,
     DEFAULT_DECK: ['vinegar', 'lemon', 'soda', 'oxy', 'dish', 'hot', 'ice', 'salt'],
     START_SHINE: 60, SUMMON_COST: 10, WAVE_BONUS: 8, HEARTS: 20,
@@ -1184,7 +1235,7 @@
 
 </script>
 <script>
-/* 싱크대 수비대 - 게임 엔진 (DOM 없음. 브라우저와 노드 시뮬레이션에서 같이 쓴다) */
+/* 싱크대를 부탁해 - 게임 엔진 (DOM 없음. 브라우저와 노드 시뮬레이션에서 같이 쓴다) */
 (function (g) {
   const SD = g.SD = g.SD || {};
 
@@ -1225,7 +1276,7 @@
       shine: DATA.START_SHINE, hearts: startHearts, maxHearts: startHearts,
       summonLv: 1, expandCount: 0,
       cells: map.cells.map(c => ({ ...c, cx: c.x + 28, cy: c.y + 28, unit: null, pile: c.pile ? { hp: c.pile, max: c.pile } : null })),
-      dishes: [], zones: [], fx: [], events: [],
+      dishes: [], zones: [], trails: [], fx: [], events: [], shake: 0,
       rules: {}, ruleChoices: null, branchQueue: [],
       spawn: { list: [], t: 0, interval: 1 }, breakT: 0,
       devices: { tap: map.devices.tap ? { cd: 0, active: 0 } : null, plug: map.devices.plug ? { uses: 3, active: 0 } : null, wok: map.devices.wok ? { cd: 0 } : null },
@@ -1235,6 +1286,11 @@
     };
     G.L = Math.max(...paths.map(p => p.L));
     G.guest = gst;
+    // 선물 재료: 판을 시작할 때 조리대에 미리 놓는다 (첫 비법 안내 등). [{ key, star }]
+    if (opts.gift) {
+      const free = G.cells.filter(c => !c.locked && !c.pile && !c.terrain);
+      for (const gf of opts.gift) { const c = free.shift(); if (!c) break; c.unit = { key: gf.key, star: gf.star || 3, cd: 0.3, jam: 0, gift: true }; }
+    }
     // 조리대 고장: 처음부터 쓸 수 있는 빈 칸 중 무작위로 잠금
     if (gst('broken')) {
       const cand = G.cells.filter(c => !c.locked && !c.pile && !c.terrain);
@@ -1263,6 +1319,7 @@
     // 예비 선반: 첫 확장은 공짜이고 값 사다리도 쓰지 않는다
     G.expandCost = () => (tool('shelf') && !G.shelfUsed) ? 0 : (DATA.EXPAND_COST[G.expandCount - (G.shelfUsed ? 1 : 0)] ?? null);
     const units = () => G.cells.filter(c => c.unit);
+    G.powerOf = (i) => { const c = G.cells[i]; return c && c.unit ? Math.round(dmgOf(c, null)) : 0; };
     G.rangeOf = (cell, u = cell.unit) => specOf(u).range + (brOf(u).rangeAdd || 0) + (cell.terrain === 'shelf' ? 40 : 0);
 
     function weights() {
@@ -1287,9 +1344,10 @@
     const hasAura = (a) => units().some(c => brOf(c.unit).aura === a);
 
     /* ---------- damage ---------- */
+    const inTapFlow = (p) => !!(G.devices.tap && G.devices.tap.active > 0 && inRect(p, map.devices.tap));
     function dmgOf(cell, dish) {
       const u = cell.unit, sp = specOf(u), br = brOf(u), f = fam(u);
-      let m = sp.dmg * DATA.STAR_DMG[u.star] * (br.dmgMul || 1) * (u.recipe ? sp.icons.reduce((s, k) => s + lvMul(k), 0) / sp.icons.length : lvMul(u.key));
+      let m = sp.dmg * DATA.STAR_DMG[u.star] * (br.dmgMul || 1) * (u.branch ? DATA.BRANCH_BASE : 1) * (u.recipe ? sp.icons.reduce((s, k) => s + lvMul(k), 0) / sp.icons.length : lvMul(u.key));
       const t = cell.terrain, scrub = !!sp.scrub;
       const gasMul = sitIs('fire') ? 2 : 1.5;
       const winMul = sitIs('vent') ? 1.6 : 1.3;
@@ -1317,6 +1375,12 @@
         if (ds.tiers) { const tier = ds.tiers[Math.min(2, Math.floor((1 - dish.hp / dish.max) * 3))]; m *= (f === tier || (tier === 'scrub' && scrub)) ? 2 : 0.6; }
         if (sp.bonus && sp.bonus[dish.type]) m *= sp.bonus[dish.type];
         if (br.bonus && br.bonus[dish.type]) m *= br.bonus[dish.type];
+        if (br.bossHunt && ds.boss) m *= br.bossHunt;
+        if (br.tapLink && (t === 'tap' || inTapFlow(pos(dish)))) m *= br.tapLink;
+        if (br.vsHard && dish.st.hard > 0) m *= br.vsHard;
+        // 냄비 뚜껑: 멈춰 있으면(배수구 마개·얼음 멈춤) 크게, 굳어 있으면 보통, 굴러다니면 조금
+        if (ds.stopMul) m *= (dish.plugged || dish.frozen > 0) ? ds.stopMul[2] : dish.st.hard > 0 ? ds.stopMul[1] : ds.stopMul[0];
+        if (ds.tapMul && inTapFlow(pos(dish))) m *= ds.tapMul;
       }
       return m;
     }
@@ -1330,6 +1394,7 @@
     function damage(dish, amount) {
       if (dish.dead || amount <= 0) return;
       if (dish.shield > 0) { dish.shield = 0; fx({ type: 'pop', x: pos(dish).x, y: pos(dish).y, life: 0.25 }); return; }
+      if (dish.mark > 0) amount *= 1.35;
       dish.hp -= amount; dish.hitT = 0.12;
       if (dish.hp <= 0) killDish(dish);
     }
@@ -1343,13 +1408,19 @@
       fx({ type: 'spark', x: p.x, y: p.y, life: 0.5 });
       fx({ type: 'coin', x: p.x, y: p.y - 10, text: '+' + r, life: 0.8 });
       if (ds.split) for (const o of [-8, 8]) spawnDish(ds.split, dish.hpMul, dish.d + o, dish.pi);
-      if (ds.boss) ev('bossDown', { boss: dish.type });
+      // 레몬즙: 산성 묻은 그릇이 닦이면 주변으로 산성이 번진다
+      if (dish.st.acid > 0 && hasAura('spreadAcid')) { for (const o of near(p, 64, dish)) o.st.acid = Math.max(o.st.acid || 0, 2); fx({ type: 'ring', x: p.x, y: p.y, r: 64, color: '#ffc93c', life: 0.35 }); }
+      // 구름 옮기기: 구름이 남아 있으면 가장 가까운 그릇으로 옮겨 간다
+      if (dish.cloud > 0.3 && hasAura('cloudSpread')) { const nx = near(p, 90, dish).sort((a, b) => dist(pos(a), p) - dist(pos(b), p))[0]; if (nx) { nx.cloud = Math.max(nx.cloud, dish.cloud); nx.cloudDps = Math.max(nx.cloudDps || 0, dish.cloudDps); } }
+      if (ds.boss) { ev('bossDown', { boss: dish.type }); G.shake = 0.7; fx({ type: 'bossPop', x: p.x, y: p.y, life: 1.1 }); }
     }
     function spawnDish(type, hpMul, d = 0, pi = null) {
       const ds = DATA.DISHES[type];
-      const hp = ds.hp * hpMul * (ds.boss ? DATA.BOSS_HP[ds.boss] * (G.spawn.bossMul || 1) : 1);
-      const o = { id: G.nextId++, type, hp, max: hp, hpMul, d, pi: pi == null ? Math.floor(rng() * paths.length) : pi, st: {}, jamT: ds.jam || ds.bossJam || 0, cloud: 0, cloudDps: 0, hitT: 0, shield: 0 };
-      G.dishes.push(o); return o;
+      const hp = ds.hp * hpMul * (ds.boss ? DATA.BOSS_HP[ds.boss] * (G.spawn.bossMul || 1) * ((map.bossHpMul && map.bossHpMul[type]) || 1) : 1);
+      const o = { id: G.nextId++, type, hp, max: hp, hpMul, d, pi: pi == null ? Math.floor(rng() * paths.length) : pi, st: {}, jamT: ds.jam || ds.bossJam || 0, cloud: 0, cloudDps: 0, hitT: 0, shield: 0, mark: 0, frozen: 0 };
+      G.dishes.push(o);
+      if (ds.boss) { o.big = G.wave >= waves && !endless; G.shake = 0.45; ev('bossSpawn', { boss: type }); }
+      return o;
     }
     const near = (p, r, exclude) => G.dishes.filter(d => !d.dead && d !== exclude && dist(pos(d), p) <= r);
 
@@ -1396,7 +1467,8 @@
         if (consume) { st.foam = 0; st.soak = 0; }
         comboText('puddle', p);
       }
-      if ((sp.scrub || sp.alwaysShatter) && (st.hard > 0 || sp.alwaysShatter)) {
+      const always = sp.alwaysShatter || br.alwaysShatter;
+      if ((sp.scrub || always) && (st.hard > 0 || always)) {
         const n = 3 + (syn.scrub >= 4 ? 2 : syn.scrub >= 2 ? 1 : 0);
         const targets = near(p, 96, dish).sort((a, b) => dist(pos(a), p) - dist(pos(b), p)).slice(0, n);
         for (const t of targets) { const tm = (DATA.DISHES[t.type].comboMul || {}).shatter || 1; damage(t, base * 1.8 * mul * tm); const q = pos(t); fx({ type: 'shard', x1: p.x, y1: p.y, x2: q.x, y2: q.y, life: 0.3 }); }
@@ -1404,7 +1476,7 @@
         if (consume && st.hard > 0) st.hard = 0;
         if (targets.length) comboText('shatter', p);
       }
-      if ((u.key === 'salt' || sp.combo === 'chain') && st.soak > 0) {
+      if ((u.key === 'salt' || sp.combo === 'chain') && (st.soak > 0 || br.chainFree)) {
         let jumps = 3 + (syn.scrub >= 4 ? 2 : syn.scrub >= 2 ? 1 : 0) + (br.chainAdd || 0);
         if (G.devices.tap && G.devices.tap.active > 0 && inRect(p, map.devices.tap)) jumps += 2;
         const pts = [p]; const seen = new Set([dish.id]); let cur = dish;
@@ -1432,13 +1504,27 @@
       if (cell.terrain === 'tap') dish.st.soak = Math.max(dish.st.soak || 0, statusTime('soak'));
       if (sts.includes('hard')) dish.slow = brOf(u).slow || 0.3;
     }
-    function hit(cell, dish, mulFactor) {
+    function hit(cell, dish, mulFactor, extra) {
       if (dish.dead) return;
-      const sp = specOf(cell.unit);
+      const u = cell.unit, sp = specOf(u), br = brOf(u), ds = DATA.DISHES[dish.type];
       if (dish.shield > 0 && (sp.unwrap || sp.scrub || sp.st === 'acid' || (sp.sts || []).includes('acid'))) dish.shield = 0; // 산성·연마는 랩을 먼저 벗긴다
       const base = dmgOf(cell, dish);
       damage(dish, base * mulFactor);
+      const p = pos(dish);
+      // 마무리: 체력이 적게 남은 일반 그릇은 바로 닦는다
+      if (!dish.dead && br.execute && !ds.boss && dish.hp / dish.max <= br.execute) { damage(dish, dish.hp + 1); fx({ type: 'text', x: p.x, y: p.y - 18, text: '숙!', color: '#fff', life: 0.5 }); }
+      // 두 번째 효과(튀기·관통)로 맞은 건 다시 퍼지지 않는다
+      if (!extra) {
+        if (br.trail) { G.trails.push({ x: p.x, y: p.y, r: 26, t: 2, life: 2, st: br.trail }); if (G.trails.length > 24) G.trails.shift(); }
+        if (br.bounce) {
+          const ts = near(p, 84, dish).sort((a, b) => dist(pos(a), p) - dist(pos(b), p)).slice(0, br.bounce);
+          for (const t of ts) { const q = pos(t); fx({ type: 'hop', x1: p.x, y1: p.y, x2: q.x, y2: q.y, fam: fam(u), life: 0.25 }); hit(cell, t, 0.6, true); }
+        }
+      }
       if (dish.dead) return;
+      if (br.mark) dish.mark = 3;
+      if (br.push && !ds.kbImmune) { dish.pushN = (dish.pushN || 0) + 1; dish.d = Math.max(0, dish.d - br.push * (ds.boss ? 0.2 : 1) * (dish.pushN <= 6 ? 1 : 0.3)); }
+      if (br.freezeEvery) { u.hitN = (u.hitN || 0) + 1; if (u.hitN % br.freezeEvery === 0) { dish.frozen = ds.boss ? 0.8 : 1; fx({ type: 'ice', x: p.x, y: p.y, life: 0.5 }); } }
       applyStatus(dish, cell);
       tryCombos(dish, cell, dmgOf(cell, null));
     }
@@ -1447,6 +1533,8 @@
       const range = G.rangeOf(cell);
       const here = { x: cell.cx, y: cell.cy };
       const inRange = G.dishes.filter(d => !d.dead && dist(pos(d), here) <= range).sort((a, b) => (b.d / paths[b.pi].L) - (a.d / paths[a.pi].L));
+      // 보스 노림: 사거리 안에 보스가 있으면 보스부터
+      if (br.bossHunt) { const bi = inRange.findIndex(d => DATA.DISHES[d.type].boss); if (bi > 0) inRange.unshift(inRange.splice(bi, 1)[0]); }
       if (!inRange.length) {
         const pile = G.phase !== 'ready' && G.cells.find(c => c.pile && Math.hypot(c.cx - here.x, c.cy - here.y) <= range);
         if (pile) {
@@ -1459,7 +1547,7 @@
       }
       const isAoe = !br.single && (sp.role === 'aoe' || sp.aoe || br.aoe);
       const splash = 36 * (br.splashMul || 1);
-      const targets = G.rules.pump ? inRange.slice(0, 3) : [inRange[0]];
+      const targets = inRange.slice(0, Math.max(G.rules.pump ? 3 : 1, br.split || 1));
       for (const t of targets) {
         const p = pos(t);
         fx({ type: 'shot', x1: here.x, y1: here.y, x2: p.x, y2: p.y, fam: u.recipe ? 'recipe' : fam(u), life: 0.2 });
@@ -1467,9 +1555,10 @@
         if (isAoe) {
           for (const o of near(p, splash, t)) hit(cell, o, 0.7);
           fx({ type: 'splash', x: p.x, y: p.y, r: splash, fam: fam(u), life: 0.25 });
-        } else if (G.rules.nozzle) {
-          const behind = G.dishes.filter(d => !d.dead && d !== t && d.pi === t.pi && d.d < t.d && t.d - d.d <= 70).sort((a, b) => b.d - a.d).slice(0, 2);
-          for (const o of behind) hit(cell, o, 1);
+        } else if (G.rules.nozzle || br.pierce) {
+          const n = (G.rules.nozzle ? 2 : 0) + (br.pierce || 0);
+          const behind = G.dishes.filter(d => !d.dead && d !== t && d.pi === t.pi && d.d < t.d && t.d - d.d <= 90).sort((a, b) => b.d - a.d).slice(0, n);
+          for (const o of behind) { const q = pos(o); fx({ type: 'hop', x1: p.x, y1: p.y, x2: q.x, y2: q.y, fam: fam(u), life: 0.2 }); hit(cell, o, 1, true); }
         }
       }
       return true;
@@ -1501,7 +1590,7 @@
     function endWave() {
       const bonus = DATA.WAVE_BONUS + G.wave;
       G.shine += bonus;
-      G.zones = [];
+      G.zones = []; G.trails = [];
       ev('waveEnd', { wave: G.wave, bonus });
       G.cleared = G.wave;
       if (!endless && G.wave >= waves) { G.phase = 'end'; ev('end', { win: true }); return; }
@@ -1543,7 +1632,7 @@
     function checkBranch(i) {
       const u = G.cells[i].unit;
       if (!u || u.recipe || u.star < 3 || u.branch || G.branchQueue.includes(i)) return;
-      if (autoBranch) { u.branch = autoBranch === 'rand' ? (rng() < 0.5 ? 'A' : 'B') : autoBranch; G.stats.branches++; return; }
+      if (autoBranch) { u.branch = typeof autoBranch === 'function' ? autoBranch(u.key, G) : autoBranch === 'rand' ? (rng() < 0.5 ? 'A' : 'B') : autoBranch; G.stats.branches++; return; }
       G.branchQueue.push(i); ev('branch', { cell: i });
     }
     G.chooseBranch = function (i, b) {
@@ -1733,8 +1822,10 @@
       return L.length;
     };
     G.unjam = function (i) { const c = G.cells[i]; if (c && c.unit && c.unit.jam > 0) { c.unit.jam = 0; fx({ type: 'pop', x: c.cx, y: c.cy, life: 0.3 }); return true; } return false; };
-    G.useTap = function () { const t = G.devices.tap; if (!t || t.cd > 0 || G.phase !== 'wave') return false; t.active = 8; t.cd = DATA.TAP_CD; return true; };
-    G.usePlug = function () { const p = G.devices.plug; if (!p || p.uses <= 0 || p.active > 0 || G.phase !== 'wave') return false; p.uses--; p.active = 5; return true; };
+    // 수도관: 8초 동안 물줄기 구역을 지나는 그릇이 불고(불림), 소금물 연쇄가 2번 더 튀다
+    G.useTap = function () { const t = G.devices.tap; if (!t || t.cd > 0 || G.phase !== 'wave') return false; t.active = 8; t.cd = DATA.TAP_CD; const R = map.devices.tap; fx({ type: 'tapOn', x: (R.x1 + R.x2) / 2, y: (R.y1 + R.y2) / 2, life: 0.9 }); ev('device', { k: 'tap' }); return true; };
+    // 배수구 마개: 5초 동안 막힌 구역 안 그릇이 멈춘다 (판마다 3번)
+    G.usePlug = function () { const p = G.devices.plug; if (!p || p.uses <= 0 || p.active > 0 || G.phase !== 'wave') return false; p.uses--; p.active = 5; const R = map.devices.plug; fx({ type: 'plugOn', x: (R.x1 + R.x2) / 2, y: (R.y1 + R.y2) / 2, life: 0.9 }); ev('device', { k: 'plug' }); return true; };
     G.useWok = function () {
       const w = G.devices.wok, W = map.devices.wok; if (!w || w.cd > 0 || G.phase !== 'wave') return false;
       w.cd = DATA.WOK_CD;
@@ -1751,6 +1842,7 @@
     G.update = function (dt) {
       if (G.phase === 'end' || G.phase === 'choose') { tickFx(dt); return; }
       G.time += dt;
+      G.shake = Math.max(0, G.shake - dt);
       for (const k in G.comboTextCd) G.comboTextCd[k] -= dt;
       if (G.phase === 'break') { G.breakT -= dt; if (G.breakT <= 0) G.startWave(); }
       if (G.phase === 'wave' && G.spawn.list.length) {
@@ -1785,8 +1877,11 @@
         const p = pos(d);
         if (dv.tap && dv.tap.active > 0 && inRect(p, map.devices.tap)) d.st.soak = Math.max(d.st.soak || 0, 0.6);
         if (ds.regen && !(d.st.acid > 0)) d.hp = Math.min(d.max, d.hp + d.max * ds.regen * dt);
-        const plugged = dv.plug && dv.plug.active > 0 && inRect(p, map.devices.plug);
-        if (!plugged) d.d += ds.speed * (map.speedMul || 1) * (ds.hasteAura ? 1 : speedMul) * (d.st.hard > 0 ? 1 - (d.slow || 0.3) : 1) * dt;
+        const plugged = !!(dv.plug && dv.plug.active > 0 && inRect(p, map.devices.plug));
+        d.plugged = plugged; d.mark = Math.max(0, d.mark - dt); d.frozen = Math.max(0, d.frozen - dt);
+        // 수도관 물줄기 안에서는 물살에 밀려 40% 느려진다
+        const flow = dv.tap && dv.tap.active > 0 && inRect(p, map.devices.tap) ? 0.6 : 1;
+        if (!plugged && !(d.frozen > 0)) d.d += ds.speed * (map.speedMul || 1) * (ds.hasteAura ? 1 : speedMul) * (d.st.hard > 0 ? 1 - (d.slow || 0.3) : 1) * flow * dt;
         if (d.cloud > 0) { d.cloud -= dt; for (const o of near(p, 46, d)) damage(o, d.cloudDps * dt); }
         if (ds.jam || ds.bossJam) {
           d.jamT -= dt;
@@ -1800,7 +1895,7 @@
         }
         if (d.d >= paths[d.pi].L) {
           d.dead = true; d.escaped = true;
-          G.hearts -= ds.boss ? 5 : 1;
+          G.hearts -= ds.boss ? (d.big ? 10 : 5) : 1;   // 마지막·최종 보스를 놓치면 10
           ev('leak', { boss: !!ds.boss });
           if (G.hearts <= 0) {
             // 앞치마: 판마다 한 번 만족도 5로 버틴다
@@ -1814,6 +1909,11 @@
       // zones
       for (const z of G.zones) { z.t -= dt; for (const d of G.dishes) if (!d.dead && dist(pos(d), z) <= z.r) { const dps = z.dps * (sitIs('boiler') ? 0.5 : 1); d.hp -= dps * dt; d.hitT = 0.05; if (d.hp <= 0) killDish(d); } }
       G.zones = G.zones.filter(z => z.t > 0);
+      // 분기 웅덩이(식초·거품): 지나가는 그릇에 상태를 묻힌다
+      for (const z of G.trails) { z.t -= dt; for (const d of G.dishes) if (!d.dead && dist(pos(d), z) <= z.r) d.st[z.st] = Math.max(d.st[z.st] || 0, 1.2); }
+      G.trails = G.trails.filter(z => z.t > 0);
+      // 레몬껍질: 바로 옆 칸(상하좌우·대각) 재료 공격 속도 +25%
+      const hasters = units().filter(c => brOf(c.unit).adjHaste && !(c.unit.jam > 0));
       // units
       for (const c of G.cells) {
         const u = c.unit; if (!u) continue;
@@ -1823,7 +1923,8 @@
           const sp = specOf(u), br = brOf(u);
           const fired = unitAttack(c);
           const haste2 = (waterHaste && fam(u) === 'water') ? 0.87 : 1;
-          u.cd = fired ? sp.cd * DATA.STAR_CD[u.star] * (br.cdMul || 1) * haste2 : 0.1;
+          const adj = hasters.some(h => h !== c && Math.abs(h.cx - c.cx) <= 64 && Math.abs(h.cy - c.cy) <= 64) ? 0.8 : 1;
+          u.cd = fired ? sp.cd * DATA.STAR_CD[u.star] * (br.cdMul || 1) * haste2 * adj : 0.1;
         }
       }
       G.dishes = G.dishes.filter(d => !d.dead);
@@ -1840,7 +1941,7 @@
 
 </script>
 <script>
-/* 싱크대 수비대 - 캔버스 렌더러 */
+/* 싱크대를 부탁해 - 캔버스 렌더러 */
 (function (g) {
   const SD = g.SD = g.SD || {};
   const INK = '#3b2f2f';
@@ -1931,11 +2032,55 @@
   function star(ctx, x, y, r) { ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r * 0.45 : r; ctx.lineTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad); } ctx.closePath(); ctx.fillStyle = '#ffc93c'; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = INK; ctx.stroke(); }
   function outlinedText(ctx, text, x, y, size, fill, stroke = INK, w = 5) { ctx.font = `${size}px Jua, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'; ctx.lineWidth = w; ctx.strokeStyle = stroke; ctx.strokeText(text, x, y); ctx.fillStyle = fill; ctx.fillText(text, x, y); }
 
-  function drawDevices(ctx, G) {
-    const dv = G.devices, M = G.map.devices;
-    const band = (r, color) => { rr(ctx, r.x1, r.y1, r.x2 - r.x1, r.y2 - r.y1, 14); ctx.fillStyle = color; ctx.fill(); ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke(); ctx.setLineDash([]); };
-    if (dv.tap && dv.tap.active > 0) band(M.tap, 'rgba(120,200,255,0.5)');
-    if (dv.plug && dv.plug.active > 0) band(M.plug, 'rgba(255,107,91,0.35)');
+  // 수도관·배수구 마개: 쉬고 있을 때도 자리를 작게 표시하고, 켜면 물줄기·막힘을 움직이는 그림으로 보여 준다
+  function drawDevices(ctx, G, ui) {
+    const dv = G.devices, M = G.map.devices, T = performance.now() / 1000;
+    const band = (r, color, dash) => { rr(ctx, r.x1, r.y1, r.x2 - r.x1, r.y2 - r.y1, 14); ctx.fillStyle = color; ctx.fill(); if (dash) { ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.strokeStyle = dash; ctx.stroke(); ctx.setLineDash([]); } };
+    const hl = ui && ui.devHint;   // 안내 중인 장치 구역은 깜빡인다
+    const timeBar = (r, f, color) => { const w = r.x2 - r.x1 - 12; rr(ctx, r.x1 + 6, r.y1 - 9, w, 6, 3); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = INK; ctx.stroke(); ctx.fillStyle = color; ctx.fillRect(r.x1 + 7, r.y1 - 8, (w - 2) * f, 4); };
+    if (dv.tap) {
+      const R = M.tap;
+      if (dv.tap.active > 0) {
+        band(R, 'rgba(120,200,255,0.42)', '#2f7fe0');
+        ctx.save(); rr(ctx, R.x1, R.y1, R.x2 - R.x1, R.y2 - R.y1, 14); ctx.clip();
+        // 흐르는 물결
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+        const vert = (R.y2 - R.y1) > (R.x2 - R.x1);
+        for (let i = 0; i < 6; i++) {
+          const k = ((T * 0.9 + i / 6) % 1);
+          ctx.beginPath();
+          if (vert) { const y = R.y1 + k * (R.y2 - R.y1); ctx.moveTo(R.x1 + 8, y); ctx.quadraticCurveTo((R.x1 + R.x2) / 2, y + 6 * Math.sin(T * 6 + i), R.x2 - 8, y); }
+          else { const x = R.x1 + k * (R.x2 - R.x1); ctx.moveTo(x, R.y1 + 8); ctx.quadraticCurveTo(x + 6 * Math.sin(T * 6 + i), (R.y1 + R.y2) / 2, x, R.y2 - 8); }
+          ctx.stroke();
+        }
+        // 떨어지는 물방울
+        for (let i = 0; i < 8; i++) { const k = (T * 1.6 + i * 0.37) % 1, x = R.x1 + ((i * 37) % (R.x2 - R.x1 - 10)) + 5, y = R.y1 + k * (R.y2 - R.y1); ctx.beginPath(); ctx.ellipse(x, y, 2.6, 4, 0, 0, Math.PI * 2); ctx.fillStyle = '#4aa3ff'; ctx.fill(); ctx.lineWidth = 1.2; ctx.strokeStyle = INK; ctx.stroke(); }
+        ctx.restore();
+        timeBar(R, dv.tap.active / 8, '#4aa3ff');
+      } else if (hl === 'tap') band(R, `rgba(120,200,255,${0.25 + 0.2 * Math.sin(T * 6)})`, '#2f7fe0');
+      // 구역 옆 작은 수도관 표시 (쓸 수 있을 때는 진하게)
+      ctx.globalAlpha = dv.tap.active > 0 ? 1 : dv.tap.cd > 0 ? 0.35 : 0.8;
+      ctx.drawImage(img('dev', 'pipe'), R.x1 - 2, R.y1 - 30, 30, 30);
+      ctx.globalAlpha = 1;
+    }
+    if (dv.plug) {
+      const R = M.plug;
+      if (dv.plug.active > 0) {
+        band(R, 'rgba(255,107,91,0.3)', '#e8653f');
+        // 막힌 줄무늬
+        ctx.save(); rr(ctx, R.x1, R.y1, R.x2 - R.x1, R.y2 - R.y1, 14); ctx.clip();
+        ctx.strokeStyle = 'rgba(232,101,63,0.35)'; ctx.lineWidth = 6;
+        for (let i = -8; i < 16; i++) { const o = i * 16 + (T * 8) % 16; ctx.beginPath(); ctx.moveTo(R.x1 + o, R.y1); ctx.lineTo(R.x1 + o - 60, R.y2); ctx.stroke(); }
+        // 보글보글 거품
+        for (let i = 0; i < 6; i++) { const k = (T * 0.7 + i / 6) % 1, x = R.x1 + 8 + ((i * 29) % (R.x2 - R.x1 - 16)), y = R.y2 - 6 - k * (R.y2 - R.y1 - 12); ctx.beginPath(); ctx.arc(x, y, 3 + 2 * k, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill(); ctx.lineWidth = 1.2; ctx.strokeStyle = INK; ctx.stroke(); }
+        ctx.restore();
+        timeBar(R, dv.plug.active / 5, '#ff6b5b');
+      } else if (hl === 'plug') band(R, `rgba(255,107,91,${0.2 + 0.18 * Math.sin(T * 6)})`, '#e8653f');
+      ctx.globalAlpha = dv.plug.active > 0 ? 1 : dv.plug.uses <= 0 ? 0.25 : 0.8;
+      const px = R.x2 - 28, py = R.y2 - 2, bob = dv.plug.active > 0 ? Math.sin(T * 10) * 1.5 : 0;
+      ctx.drawImage(img('dev', 'drainplug'), px, py + bob, 30, 30);
+      ctx.globalAlpha = 1;
+    }
     if (dv.wok) {
       const W = M.wok, ready = dv.wok.cd <= 0;
       ctx.beginPath(); ctx.arc(W.x, W.y, 15, 0, Math.PI * 2); ctx.fillStyle = ready ? '#ff9f43' : '#9aa5ad'; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = INK; ctx.stroke();
@@ -2026,9 +2171,15 @@
     const p = G.dishPos(d);
     const boss = !!ds.boss, s = boss ? 64 : (d.type === 'spore' || d.type === 'banchan' ? 26 : d.type.startsWith('sushi') ? 30 : 34);
     if (d.cloud > 0) { ctx.globalAlpha = Math.min(1, d.cloud) * 0.85; ctx.drawImage(img('fx', 'cloud'), p.x - 40, p.y - 44, 80, 80); ctx.globalAlpha = 1; }
-    const jx = d.hitT > 0 ? (Math.random() - 0.5) * 2 : 0;
+    const stopped = d.plugged || d.frozen > 0;
+    const jx = d.hitT > 0 ? (Math.random() - 0.5) * 2 : stopped ? Math.sin(performance.now() / 40) * 1.2 : 0;
     ctx.globalAlpha = 0.25; ctx.fillStyle = INK; ctx.beginPath(); ctx.ellipse(p.x, p.y + s / 2 - 1, s * 0.38, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
-    ctx.drawImage(boss ? img('boss', d.type) : img('dish', d.type), p.x - s / 2 + jx, p.y - s / 2, s, s);
+    if (ds.stopMul && !stopped) {
+      // 굴러가는 냄비 뚜껑: 움직이는 동안 빙글빙글 돈다
+      ctx.save(); ctx.translate(p.x + jx, p.y); ctx.rotate(d.d / 22); ctx.drawImage(img('boss', d.type), -s / 2, -s / 2, s, s); ctx.restore();
+    } else ctx.drawImage(boss ? img('boss', d.type) : img('dish', d.type), p.x - s / 2 + jx, p.y - s / 2, s, s);
+    if (d.frozen > 0) { ctx.save(); ctx.globalAlpha = 0.55; ctx.beginPath(); ctx.arc(p.x, p.y, s / 2 + 2, 0, Math.PI * 2); ctx.fillStyle = '#bfe9ff'; ctx.fill(); ctx.restore(); ctx.drawImage(img('fx', 'crystal'), p.x + s / 2 - 12, p.y - s / 2 - 2, 16, 16); }
+    if (d.mark > 0) { ctx.beginPath(); ctx.ellipse(p.x - s / 2 + 5, p.y + s / 2 - 8, 6, 4.5, -0.4, 0, Math.PI * 2); ctx.fillStyle = '#ff8fb0'; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = INK; ctx.stroke(); }
     if (d.shield > 0) { ctx.beginPath(); ctx.arc(p.x, p.y, s / 2 + 5, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill(); ctx.setLineDash([4, 3]); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke(); ctx.setLineDash([]); }
     const w = boss ? 56 : s * 0.85, f = Math.max(0, d.hp / d.max);
     rr(ctx, p.x - w / 2, p.y + s / 2 + 2, w, 6, 3); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = INK; ctx.stroke();
@@ -2054,15 +2205,51 @@
     else if (f.type === 'coin') { outlinedText(ctx, f.text, f.x, f.y - (1 - k) * 22, 14, '#ffd84d', INK, 4); }
     else if (f.type === 'spark') { const s = 22 + pr * 16; ctx.translate(f.x, f.y); ctx.rotate(pr * 1.2); ctx.drawImage(img('fx', 'sparkle'), -s / 2, -s / 2, s, s); }
     else if (f.type === 'pop') { ctx.strokeStyle = f.merge ? '#ffb800' : '#fff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(f.x, f.y, 20 + (1 - k) * 18, 0, Math.PI * 2); ctx.stroke(); }
+    else if (f.type === 'ring') { ctx.strokeStyle = f.color || '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(f.x, f.y, f.r * (0.4 + pr * 0.6), 0, Math.PI * 2); ctx.stroke(); }
+    else if (f.type === 'hop') { ctx.globalAlpha = 1; const x = f.x1 + (f.x2 - f.x1) * pr, y = f.y1 + (f.y2 - f.y1) * pr - Math.sin(pr * Math.PI) * 14; ctx.drawImage(img('pj', f.fam || 'water'), x - 5.5, y - 5.5, 11, 11); }
+    else if (f.type === 'ice') { const s = 18 + pr * 10; ctx.drawImage(img('fx', 'crystal'), f.x - s / 2, f.y - s / 2, s, s); }
+    else if (f.type === 'bossPop') {
+      // 보스 정리: 큰 거품 폭발 + 반짝이 + 글자
+      const s = 90 + pr * 120; ctx.globalAlpha = Math.max(0, 1 - pr * 0.9); ctx.drawImage(img('fx', 'burst'), f.x - s / 2, f.y - s / 2, s, s);
+      for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4 + pr, r = 20 + pr * 80; ctx.drawImage(img('fx', 'sparkle'), f.x + Math.cos(a) * r - 9, f.y + Math.sin(a) * r - 9, 18, 18); }
+      ctx.globalAlpha = Math.min(1, k * 2); outlinedText(ctx, '보스 정리!', Math.max(80, Math.min(310, f.x)), f.y - 40 - pr * 20, 30, '#ffd84d', INK, 7);
+    }
+    else if (f.type === 'tapOn' || f.type === 'plugOn') {
+      const tap = f.type === 'tapOn', s = 40 + pr * 30;
+      ctx.drawImage(img('dev', tap ? 'pipe' : 'drainplug'), f.x - s / 2, f.y - s / 2 - pr * 20, s, s);
+      outlinedText(ctx, tap ? '콸콸!' : '뽁!', f.x, f.y - 36 - pr * 16, 22, tap ? '#bfe9ff' : '#ffb3a1', INK, 6);
+    }
     ctx.restore();
+  }
+
+  // 보스 등장 띠: 창을 띄우지 않고 레일 위에 2초쯤 보여 준다 (처음 보는 보스만 창으로 설명)
+  function drawBanner(ctx, b) {
+    const D = SD.DATA, A = g.SD_ART, t = (performance.now() - b.t0) / 1000; if (t > 2.6) return false;
+    const slide = Math.min(1, t / 0.25), out = t > 2.2 ? (t - 2.2) / 0.4 : 0, x = -390 * (1 - slide) + 390 * out;
+    ctx.save(); ctx.translate(x, 0);
+    rr(ctx, 14, 196, 362, 74, 14); ctx.fillStyle = INK; ctx.fill();
+    rr(ctx, 14, 192, 362, 74, 14); ctx.fillStyle = '#fffaf0'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke();
+    rr(ctx, 26, 182, 112, 22, 8); ctx.fillStyle = b.final ? '#ff6b5b' : '#a77bf3'; ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
+    outlinedText(ctx, b.label, 82, 193.5, 13, '#fff', INK, 3);
+    ctx.drawImage(img('boss', b.boss), 22, 200, 60, 60);
+    ctx.font = '19px Jua'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = INK; ctx.fillText(((A.BOSS[b.boss] || {}).name) || b.boss, 90, 216);
+    ctx.font = '800 11.5px Pretendard, sans-serif'; ctx.fillStyle = '#6b5a4e';
+    const tip = D.BOSS_TIP[b.boss] || ((D.DISHES[b.boss].weak || []).length ? '약점 ' + D.DISHES[b.boss].weak.map(f => (A.FAMILY[f] || {}).name || f).join(', ') : '');
+    const words = tip.split(' '); let line = '', y = 238; for (const w of words) { if (ctx.measureText(line + w).width > 270) { ctx.fillText(line, 90, y); y += 15; line = ''; } line += w + ' '; } ctx.fillText(line, 90, y);
+    ctx.restore();
+    return true;
   }
 
   SD.render = function (ctx, G, ui) {
     const bg = bgImage(G);
-    ctx.fillStyle = '#f6f0e6'; ctx.fillRect(0, 0, 390, 612);
+    ctx.save();
+    // 보스 등장·정리 때 화면 흔들림
+    if (G.shake > 0) ctx.translate((Math.random() - 0.5) * 9 * G.shake, (Math.random() - 0.5) * 9 * G.shake);
+    ctx.fillStyle = '#f6f0e6'; ctx.fillRect(-10, -10, 410, 632);
     if (bg.complete) ctx.drawImage(bg, 0, 0, 390, 612);
-    drawDevices(ctx, G);
+    drawDevices(ctx, G, ui);
     for (const z of G.zones) { ctx.globalAlpha = 0.45 + 0.5 * Math.min(1, z.t / 1); const w = z.r * 2.2; ctx.drawImage(img('fx', 'puddle'), z.x - w / 2, z.y - w / 2 - 6, w, w); ctx.globalAlpha = 1; }
+    for (const z of G.trails || []) { ctx.globalAlpha = 0.5 * Math.min(1, z.t / 0.6); ctx.beginPath(); ctx.arc(z.x, z.y, z.r, 0, Math.PI * 2); ctx.fillStyle = STC[z.st] || '#fff'; ctx.fill(); ctx.globalAlpha = 1; }
     G.cells.forEach((c, i) => drawCell(ctx, G, c, i, ui));
     const ri = ui.drag ? ui.drag.from : ui.sel;
     if (ri != null && G.cells[ri] && G.cells[ri].unit) {
@@ -2088,14 +2275,16 @@
     for (const f of G.fx) drawFx(ctx, f);
     if (ui.drag && ui.drag.moved) {
       const u = G.cells[ui.drag.from].unit;
-      if (u) { ctx.globalAlpha = 0.9; if (u.recipe) { const R = SD.DATA.RECIPES[u.recipe]; ctx.drawImage(img('ing', R.a), ui.drag.x - 30, ui.drag.y - 26, 34, 34); ctx.drawImage(img('ing', R.b), ui.drag.x - 6, ui.drag.y - 22, 34, 34); } else ctx.drawImage(img('ing', u.key), ui.drag.x - 24, ui.drag.y - 28, 48, 48); ctx.globalAlpha = 1; }
+      if (u) { ctx.globalAlpha = 0.9; if (u.recipe) { const R = SD.DATA.RECIPES[u.recipe]; ctx.drawImage(img('ing', R.icons[0]), ui.drag.x - 30, ui.drag.y - 26, 34, 34); ctx.drawImage(img('ing', R.icons[1]), ui.drag.x - 6, ui.drag.y - 22, 34, 34); } else ctx.drawImage(img('ing', u.key), ui.drag.x - 24, ui.drag.y - 28, 48, 48); ctx.globalAlpha = 1; }
     }
+    ctx.restore();
+    if (ui.banner && !drawBanner(ctx, ui.banner)) ui.banner = null;
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
 <script>
-/* 싱크대 수비대 - 판 밖 데이터와 규칙 (재화, 커피, 스테이지, 상자, 레벨업, 상점, 주방, 미션, 출석, 우편)
+/* 싱크대를 부탁해 - 판 밖 데이터와 규칙 (재화, 커피, 스테이지, 상자, 레벨업, 상점, 주방, 미션, 출석, 우편)
  * DOM 없음. store(get/set)와 now()를 바꿔 끼우면 노드에서 테스트할 수 있다 */
 (function (g) {
   const SD = g.SD = g.SD || {};
@@ -2143,15 +2332,16 @@
     { coffee: 10, chest: 'silver' }, { coffee: 10, tips: 400 }, { coffee: 10, chest: 'gold' }
   ];
   const PRODUCTS = {
-    starter: { name: '스타터팩', price: 1540, once: true, desc: '덱 재료 조각 각 15 · 팁 3,000 · 커피 50 · 커피 최대치 +10', items: { coffee: 50, tips: 3000, deckShards: 15, maxPlus: 10 } },
+    // iap: 토스 인앱 상품 종류. once(한 번만 사는 것)는 비소모품, 여러 번 사는 것과 시즌마다 사는 패스는 소모품
+    starter: { name: '스타터팩', price: 1540, once: true, iap: 'NON_CONSUMABLE', desc: '덱 재료 조각 각 15 · 팁 3,000 · 커피 50 · 커피 최대치 +10', items: { coffee: 50, tips: 3000, deckShards: 15, maxPlus: 10 } },
     // 커피는 남아서(1.2) 커피 50 · 커피 최대치 +10 상품을 같은 값의 재료 꾸러미로 바꿈. 조각은 덱 재료에 똑같이 주므로 확률형이 아니다
-    shards10: { name: '재료 꾸러미', price: 660, desc: '덱 조각 각 10 · 커피 30', items: { deckShards: 10, coffee: 30 } },
-    shards30: { name: '큰 재료 꾸러미', price: 1760, desc: '덱 조각 각 30 · 커피 100', items: { deckShards: 30, coffee: 100 } },
-    adfree: { name: '광고 제거', price: 2970, once: true, desc: '판 보상 2배 · 시작 부스트 · 상자를 광고 없이 바로', items: { adFree: true } },
-    speed4: { name: '4배속', price: 1760, once: true, desc: '영업을 4배속으로 돌려요', items: { speed4: true } },
+    shards10: { name: '재료 꾸러미', price: 660, iap: 'CONSUMABLE', desc: '덱 조각 각 10 · 커피 30', items: { deckShards: 10, coffee: 30 } },
+    shards30: { name: '큰 재료 꾸러미', price: 1760, iap: 'CONSUMABLE', desc: '덱 조각 각 30 · 커피 100', items: { deckShards: 30, coffee: 100 } },
+    adfree: { name: '광고 제거', price: 2970, once: true, iap: 'NON_CONSUMABLE', desc: '판 보상 2배 · 시작 부스트 · 상자를 광고 없이 바로', items: { adFree: true } },
+    speed4: { name: '4배속', price: 1760, once: true, iap: 'NON_CONSUMABLE', desc: '영업을 4배속으로 돌려요', items: { speed4: true } },
     // 둘을 따로 사면 4,730원. 둘 다 없을 때만 살 수 있다
-    combo: { name: '광고 제거 + 4배속', price: 3630, once: true, desc: '따로 사면 4,730원 · 1,100원 할인', items: { adFree: true, speed4: true } },
-    pass: { name: '단골 패스', price: 2640, desc: '이번 시즌 단골 보상 줄 열기 · 시즌 동안 도구 하나 더', items: { pass: true } }
+    combo: { name: '광고 제거 + 4배속', price: 3630, once: true, iap: 'NON_CONSUMABLE', desc: '따로 사면 4,730원 · 1,100원 할인', items: { adFree: true, speed4: true } },
+    pass: { name: '단골 패스', price: 2640, iap: 'CONSUMABLE', desc: '이번 시즌 단골 보상 줄 열기 · 시즌 동안 도구 하나 더', items: { pass: true } }
   };
   // 단골 패스 보상. 유료 줄에는 확률형 상자를 넣지 않는다 (등급분류: 확률형 아이템 미포함)
   function passReward(line, lv) {
@@ -2162,8 +2352,8 @@
   const CHAPTERS = () => D().MAP_ORDER;
 
   let store = {
-    get(k, d) { try { const v = g.localStorage && g.localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-    set(k, v) { try { g.localStorage && g.localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+    get(k, d) { try { const v = g.localStorage && g.localStorage.getItem((g.SD_STORE_PREFIX || '') + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { g.localStorage && g.localStorage.setItem((g.SD_STORE_PREFIX || '') + k, JSON.stringify(v)); } catch (e) { } }
   };
   let nowFn = () => Date.now();
   let randFn = Math.random;
@@ -2181,14 +2371,14 @@
       shards: {}, levels: Object.fromEntries(deck.map(k => [k, 1])), deck, today: 'bomb',
       stars: {}, sel: { map: 'basic', stage: 1 },
       day: null, attend: { last: '', streak: 0 },
-      mail: [{ id: 'welcome', title: '싱크대 수비대에 오신 걸 환영해요', body: '첫 영업 준비금이에요.', items: { coffee: 20, tips: 500 } }],
+      mail: [{ id: 'welcome', title: '싱크대를 부탁해에 오신 걸 환영해요', body: '첫 영업 준비금이에요.', items: { coffee: 20, tips: 500 } }],
       shop: null, kitchen: { lv: 1, t: t }, adFree: false, bought: {}, stats: { plays: 0, wins: 0 },
       speed4: false, parts: 0, tools: {}, toolEq: [], endless: { best: {}, ms: {} }, last: null, pass: null, rank: null
     };
   }
   // 예전 저장에 새 칸 채우기
   function migrate(p) {
-    const d = { speed4: false, parts: 0, tools: {}, toolEq: [], endless: { best: {}, ms: {} }, last: null, pass: null, rank: null };
+    const d = { speed4: false, parts: 0, tools: {}, toolEq: [], endless: { best: {}, ms: {} }, last: null, pass: null, rank: null, orders: {} };
     for (const k in d) if (p[k] === undefined) p[k] = d[k];
     return p;
   }
@@ -2301,7 +2491,7 @@
   M.mapStars = (m) => [1, 2, 3, 4, 5].reduce((a, s) => a + M.starsOf(m, s), 0);
   M.isFree = (m) => m === 'basic';
   M.stageName = (m, s) => (({ basic: ['첫 출근', '설거지 연습', '점심 준비', '저녁 손님', '기름 쟁반'], kr: ['반찬 가게', '국밥집', '돌솥 비빔밥', '고깃집 점심', '삼겹살 회식'], cn: ['짜장면 배달', '탕수육 주문', '딤섬 브런치', '중식 코스', '불쇼 만찬'], jp: ['초밥 오픈', '라멘 줄서기', '타코야키 축제', '회전 가속', '카레 데이'], we: ['브런치 카페', '파스타 런치', '스테이크 디너', '디저트 타임', '라자냐 파티'] })[m] || [])[s - 1] || `${s}번째 영업`;
-  M.stageBoss = (m, s) => { const M0 = D().MAPS[m]; return { mid: M0.mid, last: s >= 5 ? M0.final : M0.mid, lastStrong: s < 5 }; };
+  M.stageBoss = (m, s) => { const M0 = D().MAPS[m], sb = M0.stageBosses && M0.stageBosses[s]; if (sb) return { mid: sb[0], last: sb[1], lastStrong: s < 5 && sb[0] === sb[1] }; return { mid: M0.mid, last: s >= 5 ? M0.final : M0.mid, lastStrong: s < 5 }; };
   M.firstChest = (m, s) => s >= 5 ? 'gold' : 'silver';
   M.startRun = function (m, s) {
     M.tick();
@@ -2475,20 +2665,37 @@
     P.last.doubled = true; const r = grant({ tips: P.last.tips, shardList: P.last.shards || [] }, [], '광고 2배'); M.save(); return { ok: true, rewards: r };
   };
   // 패배한 날 한 번, 스타터팩을 안 샀으면 권한다 (웹판은 결제가 없어서 안 함)
-  M.starterOfferDue = () => { M.tick(); return g.SD_PLATFORM !== 'web' && !P.bought.starter && !P.day.offer; };
+  const hostIap = () => (g.SD_HOST && g.SD_HOST.iap) || null;
+  M.starterOfferDue = () => { M.tick(); return g.SD_PLATFORM !== 'web' && !P.bought.starter && !P.day.offer && (!(g.SD_PLATFORM === 'toss' || g.SD_PLATFORM === 'play') || !!(hostIap() && hostIap().canBuy('starter'))); };
   M.markStarterOffer = () => { M.tick(); P.day.offer = true; M.save(); };
 
   /* ---------- 상품 ---------- */
   M.owned = (id) => id === 'adfree' ? !!P.adFree : id === 'speed4' ? !!P.speed4 : id === 'combo' ? !!(P.adFree && P.speed4) : id === 'pass' ? !!(P.pass && P.pass.premium) : !!(PRODUCTS[id] && PRODUCTS[id].once && P.bought[id]);
-  // 웹판(깃허브 페이지·원스토어·MS 스토어)은 결제가 없어서 4배속을 그냥 열어 둔다
-  M.canSpeed4 = () => !!P.speed4 || g.SD_PLATFORM === 'web';
-  // 토스 결제 연결 전: 바로 지급 (테스트)
+  // 웹판은 결제가 없어서 4배속을 그냥 열어 둔다
+  M.canSpeed4 = () => !!P.speed4 || g.SD_PLATFORM === 'web' || (g.SD_PLATFORM === 'play' && !hostIap());   // 결제가 없는 판(웹, 결제 없는 플레이판)은 4배속을 그냥 연다
+  // 개발용: 바로 지급 (테스트). 토스에서는 실제 결제(toss/app/src/shop.js → M.grantOrder)만 쓴다
   M.buyProduct = function (id) {
     const pr = PRODUCTS[id]; if (!pr) return { ok: false };
+    if (g.SD_PLATFORM === 'toss' || g.SD_PLATFORM === 'play') return { ok: false, why: '지금은 살 수 없어요' };
     M.tick();
     if (M.owned(id)) return { ok: false, why: id === 'pass' ? '이번 시즌 패스는 이미 있어요' : '이미 산 상품이에요' };
     if (id === 'combo' && (P.adFree || P.speed4)) return { ok: false, why: '하나는 이미 있어요. 남은 하나만 사면 돼요' };
     P.bought[id] = (P.bought[id] || 0) + 1; const r = grant(pr.items); M.save(); return { ok: true, rewards: r };
+  };
+
+  // 토스 결제: 주문 하나에 한 번만 지급한다 (같은 주문 번호가 다시 와도 두 번 주지 않음)
+  M.grantOrder = function (id, orderId) {
+    const pr = PRODUCTS[id]; if (!pr || !orderId) return { ok: false };
+    M.tick(); if (!P.orders) P.orders = {};
+    if (P.orders[orderId]) return { ok: true, dup: true, rewards: [] };
+    P.orders[orderId] = id; const ks = Object.keys(P.orders); if (ks.length > 300) delete P.orders[ks[0]];
+    P.bought[id] = (P.bought[id] || 0) + 1; const r = grant(pr.items); M.save(); return { ok: true, rewards: r };
+  };
+  // 토스 결제 내역으로 확인된 비소모품 보유 상태를 맞춘다 (환불되면 꺼진다). own: { adfree, speed4, combo, starter }
+  M.syncOwned = function (own) {
+    P.adFree = !!(own.adfree || own.combo); P.speed4 = !!(own.speed4 || own.combo);
+    if (own.starter && !P.bought.starter) P.bought.starter = 1;
+    M.save();
   };
 
   /* ---------- 주방 (방치 생산 + 소탕) ---------- */
@@ -2588,31 +2795,36 @@
 
 </script>
 <script>
-/* 싱크대 수비대 - 광고 연결부
- * 지금은 토스 SDK 연결 전이라 테스트로 바로 성공한다. 앱인토스로 포장할 때 show()만 실제 보상형 광고로 바꾸면 된다.
- *   (앱인토스: loadAdMobRewardedAd → showAdMobRewardedAd, 보상 이벤트를 받았을 때만 true)
- * 웹판(깃허브 페이지·원스토어)은 광고가 없으므로 available() = false → 광고 버튼 자체를 안 보여준다. */
+/* 싱크대를 부탁해 - 광고 연결부
+ * 판(플랫폼)별 동작
+ *   개발용(SD_PLATFORM 없음): 테스트로 바로 성공
+ *   웹판(web): 광고 없음 → available() = false → 광고 버튼 자체를 안 보여준다
+ *   토스(toss): toss/app/src 가 넣어 주는 window.SD_HOST.ads 로 실제 보상형 광고를 띄운다. 광고 그룹이 없으면 광고 버튼이 안 보인다
+ * show(kind) 결과: true = 끝까지 봄(보상), false = 중간에 닫음, null = 광고를 못 불러옴(다시 누를 수 있게 둔다) */
 (function (g) {
   const SD = g.SD = g.SD || {};
+  const host = () => (g.SD_HOST && g.SD_HOST.ads) || null;
+  const adFree = () => !!(SD.meta && SD.meta.p && SD.meta.p.adFree);
   SD.ads = {
-    available: () => g.SD_PLATFORM !== 'web',
-    // kind: 광고 자리. 끝까지 봤으면 true
-    //   revive(이어하기) · boost(시작 버프) · double(판 끝 팁 2배) · coffee · tips · chest(상자 하나 더) · reroll(조각 가게) · sweep(소탕) · daily(오늘의 도전 다시)
-    //   토스는 광고 그룹을 자리별로 나눠 만들면 어느 자리가 잘 버는지 콘솔에서 볼 수 있다
+    available: () => g.SD_PLATFORM === 'web' ? false : (g.SD_PLATFORM === 'toss' || g.SD_PLATFORM === 'play') ? (adFree() || !!(host() && host().usable())) : true,
+    // kind: 광고 자리
+    //   revive(이어하기) · boost(시작 버프) · double(판 끝 보상 2배) · coffee · shards(조각) · chest(상자 하나 더) · reroll(조각 가게) · sweep(소탕) · daily(오늘의 도전 다시)
     show(kind) {
-      return new Promise((resolve) => {
-        if (SD.meta && SD.meta.p && SD.meta.p.adFree) return resolve(true);   // 광고 제거 구매자는 바로 보상
-        // TODO 토스 SDK 연결
-        setTimeout(() => resolve(true), 400);
-      });
+      if (adFree()) return Promise.resolve(true);   // 광고 제거 구매자는 바로 보상
+      const h = host();
+      if (h) return Promise.resolve(h.show(kind)).catch(() => null);
+      if (g.SD_PLATFORM === 'toss' || g.SD_PLATFORM === 'play') return Promise.resolve(null);
+      return new Promise((resolve) => setTimeout(() => resolve(true), 400));   // 개발용
     },
-    isTest: true
+    // 그 자리가 곧 보일 때 광고를 미리 불러 둔다 (토스만. 광고 제거 보유자는 필요 없음)
+    prepare(kinds) { const h = host(); if (h && h.prepare && !adFree()) { try { h.prepare(kinds); } catch (e) { } } },
+    get isTest() { return !(g.SD_PLATFORM === 'toss' || g.SD_PLATFORM === 'play') || !!(host() && host().test); }
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
 <script>
-/* 싱크대 수비대 - 오늘의 도전 랭킹 (Supabase, 서울. 데스크던전과 같은 프로젝트, sd_ 로 시작하는 함수만 쓴다)
+/* 싱크대를 부탁해 - 오늘의 도전 랭킹 (Supabase, 서울. 데스크던전과 같은 프로젝트, sd_ 로 시작하는 함수만 쓴다)
  * 공개 키라 코드에 넣어도 된다: 테이블 직접 접근은 막혀 있고 sd_daily_submit · sd_daily_top 함수만 부를 수 있다 (server/sd-rank.sql)
  * 보내는 것: 기기에서 만든 무작위 아이디, 낱말 조합 이름 번호, 날짜, 점수. 개인정보는 보내지 않는다 */
 (function (g) {
@@ -2639,7 +2851,7 @@
 
 </script>
 <script>
-/* 싱크대 수비대 - 소리 (파일 없이 WebAudio로 합성)
+/* 싱크대를 부탁해 - 소리 (파일 없이 WebAudio로 합성)
  * 효과음: 버튼, 소환, 합성, 비법, 그릇 닦기, 콤보 5종, 하트 깎임, 보스, 웨이브, 승패
  * 배경음: 로비(느리고 가벼움) / 영업(조금 빠름) 두 가지 루프
  * 설정: localStorage 'sd.sound.v1' = { sfx, bgm } */
@@ -2647,8 +2859,8 @@
   const SD = g.SD = g.SD || {};
   const KEY = 'sd.sound.v1';
   let cfg = { sfx: true, bgm: true };
-  try { cfg = Object.assign(cfg, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { }
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (e) { } };
+  try { cfg = Object.assign(cfg, JSON.parse(localStorage.getItem((window.SD_STORE_PREFIX || '') + KEY) || '{}')); } catch (e) { }
+  const save = () => { try { localStorage.setItem((window.SD_STORE_PREFIX || '') + KEY, JSON.stringify(cfg)); } catch (e) { } };
 
   const AC = g.AudioContext || g.webkitAudioContext;
   let ctx = null, sfxBus = null, bgmBus = null, noiseBuf = null;
@@ -2784,7 +2996,7 @@
 </script>
 <script>document.getElementById('icTap').innerHTML=SD_ART.device('pipe',34);document.getElementById('icPlug').innerHTML=SD_ART.device('drainplug',34);</script>
 <script>
-/* 싱크대 수비대 - 화면(DOM) · 입력 · 루프 */
+/* 싱크대를 부탁해 - 화면(DOM) · 입력 · 루프 */
 (function (g) {
   const SD = g.SD;
   const D = SD.DATA, A = g.SD_ART;
@@ -2793,8 +3005,8 @@
   const ROLE = { aoe: '범위', single: '단일', support: '지원', slow: '둔화' };
   const STN = { acid: '산성', alk: '알칼리', foam: '거품', soak: '불림', hard: '굳힘' };
   const store = {
-    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+    get(k, d) { try { const v = localStorage.getItem((window.SD_STORE_PREFIX || '') + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem((window.SD_STORE_PREFIX || '') + k, JSON.stringify(v)); } catch (e) { } }
   };
 
   let G = null, speed = store.get('sd.speed', 1), paused = false, modalOpen = false, runMode = null;   // runMode: null(스테이지) | 'endless' | 'daily'
@@ -2855,12 +3067,12 @@
       const u = G.cells[ui.sel].unit, sp = u.recipe ? D.RECIPES[u.recipe] : D.ING[u.key], br = G.branchOf(u);
       line1 = (u.recipe ? '살림 비법' : A.FAMILY[A.ING[u.key].family].name) + ' · ' + ROLE[sp.role] + (br.name ? ' · ' + br.name : '');
       const sts = (sp.sts || (sp.st ? [sp.st] : [])).map(s => STN[s]).join('+');
-      line2 = `${ingName(u.key)} ${'★'.repeat(u.star)}${sts ? ' · ' + sts : ''}`;
+      line2 = `${ingName(u.key)} ★${u.star} · 위력 ${G.powerOf(ui.sel)}`;
     } else if (G.phase === 'ready') { line2 = '재료를 놓고 시작!'; }
     else if (G.phase === 'break') { line2 = `다음 W${G.wave + 1} · ${Math.ceil(G.breakT)}초`; }
     else if (G.phase === 'wave') { const spec = D.waveSpec(G.wave, G.map, G.stage, G.endless, G.waves); line2 = spec.boss ? spec.bossLabel + '!' : `남은 그릇 ${G.spawn.list.length + G.dishes.length}`; }
     else if (G.phase === 'end') line2 = '영업 끝';
-    $('#chalk').innerHTML = `<div class="pen">${line1}</div><div class="jua">${line2}</div>`;
+    $('#chalk').innerHTML = `<div class="pen">${line1}</div><div class="jua"${line2.length > 12 ? ' style="font-size:13px"' : ''}>${line2}</div>`;
     const rs = Object.keys(G.rules);
     $('#receipt').innerHTML = (G.guests && G.guests.length ? `<div class="rl gl">${G.guests.map(g => `<span class="tago">${D.GUESTS[g.id].name}</span>`).join('')}</div>` : '') + `<div class="rt"><span class="tagr">주방 규칙</span></div>` + (rs.length > 1 ? `<div class="rl">${D.RULES[rs[rs.length - 1]].name} 외 ${rs.length - 1}개</div>` : rs.length ? `<div class="rl">${D.RULES[rs[0]].name}</div>` : `<div class="rl dim">${D.RULE_WAVES[0]}웨이브 뒤에 골라요</div>`);
     const syn = G.synergy(); const need = { acid: [2, 3], alk: [2, 3], soap: [2, 3], water: [2, 3], scrub: [2, 4] };
@@ -2888,8 +3100,13 @@
     $('#dTap').style.display = dv.tap ? 'flex' : 'none';
     $('#dPlug').style.display = dv.plug ? 'flex' : 'none';
     $('#dWok').style.display = dv.wok ? 'flex' : 'none';
-    if (dv.tap) { $('#dTap .cd').style.background = dv.tap.cd > 0 ? `conic-gradient(rgba(59,47,47,.55) 0 ${dv.tap.cd / D.TAP_CD * 100}%, transparent 0)` : 'none'; $('#dTap small').textContent = dv.tap.active > 0 ? '물웅덩이 중' : dv.tap.cd > 0 ? Math.ceil(dv.tap.cd) + '초' : '탭해서 사용'; }
-    if (dv.plug) { $('#dPlug small').textContent = dv.plug.active > 0 ? '막는 중' : `${dv.plug.uses}회 남음`; $('#dPlug').classList.toggle('dis', dv.plug.uses <= 0); }
+    if (dv.tap) { $('#dTap .cd').style.background = dv.tap.cd > 0 ? `conic-gradient(rgba(59,47,47,.55) 0 ${dv.tap.cd / D.TAP_CD * 100}%, transparent 0)` : 'none'; $('#dTap small').textContent = dv.tap.active > 0 ? `물줄기 ${Math.ceil(dv.tap.active)}초` : dv.tap.cd > 0 ? Math.ceil(dv.tap.cd) + '초 뒤' : '불리고 느리게'; }
+    if (dv.plug) { $('#dPlug small').textContent = dv.plug.active > 0 ? `막는 중 ${Math.ceil(dv.plug.active)}초` : `멈추기 ${dv.plug.uses}회`; $('#dPlug').classList.toggle('dis', dv.plug.uses <= 0); }
+    // 장치로 풀어야 하는 보스가 레일 위에 있으면 그 장치 버튼·구역을 깜빡인다
+    const bossOn = G.phase === 'wave' && G.dishes.find(d => D.DISHES[d.type].boss);
+    const needTap = !!(bossOn && D.DISHES[bossOn.type].tapMul && dv.tap && dv.tap.cd <= 0), needPlug = !!(bossOn && D.DISHES[bossOn.type].stopMul && dv.plug && dv.plug.uses > 0 && !(dv.plug.active > 0));
+    $('#dTap').classList.toggle('pulse', needTap); $('#dPlug').classList.toggle('pulse', needPlug);
+    ui.devHint = needTap ? 'tap' : needPlug ? 'plug' : ui.tutHint || null;
     if (dv.wok) { $('#dWok .cd').style.background = dv.wok.cd > 0 ? `conic-gradient(rgba(59,47,47,.55) 0 ${dv.wok.cd / D.WOK_CD * 100}%, transparent 0)` : 'none'; $('#dWok small').textContent = dv.wok.cd > 0 ? Math.ceil(dv.wok.cd) + '초' : '불쇼!'; }
     const wb = $('#bWave');
     if (G.phase === 'ready') { wb.style.display = 'flex'; wb.innerHTML = '설거지 시작!'; }
@@ -2902,7 +3119,7 @@
   /* ---------- toasts / modals ---------- */
   let toastT = null;
   // 창이 떠 있으면 알림을 맨 위로 올려 창의 버튼을 가리지 않게 한다
-  function toast(text, warn) { const t = $('#toast'); t.textContent = text; t.className = 'show' + (warn ? ' warn' : '') + (modalOpen ? ' hi' : ''); clearTimeout(toastT); toastT = setTimeout(() => t.className = '', 1800); }
+  function toast(text, warn) { const t = $('#toast'); t.textContent = text; t.className = 'show' + (warn ? ' warn' : '') + (modalOpen ? ' hi' : ''); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 1800); }   // 위치(hi)는 남겨 둬야 사라지는 동안 가운데로 튀지 않는다
   const mq = [];
   function modal(html, onReady) { if (modalOpen) { mq.push([html, onReady]); return; } modalOpen = true; const m = $('#modal'); m.innerHTML = `<div class="sheet">${html}</div>`; m.classList.add('show'); const tt = $('#toast'); if (tt.classList.contains('show')) tt.classList.add('hi'); onReady && onReady(m); }
   function closeModal() { modalOpen = false; $('#modal').classList.remove('show'); $('#modal').innerHTML = ''; if (mq.length) { const [h, f] = mq.shift(); modal(h, f); } }
@@ -2911,10 +3128,14 @@
 const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sound.sfx ? 'on' : ''}" data-snd="sfx"><span>효과음</span><i></i></div><div class="tgl ${SD.sound && SD.sound.bgm ? 'on' : ''}" data-snd="bgm"><span>배경음</span><i></i></div></div>`;
   const bindSnd = (m) => m.querySelectorAll('[data-snd]').forEach(t => t.onclick = () => { const on = !t.classList.contains('on'); t.classList.toggle('on', on); if (t.dataset.snd === 'sfx') SD.sound.setSfx(on); else SD.sound.setBgmOn(on); });
   SD.sndToggles = sndToggles; SD.bindSnd = bindSnd;
-  function startScreen() { SD.sound && SD.sound.setBgm('lobby'); mq.length = 0; modalOpen = false; $('#modal').classList.remove('show'); G = null; SD.lobby.show(); }
+  function startScreen() { SD.sound && SD.sound.setBgm('lobby'); mq.length = 0; modalOpen = false; branchOpen = false; $('#modal').classList.remove('show'); G = null; SD.lobby.show(); }
   function begin(r, mapId, stage) {
     SD.lobby.hide(); runMode = r.mode || null;
-    newGame(mapId, r.today, { deck: r.deck, levels: r.levels, stage, guests: r.guests || [], tools: r.tools || [], endless: !!r.mode, seed: r.seed || undefined });
+    SD.ads.prepare(['boost', 'double', 'revive']);
+    // 첫 비법 안내: 기본 주방 3스테이지부터, 아직 비법을 하나도 못 만들었으면 3성 베이킹소다·식초를 선물로 놓아 준다
+    const gift = !r.mode && mapId === 'basic' && stage >= 3 && !Object.keys(codex.recipes).length ? [{ key: 'soda', star: 3 }, { key: 'vinegar', star: 3 }] : null;
+    newGame(mapId, r.today, { deck: r.deck, levels: r.levels, stage, guests: r.guests || [], tools: r.tools || [], endless: !!r.mode, seed: r.seed || undefined, gift });
+    if (gift) toast('선물: 3성 베이킹소다와 식초! 격쳐 보세요');
     if (r.guests && r.guests.length) guestScreen(r.guests);
     boostScreen();
     return true;
@@ -2943,7 +3164,10 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       const go = m.querySelector('#bsAd');
       go.onclick = () => {
         if (go.classList.contains('dis')) return; go.classList.add('dis'); if (!adFree) go.textContent = '광고 보는 중…';
-        SD.ads.show('boost').then((ok) => { closeModal(); if (ok && G && M.adBoost().ok && G.boost()) { toast('반짝 +40, 소환 레벨 2로 시작!'); hud(); } });
+        SD.ads.show('boost').then((ok) => {
+          if (ok == null) { go.classList.remove('dis'); go.textContent = '광고 보고 받기'; return; }   // 광고를 못 불러옴: 다시 누르거나 그냥 시작
+          closeModal(); if (ok && G && M.adBoost().ok && G.boost()) { toast('반짝 +40, 소환 레벨 2로 시작!'); hud(); }
+        });
       };
       m.querySelector('#bsNo').onclick = () => closeModal();
     });
@@ -2972,12 +3196,29 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       const re = m.querySelector('#rrRe'); if (re) re.onclick = () => { closeModal(); G.rerollRules(); };
     });
   }
-  function branchScreen(i) {
-    const c = G.cells[i]; if (!c || !c.unit || c.unit.branch || c.unit.recipe) { G.branchQueue = G.branchQueue.filter(x => x !== i); return; }
-    const k = c.unit.key, B = D.BRANCH[k];
-    modal(`${ribbon('3성 분기 진화', '#ff9f43')}<div class="pair">${ingImg(k, 64)}</div><div class="jua h2">${ingName(k)} ★★★</div>
-      ${['A', 'B'].map(b => `<div class="rule br" data-b="${b}"><div class="ra" style="background:${b === 'A' ? '#d6f5f1' : '#ffe9d6'}"><span class="jua" style="font-size:30px">${b}</span></div><div><div class="jua rn">${B[b].name}</div><div class="good">${B[b].desc}</div></div></div>`).join('')}`, (m) => {
-      m.querySelectorAll('.br').forEach(el => el.onclick = () => { G.chooseBranch(i, el.dataset.b); closeModal(); });
+  // 3성 분기 진화: 일괄 합성 한 번에 여러 개가 생겨도 창 하나에서 한꺼번에 고른다. 같은 재료는 한 줄로 묶는다
+  let branchOpen = false;
+  function branchScreen(only) {
+    if (branchOpen) return;
+    const want = (only != null ? [only] : G.branchQueue.slice()).filter(i => { const u = G.cells[i] && G.cells[i].unit; return u && !u.recipe && !u.branch && u.star >= 3; });
+    G.branchQueue = G.branchQueue.filter(i => want.includes(i) || only != null);
+    if (!want.length) return;
+    const groups = {}; for (const i of want) (groups[G.cells[i].unit.key] = groups[G.cells[i].unit.key] || []).push(i);
+    const keys = Object.keys(groups);
+    branchOpen = true;
+    modal(`${ribbon('3성 분기 진화', '#ff9f43')}<div class="pen sub">${keys.length > 1 ? '한 번에 골라요' : '공격 방식을 골라요'}</div>
+      <div class="bvlist">${keys.map(k => { const B = D.BRANCH[k], n = groups[k].length; return `<div class="bvrow" data-k="${k}"><div class="bvhead">${ingImg(k, 34)}<span class="jua">${ingName(k)} ★★★${n > 1 ? ` <small>x${n}</small>` : ''}</span></div>
+        <div class="bvpair">${['A', 'B'].map(b => `<div class="bvcard ${b}" data-b="${b}"><span class="jua bl">${b}</span><b class="jua">${B[b].name}</b><small>${B[b].desc}</small></div>`).join('')}</div></div>`; }).join('')}</div>
+      <div class="btn" id="brLater">나중에 고르기</div>`, (m) => {
+      const left = new Set(keys);
+      const done = () => { branchOpen = false; closeModal(); const p = ui.pendingHybrid; ui.pendingHybrid = null; if (p && G.cells[p.from] && G.cells[p.to] && G.move(p.from, p.to) === 'recipe') ui.sel = p.to; hud(); };
+      m.querySelectorAll('.bvcard').forEach(el => el.onclick = () => {
+        const row = el.closest('.bvrow'), k = row.dataset.k; if (!left.has(k)) return;
+        for (const i of groups[k]) G.chooseBranch(i, el.dataset.b);
+        left.delete(k); row.classList.add('done'); el.classList.add('on');
+        if (!left.size) setTimeout(done, 160);
+      });
+      m.querySelector('#brLater').onclick = () => { G.branchQueue = []; ui.pendingHybrid = null; branchOpen = false; closeModal(); };
     });
   }
   function recipeScreen(id) {
@@ -2992,14 +3233,17 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       <div class="btn big" id="mOk">좋아요!</div>`, (m) => { m.querySelector('#mOk').onclick = closeModal; });
   }
   function pairLabel(p) { const P = D.PAIRS[p]; return [P.A, P.B].filter(id => codex.recipes[id]).map(id => D.RECIPES[id].name)[0] || (ingName(P.a) + '+' + ingName(P.b) + ' 비법'); }
+  // 보스: 처음 보는 보스만 창으로 공략을 알려 주고, 그 뒤로는 레일 위 띠(배너)만 띄운다
   function bossScreen(boss) {
     const ds = D.DISHES[boss];
     const weak = (ds.weak || []).map(f => (A.FAMILY[f] || {}).name || ingName(f)).join(', ');
     const res = (ds.resist || []).map(f => (A.FAMILY[f] || {}).name || ingName(f)).join(', ');
+    const dev = ds.tapMul ? 'pipe' : ds.stopMul ? 'drainplug' : null;
     modal(`${ribbon(D.waveSpec(G.wave, G.map, G.stage, G.endless, G.waves).bossLabel + ' 등장', '#a77bf3')}
       <div class="pair">${A.boss(boss, 120)}</div><div class="jua h1">${dishName(boss)}</div>
       <div class="lbl center">${weak ? `약점 <b>${weak}</b>` : ''}${res ? ` · 저항 <b>${res}</b>` : ''}</div>
       ${traitsOf(boss).map(t => `<div class="lbl center dim">${t}</div>`).join('')}
+      ${D.BOSS_TIP[boss] ? `<div class="bosstip">${dev ? `<span class="ii" style="width:40px;height:40px">${A.device(dev, 40)}</span>` : ''}<span>${D.BOSS_TIP[boss]}</span></div>` : ''}
       <div class="btn big" id="mOk">막아보자!</div>`, (m) => { m.querySelector('#mOk').onclick = closeModal; });
   }
   function settle(win) {
@@ -3041,6 +3285,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       go.onclick = () => {
         if (go.classList.contains('dis')) return; go.classList.add('dis'); go.textContent = '광고 보는 중…';
         SD.ads.show('revive').then((ok) => {
+          if (ok == null) { go.classList.remove('dis'); go.textContent = '광고 보고 이어하기'; return; }   // 광고를 못 불러옴: 이어하기 기회를 날리지 않는다
           closeModal();
           if (ok && G.revive()) { toast(SD.ads.isTest && !adFree ? '(테스트 광고) 다시 영업 시작!' : '다시 영업 시작!'); SD.sound && SD.sound.play('recipe'); }
           else endScreen(false);
@@ -3061,7 +3306,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     });
   }
   function endScreen(win) {
-    mq.length = 0;
+    mq.length = 0; branchOpen = false;
     const res = settle(win), L = SD.lobby;
     if (res.mode) { modeEndScreen(res); return; }
     const combos = Object.entries(G.stats.combos).map(([k, v]) => `${D.COMBOS[k].name.replace('!', '')} ${v}`).join(' · ') || '없음';
@@ -3090,7 +3335,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       <div class="btn big" id="pGo">계속하기</div>
       <div class="btn" id="pHome">영업 그만하기</div>
       ${sndToggles()}
-      ${window.SD_PLATFORM === 'web' ? '' : `<div class="lbl center dim">개발용</div>
+      ${window.SD_PLATFORM ? '' : `<div class="lbl center dim">개발용</div>
       <div class="row2"><div class="btn" id="pShine">+200 반짝</div><div class="btn" id="pSkip">웨이브 넘기기</div></div>`}`, (m) => {
       m.querySelector('#pGo').onclick = () => { paused = false; closeModal(); };
       bindSnd(m);
@@ -3108,9 +3353,11 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       else if (e.type === 'forbidden') toast('락스와 산성 세제는 절대 섞으면 안 돼요! 유독 가스가 나와요', true);
       else if (e.type === 'recipe') { if (e.first) recipeScreen(e.id); else toast(D.RECIPES[e.id].name + '!'); }
       else if (e.type === 'chooseRule') ruleScreen(e.choices);
-      else if (e.type === 'branch') branchScreen(e.cell);
-      else if (e.type === 'needBranch') { toast(`${ingName(e.key)}의 3성 분기를 먼저 골라야 교잡돼요`); branchScreen(e.cell); }
-      else if (e.type === 'bossWarn') bossScreen(e.boss);
+      else if (e.type === 'branch') branchNow = true;
+      else if (e.type === 'needBranch') { toast(`${ingName(e.key)}의 분기를 고르면 바로 비법이 돼요`); branchScreen(e.cell); }
+      else if (e.type === 'bossWarn') { codex.bosses = codex.bosses || {}; if (!codex.bosses[e.boss]) { codex.bosses[e.boss] = true; bossScreen(e.boss); } }
+      else if (e.type === 'bossSpawn') { const sp = D.waveSpec(G.wave, G.map, G.stage, G.endless, G.waves); ui.banner = { boss: e.boss, label: sp.bossLabel || '보스', final: /최종|마지막/.test(sp.bossLabel || ''), t0: performance.now() }; }
+      else if (e.type === 'device') toast(e.k === 'tap' ? '수도관! 8초 동안 물줄기 위 그릇이 불고 느려져요' : '배수구 막음! 5초 동안 구역 안 그릇이 멈춰요');
       else if (e.type === 'end') { if (!e.win && G.canRevive() && SD.ads && SD.ads.available()) reviveScreen(); else endScreen(e.win); }
       else if (e.type === 'comboFirst') toast('새 콤보: ' + D.COMBOS[e.combo].name);
       else if (e.type === 'waveEnd') toast(`W${e.wave} 정리! +${e.bonus}`);
@@ -3118,13 +3365,15 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       else if (e.type === 'jam') toast('기름이 튀었어요! 탭해서 닦기');
     }
     G.events.length = 0;
+    if (branchNow) { branchNow = false; branchScreen(); }
     store.set('sd.codex.v1', codex);
   }
+  let branchNow = false;
 
   function newGame(mapId, recipeToday, extra = {}) {
     G = SD.createGame({ codex, recipeToday, mapId, ...extra });
     SD.sound && SD.sound.setBgm('run');
-    ui.sel = null; ui.drag = null; seenTypes = new Set(['plate', 'cup', 'mug', 'pot', 'spore']);
+    ui.sel = null; ui.drag = null; ui.banner = null; ui.pendingHybrid = null; branchOpen = false; seenTypes = new Set(['plate', 'cup', 'mug', 'pot', 'spore']);
     paused = false;
     if (speed === 4 && !SD.meta.canSpeed4()) { speed = 2; store.set('sd.speed', speed); }
     hud();
@@ -3156,15 +3405,17 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     const p = toLocal(e), i = cellAt(p);
     if (ui.drag && ui.drag.moved) {
       if (overRecycle(e)) { G.recycle(ui.drag.from); ui.sel = null; }
-      else if (i != null) { const r = G.move(ui.drag.from, i); if (r === 'move' || r === 'merge' || r === 'recipe') ui.sel = i; }
+      else if (i != null) { const r = G.move(ui.drag.from, i); if (r === 'move' || r === 'merge' || r === 'recipe') ui.sel = i; else if (r === 'needBranch') ui.pendingHybrid = { from: ui.drag.from, to: i }; }
     } else if (ui.press) {
       const j = ui.press.i;
       if (j != null) {
         const c = G.cells[j];
+        const terr = () => { if (c.terrain && D.TERRAIN[c.terrain].desc) toast(`${D.TERRAIN[c.terrain].name}: ${D.TERRAIN[c.terrain].desc}`); };
         if (c.unit && c.unit.jam > 0) G.unjam(j);
         else if (c.locked) { if (!G.expand(j)) toast(c.ruleLocked ? '주방 정리 규칙으로 잠긴 칸이에요' : '반짝이 부족해요'); }
-        else if (c.unit) { if (!c.unit.recipe && c.unit.star >= 3 && !c.unit.branch) branchScreen(j); else ui.sel = ui.sel === j ? null : j; }
-        else ui.sel = null;
+        else if (c.unit) { if (!c.unit.recipe && c.unit.star >= 3 && !c.unit.branch) branchScreen(j); else { ui.sel = ui.sel === j ? null : j; if (ui.sel === j) terr(); } }
+        else if (c.pile) { toast('설거지 더미: 근처 재료가 쉬는 동안 닦아요. 다 닦으면 반짝 +10, 칸이 생겨요'); ui.sel = null; }
+        else { ui.sel = null; terr(); }
       } else {
         const W = G.map.devices.wok;
         if (W && Math.hypot(p.x - W.x, p.y - W.y) < 24) { if (!G.useWok()) toast('아직 화구가 식는 중이에요'); }
@@ -3204,6 +3455,15 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     store.set('sd.speed', speed); hud();
   });
   $('#pause').addEventListener('click', () => { if (G && !modalOpen) pauseScreen(); });
+  const inRun = () => !!G && $('#lobby').style.display !== 'block';
+  // 토스: 앱이 뒤로 가면 판을 멈춘다 (소리는 sound.js 가 끈다)
+  document.addEventListener('visibilitychange', () => { if ((window.SD_PLATFORM === 'toss' || window.SD_PLATFORM === 'play') && document.hidden && inRun() && !modalOpen && !paused && G.phase !== 'end') pauseScreen(); });
+  // 뒤로가기(안드로이드): 닫을 수 있는 창은 닫고, 판 안이면 멈춤 창을 연다. 처리했으면 true, 로비 맨 바깥이면 false
+  function back() {
+    if (modalOpen) { const b = $('#modal').querySelector('[data-close], #mOk, #gOk, #pGo, #bsNo, #soNo, #rvNo'); if (b) b.click(); return true; }
+    if (inRun() && G.phase !== 'end') { pauseScreen(); return true; }
+    return false;
+  }
 
   /* ---------- loop ---------- */
   let last = performance.now(), acc = 0, hudT = 0, lastFrame = 0;
@@ -3213,7 +3473,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     if (G) {
       if (!paused && !modalOpen) {
         acc += real * speed; let n = 0;
-        while (acc >= 1 / 60 && n < 12) { G.update(1 / 60); acc -= 1 / 60; n++; if (G.events.some(e => e.type === 'branch' || e.type === 'chooseRule' || e.type === 'bossWarn' || e.type === 'end' || (e.type === 'recipe' && e.first))) break; }
+        while (acc >= 1 / 60 && n < 12) { G.update(1 / 60); acc -= 1 / 60; n++; if (G.events.some(e => e.type === 'branch' || e.type === 'chooseRule' || (e.type === 'bossWarn' && !(codex.bosses || {})[e.boss]) || e.type === 'end' || (e.type === 'recipe' && e.first))) break; }
         if (n >= 12) acc = 0;
       }
       if (SD.sound) SD.sound.tick(G);
@@ -3230,13 +3490,13 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   SD.meta.load();
   fit();
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => SD.preload(D.MAP_ORDER)).then(() => { startScreen(); });
-  SD.ui = { modal, closeModal, toast, startRun, startMode, codex, fit, get G() { return G; } };
+  SD.ui = { modal, closeModal, toast, startRun, startMode, codex, fit, back, state: ui, get G() { return G; } };
   SD.debug = { get G() { return G; }, ui, setSpeed: (s) => { speed = s; }, newGame };
 })(window);
 
 </script>
 <script>
-/* 싱크대 수비대 - 로비 (영업 · 재료 · 비법 노트 · 상점 · 주방 + 출석 · 미션 · 우편) */
+/* 싱크대를 부탁해 - 로비 (영업 · 재료 · 비법 노트 · 상점 · 주방 + 출석 · 미션 · 우편) */
 (function (g) {
   const SD = g.SD, D = SD.DATA, A = g.SD_ART, M = SD.meta, INK = A.INK;
   const S = `stroke="${INK}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"`;
@@ -3282,6 +3542,11 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   const mmss = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${String(m).padStart(2, '0')}:${String(x).padStart(2, '0')}` : `${m}:${String(x).padStart(2, '0')}`; };
   const toast = (t, w) => SD.ui.toast(t, w);
   const codex = () => SD.ui.codex;
+  // 판(플랫폼): 웹판은 결제·광고 없음, 토스는 실제 결제(SD_HOST.iap), 그 밖(개발용)은 테스트 지급
+  const WEBP = window.SD_PLATFORM === 'web', TOSS = (window.SD_PLATFORM === 'toss' || window.SD_PLATFORM === 'play');   // 앱 판(토스·구글 플레이): 콘솔에 등록된 상품만 판다
+  const iapH = () => (window.SD_HOST && window.SD_HOST.iap) || null;
+  const canSell = (id) => WEBP ? false : TOSS ? !!(iapH() && iapH().canBuy(id)) : !M.owned(id);
+  const priceText = (id) => (TOSS && iapH() && iapH().price(id)) || (num(M.PRODUCTS[id].price) + '원');
 
   /* ---------- 보상 표시 ---------- */
   function rewardChips(rw) {
@@ -3362,7 +3627,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
           <div class="sinfo">
             <div class="jua sname"><span class="sno" style="background:${map.color}">${mi + 1}-${st}</span>${map.name}</div>
             <div class="jua ssub">${M.stageName(viewMap, st)}</div>
-            <div class="bossline">${st === 5 ? `<span class="bossic">${A.boss(map.final, 34)}</span>` : ''}${D.GUEST_COUNT[st] ? `<span class="tag" style="background:#ff9f43">까다로운 손님 ${D.GUEST_COUNT[st]}명</span>` : ''}<span class="tag" style="background:#a77bf3">W7 ${bname(map.mid)}</span><span class="tag" style="background:${boss.lastStrong ? '#a77bf3' : '#ff6b5b'}">W${D.wavesOf(viewMap, st)} ${bname(boss.last)}${boss.lastStrong ? ' 강화' : ''}</span></div>
+            <div class="bossline">${st === 5 ? `<span class="bossic">${A.boss(boss.last, 34)}</span>` : ''}${D.GUEST_COUNT[st] ? `<span class="tag" style="background:#ff9f43">까다로운 손님 ${D.GUEST_COUNT[st]}명</span>` : ''}<span class="tag" style="background:#a77bf3">W7 ${bname(boss.mid)}</span><span class="tag" style="background:${boss.lastStrong ? '#a77bf3' : '#ff6b5b'}">W${D.wavesOf(viewMap, st)} ${bname(boss.last)}${boss.lastStrong ? ' 강화' : ''}</span></div>
             <div class="sstars2">${starS(stars > 0, 22)}${starS(stars > 1, 22)}${starS(stars > 2, 22)}</div>
           </div>
           ${open ? '' : `<div class="slock"><div>${lock(30)}</div><div class="jua">${lockMsg}</div></div>`}
@@ -3444,25 +3709,27 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
 
   /* ---------- 상점 ---------- */
   function shopTab() {
-    const P = M.p, d = P.day, E = M.ECON, WEB = window.SD_PLATFORM === 'web';
+    const P = M.p, d = P.day, E = M.ECON, WEB = window.SD_PLATFORM === 'web', NOAD = WEB || !SD.ads.available();   // NOAD: 광고를 못 띄우는 판(웹판, 광고 그룹이 없는 토스)에서는 광고 칸을 안 보여 준다
     const adBtn = (n, left) => `<div class="btn sm" style="flex-direction:column;gap:0;line-height:1">${P.adFree ? '바로 받기' : '광고 보기'}<small>${left}/${n} 남음</small></div>`;
     const ps = M.passState(), days = Math.max(1, Math.ceil(ps.endMs / 864e5)), cLeft = M.adLeft('chest'), rLeft = M.adLeft('reroll');
-    const prod = (id, ic) => { const pr = M.PRODUCTS[id], own = M.owned(id); return `<div class="card pcard ${own ? 'used' : ''}" data-act="buy" data-id="${id}"><div class="pic">${ic}</div><div class="ptx"><span class="jua">${pr.name}</span><small class="dim">${pr.desc}</small></div><div class="btn sm">${own ? '보유 중' : num(pr.price) + '원'}</div></div>`; };
+    const prod = (id, ic) => { const pr = M.PRODUCTS[id], own = M.owned(id); if (TOSS && !own && !canSell(id)) return ''; return `<div class="card pcard ${own ? 'used' : ''}" data-act="buy" data-id="${id}"><div class="pic">${ic}</div><div class="ptx"><span class="jua">${pr.name}</span><small class="dim">${pr.desc}</small></div><div class="btn sm">${own ? '보유 중' : priceText(id)}</div></div>`; };
+    const cards = WEB ? '' : prod('adfree', noAdIcon(34)) + prod('speed4', ffIcon(34)) + prod('shards10', shard(P.deck[0], 32)) + prod('shards30', `<span style="position:relative;margin-right:10px">${shard(P.deck[0], 32)}<span class="jua plusbadge">x3</span></span>`);
+    const showStarter = !WEB && !P.bought.starter && (!TOSS || canSell('starter')), showCombo = !WEB && !(P.adFree || P.speed4) && (!TOSS || canSell('combo'));
     return `<div class="lscroll">
       <div class="card passcard ${ps.claimable ? 'hot' : ''}" data-act="pass">${passIcon(46)}<div style="flex:1;min-width:0"><div class="jua" style="font-size:18px">단골 패스 <small class="dim" style="font-family:Pretendard;font-size:11px;font-weight:800">${ps.lv}/${E.PASS_LEVELS}단계 · ${days}일 남음</small></div><div class="bar" style="margin-top:5px"><i style="width:${Math.round(100 * ps.into / ps.step)}%;background:#ff9f43"></i></div></div><div class="btn sm ${ps.claimable ? 'go' : ''}" style="width:64px;height:36px">${ps.claimable ? '받기 ' + ps.claimable : '보기'}</div></div>
       <div class="sec" style="margin-top:12px">오늘의 무료 <small>매일 오전 5시 초기화</small></div>
-      <div class="${WEB ? '' : 'g4'}">
-        ${WEB ? `<div class="card fwide ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 50)}<div style="flex:1"><div class="jua" style="font-size:18px">무료 상자</div><div class="pdesc">재료 조각과 팁이 들어 있어요</div></div><div class="btn sm ${d.freeChest ? '' : 'go'}" style="width:84px;height:36px">${d.freeChest ? '내일 또' : '받기'}</div></div>` : `<div class="card fcard ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 44)}<span class="jua">무료 상자</span><div class="btn sm ${d.freeChest ? '' : 'go'}">${d.freeChest ? '내일 또' : '받기'}</div></div>`}
-        ${WEB ? '' : `<div class="card fcard ${cLeft <= 0 ? 'used' : ''}" data-act="adChest">${box('wood', 44)}<span class="jua">상자 더</span>${adBtn(E.AD_CAPS.chest, cLeft)}</div>
+      <div class="${NOAD ? '' : 'g4'}">
+        ${NOAD ? `<div class="card fwide ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 50)}<div style="flex:1"><div class="jua" style="font-size:18px">무료 상자</div><div class="pdesc">재료 조각과 팁이 들어 있어요</div></div><div class="btn sm ${d.freeChest ? '' : 'go'}" style="width:84px;height:36px">${d.freeChest ? '내일 또' : '받기'}</div></div>` : `<div class="card fcard ${d.freeChest ? 'used' : 'hot'}" data-act="free">${box('wood', 44)}<span class="jua">무료 상자</span><div class="btn sm ${d.freeChest ? '' : 'go'}">${d.freeChest ? '내일 또' : '받기'}</div></div>`}
+        ${NOAD ? '' : `<div class="card fcard ${cLeft <= 0 ? 'used' : ''}" data-act="adChest">${box('wood', 44)}<span class="jua">상자 더</span>${adBtn(E.AD_CAPS.chest, cLeft)}</div>
         <div class="card fcard ${d.adCoffee >= E.AD_COFFEE_CAP ? 'used' : ''}" data-act="adCoffee">${coffee(40)}<span class="jua">커피 +${E.AD_COFFEE}</span>${adBtn(E.AD_COFFEE_CAP, E.AD_COFFEE_CAP - d.adCoffee)}</div>
         <div class="card fcard ${M.adShardLeft() <= 0 ? 'used' : ''}" data-act="adShard">${shard(P.deck[0], 38)}<span class="jua">조각 +${E.AD_SHARD_KINDS * E.AD_SHARD_N}</span>${adBtn(E.AD_SHARD_CAP, M.adShardLeft())}</div>`}
       </div>
-      <div class="sec" style="margin-top:12px">조각 가게 <small id="lShopT">${mmss(M.shopNextMs())} 뒤 바뀜</small><span style="margin-left:auto;display:flex;gap:5px">${WEB || rLeft <= 0 ? '' : `<span class="btn sm" style="width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="adReroll">${P.adFree ? '무료' : '광고'} 새로고침 ${rLeft}</span>`}<span class="btn sm" style="width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="reroll">새로고침 ${tip(14)}${E.SHOP_REROLL}</span></span></div>
+      <div class="sec" style="margin-top:12px">조각 가게 <small id="lShopT">${mmss(M.shopNextMs())} 뒤 바뀜</small><span style="margin-left:auto;display:flex;gap:5px">${NOAD || rLeft <= 0 ? '' : `<span class="btn sm" style="width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="adReroll">${P.adFree ? '무료' : '광고'} 새로고침 ${rLeft}</span>`}<span class="btn sm" style="width:auto;padding:0 8px;flex-direction:row;gap:3px;white-space:nowrap" data-act="reroll">새로고침 ${tip(14)}${E.SHOP_REROLL}</span></span></div>
       <div class="g4">${P.shop.slots.map((s, i) => { const bought = P.shop.bought.includes(i), un = M.isUnlocked(s.k); return `<div class="card scard ${bought ? 'used' : ''}" data-act="shopBuy" data-i="${i}">${un ? '' : '<span class="tag newtag" style="background:#a77bf3">새 재료</span>'}${shard(s.k, 38)}<span class="sname2">${A.ING[s.k].name} x${s.n}</span><div class="btn sm prow">${bought ? '구매 완료' : tip(14) + num(s.price)}</div></div>`; }).join('')}</div>
-      ${WEB ? '' : `<div class="sec" style="margin-top:12px">상품 <small>토스 결제 연결 전 · 지금은 테스트로 바로 지급</small></div>
-      ${P.bought.starter ? '' : `<div class="card pstarter" data-act="buy" data-id="starter"><span class="tag" style="position:absolute;top:-9px;left:12px;background:#ff6b5b">한 번만</span>${box('gold', 54)}<div style="flex:1"><div class="jua" style="font-size:18px">스타터팩</div><div class="pdesc">${M.PRODUCTS.starter.desc}</div></div><div class="btn" style="height:42px;width:78px;background:#ffc93c">${num(M.PRODUCTS.starter.price)}원</div></div>`}
-      ${P.adFree || P.speed4 ? '' : `<div class="card pstarter" data-act="buy" data-id="combo" style="margin-top:${P.bought.starter ? 10 : 16}px"><span class="tag" style="position:absolute;top:-9px;left:12px;background:#5cc96b">묶음 할인</span><span style="display:flex;flex:none">${noAdIcon(38)}${ffIcon(38)}</span><div style="flex:1"><div class="jua" style="font-size:17px">광고 제거 + 4배속</div><div class="pdesc">따로 사면 <s>${num(M.PRODUCTS.adfree.price + M.PRODUCTS.speed4.price)}원</s> · ${num(M.PRODUCTS.adfree.price + M.PRODUCTS.speed4.price - M.PRODUCTS.combo.price)}원 할인</div></div><div class="btn" style="height:42px;width:78px;background:#ffc93c">${num(M.PRODUCTS.combo.price)}원</div></div>`}
-      <div class="g2">${prod('adfree', noAdIcon(34))}${prod('speed4', ffIcon(34))}${prod('shards10', shard(P.deck[0], 32))}${prod('shards30', `<span style="position:relative;margin-right:10px">${shard(P.deck[0], 32)}<span class="jua plusbadge">x3</span></span>`)}</div>`}
+      ${WEB || (TOSS && !cards && !showStarter && !showCombo) ? '' : `<div class="sec" style="margin-top:12px">상품${TOSS ? '' : ' <small>개발용 · 테스트로 바로 지급</small>'}</div>
+      ${!showStarter ? '' : `<div class="card pstarter" data-act="buy" data-id="starter"><span class="tag" style="position:absolute;top:-9px;left:12px;background:#ff6b5b">한 번만</span>${box('gold', 54)}<div style="flex:1"><div class="jua" style="font-size:18px">스타터팩</div><div class="pdesc">${M.PRODUCTS.starter.desc}</div></div><div class="btn" style="height:42px;width:78px;background:#ffc93c">${priceText('starter')}</div></div>`}
+      ${!showCombo ? '' : `<div class="card pstarter" data-act="buy" data-id="combo" style="margin-top:${P.bought.starter ? 10 : 16}px"><span class="tag" style="position:absolute;top:-9px;left:12px;background:#5cc96b">묶음 할인</span><span style="display:flex;flex:none">${noAdIcon(38)}${ffIcon(38)}</span><div style="flex:1"><div class="jua" style="font-size:17px">광고 제거 + 4배속</div><div class="pdesc">따로 사면 <s>${num(M.PRODUCTS.adfree.price + M.PRODUCTS.speed4.price)}원</s> · ${num(M.PRODUCTS.adfree.price + M.PRODUCTS.speed4.price - M.PRODUCTS.combo.price)}원 할인</div></div><div class="btn" style="height:42px;width:78px;background:#ffc93c">${priceText('combo')}</div></div>`}
+      <div class="g2">${cards}</div>`}
     </div>`;
   }
 
@@ -3511,6 +3778,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     if (!M.modeUnlocked()) { toast('기본 주방 5스테이지를 깨면 도전이 열려요'); return; }
     const P = M.p, di = M.dailyInfo(), map = D.MAPS[di.map], maps = M.endlessMaps(), adOk = SD.ads.available();
     if (!maps.includes(endMap)) endMap = maps[maps.length - 1];
+    if (!di.free) SD.ads.prepare(['daily']);
     const next = M.endlessNext(endMap);
     const dBtn = di.free ? `<div class="btn big go" data-act="dailyGo">도전하기</div>`
       : (adOk && di.adLeft > 0) ? `<div class="btn big" data-act="dailyAd">${P.adFree ? '다시 도전' : '광고 보고 다시 도전'} (${di.adLeft}번 남음)</div>` : `<div class="btn big dis">내일 또 도전해요</div>`;
@@ -3545,7 +3813,8 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
 
   /* ---------- 단골 패스 ---------- */
   function passModal() {
-    const st = M.passState(), E = M.ECON, WEB = window.SD_PLATFORM === 'web', days = Math.max(1, Math.ceil(st.endMs / 864e5));
+    const st = M.passState(), E = M.ECON, days = Math.max(1, Math.ceil(st.endMs / 864e5));
+    const WEB = window.SD_PLATFORM === 'web' || (TOSS && !st.premium && !canSell('pass'));   // 유료 줄을 안 보여 주는 판
     const cell = (it, got, open, shut) => `<div class="pcell ${got ? 'got' : ''} ${open && !shut ? '' : 'wait'}">${itemText(it)}${shut ? ' ' + lock(10) : ''}</div>`;
     SD.ui.modal(`<div class="ribbon" style="background:#ff9f43">단골 패스</div>
       <div class="lbl center"><b>${st.lv}/${E.PASS_LEVELS}단계</b> · ${days}일 뒤 새 시즌</div>
@@ -3555,7 +3824,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       <div class="prow2 phd ${WEB ? 'one' : ''}"><b></b><span>무료</span>${WEB ? '' : `<span>단골${st.premium ? '' : ' ' + lock(10)}</span>`}</div>
       <div class="plist ${WEB ? 'one' : ''}">${st.rows.map(x => `<div class="prow2 ${x.open ? 'open' : ''}"><b>${x.lv}</b>${cell(x.free, x.gotF, x.open, false)}${WEB ? '' : cell(x.paid, x.gotP, x.open, !st.premium)}</div>`).join('')}</div>
       ${st.claimable ? '<div class="btn big go" data-act="passClaim">보상 받기</div>' : ''}
-      ${st.premium || WEB ? '' : `<div class="btn big" data-act="buy" data-id="pass">단골 줄 열기 ${num(M.PRODUCTS.pass.price)}원</div>`}
+      ${st.premium || WEB || (TOSS && !canSell('pass')) ? '' : `<div class="btn big" data-act="buy" data-id="pass">단골 줄 열기 ${priceText('pass')}</div>`}
       <div class="btn" data-close>닫기</div>`, bindModal);
   }
 
@@ -3575,7 +3844,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
     if (!SD.ads.available() || adBusy) return;
     if (left <= 0) { toast('오늘은 다 봤어요'); return; }
     adBusy = true;
-    SD.ads.show(kind).then((ok) => { adBusy = false; if (!ok) { toast('광고를 끝까지 봐야 받을 수 있어요'); return; } fn(); render(); });
+    SD.ads.show(kind).then((ok) => { adBusy = false; if (!ok) { if (ok === false) toast('광고를 끝까지 봐야 받을 수 있어요'); return; } fn(); render(); });
   }
   const adTitle = (t) => M.p.adFree || !SD.ads.isTest ? t : t + ' (테스트 광고)';
   const closeIfOpen = () => { if (document.querySelector('#modal.show')) SD.ui.closeModal(); };
@@ -3617,7 +3886,9 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       case 'adCoffee': case 'adShard': { const kind = a === 'adCoffee' ? 'coffee' : 'shards', left = kind === 'coffee' ? M.ECON.AD_COFFEE_CAP - P.day.adCoffee : M.adShardLeft(); withAd(kind, left, () => { const r = M.adReward(kind); if (res(r)) showRewards(adTitle('광고 보상'), r.rewards); }); return; }
       case 'shopBuy': res(M.shopBuy(+ds.i), '샀어요!'); break;
       case 'reroll': res(M.shopReroll(), '조각 가게를 새로 채웠어요'); break;
-      case 'buy': if (window.SD_PLATFORM === 'web') return; { const r = M.buyProduct(ds.id); if (res(r)) { closeIfOpen(); showRewards('(테스트) 결제 완료', r.rewards, '#ff9f43'); } break; }
+      case 'buy': if (WEBP) return;
+        if (TOSS) { if (M.owned(ds.id)) { toast('이미 가진 상품이에요'); return; } const h = iapH(); if (!h || !h.buy(ds.id)) toast('지금은 살 수 없어요. 잠시 뒤에 다시 눌러 주세요'); return; }
+        { const r = M.buyProduct(ds.id); if (res(r)) { closeIfOpen(); showRewards('(테스트) 결제 완료', r.rewards, '#ff9f43'); } break; }
       case 'odds': oddsModal(ds.tier); return;
       case 'kCollect': { const r = M.kitchenCollect(); if (res(r)) toast(`팁 +${num(r.rewards[0].n)}`); break; }
       case 'kUp': res(M.kitchenUp(), '주방 확장!'); break;
@@ -3656,6 +3927,7 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   /* ---------- 그리기 ---------- */
   function render() {
     M.tick();
+    if (tab === 'shop') SD.ads.prepare(['coffee', 'shards', 'chest', 'reroll']); else if (tab === 'kitchen') SD.ads.prepare(['sweep']);
     const body = tab === 'play' ? playTab() : tab === 'ing' ? ingTab() : tab === 'note' ? noteTab_() : tab === 'shop' ? shopTab() : kitchenTab();
     const keep = el.querySelector('.lscroll'); const y = keep ? keep.scrollTop : 0, prevTab = el.dataset.tab;
     el.innerHTML = topbar() + `<div class="lbody">${body}</div>` + tabsHtml();
@@ -3674,13 +3946,16 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   SD.lobby = {
     show(t) { if (t) tab = t; el.style.display = 'block'; render(); clearInterval(timer); timer = setInterval(tickTop, 1000); },
     hide() { el.style.display = 'none'; clearInterval(timer); },
-    render, showRewards, chestHtml, rewardChips, starS, showRank: rankModal, toolArt, get tab() { return tab; }
+    render, showRewards, chestHtml, rewardChips, starS, showRank: rankModal, toolArt, get tab() { return tab; },
+    // 토스 결제가 끝나 지급됐을 때 · 광고나 상품 준비 상태가 바뀌었을 때 (toss/app/src 에서 부른다)
+    purchased(id, rewards) { closeIfOpen(); if (el.style.display === 'block') render(); showRewards('구매 완료', rewards || [], '#ff9f43'); },
+    refresh() { if (el.style.display === 'block' && !document.querySelector('#modal.show')) render(); }
   };
 })(window);
 
 </script>
 <script>
-/* 싱크대 수비대 - 처음 하는 사람 안내
+/* 싱크대를 부탁해 - 처음 하는 사람 안내
  * 첫 영업에서 순서대로: 소환 → 같은 재료 합성 → 설거지 시작 → 하트 설명 → (때가 되면) 일괄 합성 → 살림 비법
  * 화면을 막지 않고 말풍선 + 강조 테두리 + 손가락만 띄운다. 끝나거나 건너뛰면 프로필에 tut=1 저장 */
 (function (g) {
@@ -3696,6 +3971,10 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       if (x.key === y.key && !!x.recipe === !!y.recipe && x.star === y.star && x.star < 4 && x.jam <= 0 && y.jam <= 0) return [us[a][1], us[b][1]];
     }
     return null;
+  }
+  function giftPair(G) {
+    const gs = units(G).filter(([c]) => c.unit.gift && !c.unit.recipe);
+    return gs.length >= 2 ? [gs[0][1], gs[1][1]] : null;
   }
   function hybridPair(G) {
     const us = units(G);
@@ -3724,6 +4003,13 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
       target: (G) => samePair(G) ? null : '#bSummon', text: (G) => samePair(G) ? '<b>같은 재료</b> 둘을 끌어다 겹치면 별이 올라요' : '같은 재료가 나올 때까지 <b>소환</b>해요' },
     { id: 'wave', when: (G) => G.phase === 'ready', done: (G) => G.phase !== 'ready', target: '#bWave', text: () => '준비됐으면 <b>설거지 시작!</b>' },
     { id: 'hearts', when: (G) => G.phase === 'wave', done: (G, t) => t > 5, target: '#hearts', tap: true, text: () => '재료가 지나가는 그릇을 닦아요. 그릇이 끝까지 가면 <b>하트</b>가 줄어요' },
+    // 1.3: 선물로 받은 3성 두 개로 첫 비법 만들기 (기본 주방 3스테이지부터 비법이 없으면)
+    { id: 'gift', opt: true, revisit: true, when: (G) => !!giftPair(G), done: (G) => G.stats.recipes.length > 0, pair: giftPair, text: () => '선물로 받은 <b>3성 재료</b> 둘을 격쳐 보세요. 서로 다른 3성을 격치면 <b>살림 비법</b>이 생겨요' },
+    // 1.3: 수도관·배수구 마개 설명. 쉬는 시간에 띄우고 레일 위 구역을 깜빡인다
+    { id: 'tap', opt: true, dev: 'tap', when: (G) => !!G.devices.tap && G.wave >= 1, done: (G, t) => t > 10 || (G.devices.tap && G.devices.tap.active > 0), target: '#dTap', tap: true,
+      text: () => '<b>수도관</b>을 누르면 8초 동안 깜빡이는 레일에 물줄기가 흘러요. 지나가는 그릇이 <b>불고</b> 느려져서, 불려야 하는 보스나 소금물 연쇄에 좋아요' },
+    { id: 'plug', opt: true, dev: 'plug', when: (G) => !!G.devices.plug && G.wave >= 2, done: (G, t) => t > 10 || (G.devices.plug && G.devices.plug.active > 0), target: '#dPlug', tap: true,
+      text: () => '<b>배수구 마개</b>는 5초 동안 깜빡이는 구역을 막아 그릇을 <b>멈춰요</b>. 판마다 3번! 그릇이 몰려올 때나 굴러다니는 보스에 쓰세요' },
     { id: 'bulk', opt: true, when: (G) => G.mergePairs() >= 2, done: (G, t) => G.mergePairs() < 2 || t > 7, target: '#bMerge', tap: true, text: () => '합칠 게 많으면 <b>일괄 합성</b> 한 번이면 돼요' },
     { id: 'hold', opt: true, when: (G) => G.stats.summons >= 6 && G.shine >= G.summonCost() * 5 && G.emptyCells().length >= 3, done: (G, t) => t > 6 || G.shine < G.summonCost() * 2 || !G.emptyCells().length, target: '#bSummon', tap: true, text: () => '<b>소환</b>을 꾹 누르면 연달아 불러요' },
     { id: 'recycle', opt: true, when: (G) => G.canRecycleLow() && G.mergePairs() === 0 && G.shine >= G.summonCost() * 3, done: (G, t) => t > 8 || !G.canRecycleLow(), target: '#bRecycle', tap: true, text: () => '조리대가 꽉 찼으면 <b>재활용</b>으로 1성을 한 번에 비우고 다시 소환해요' },
@@ -3797,9 +4083,14 @@ const sndToggles = () => `<div class="tgls"><div class="tgl ${SD.sound && SD.sou
   function frame() {
     const now = performance.now(), dt = lastNow ? Math.min(0.25, (now - lastNow) / 1000) : 0; lastNow = now;
     const G = SD.ui && SD.ui.G, P = SD.meta && SD.meta.p;
+    const st = SD.ui && SD.ui.state;
+    if (st) st.tutHint = null;
     if (!P || allDone() || !G || G.phase === 'end' || $('#modal.show') || $('#lobby').style.display === 'block') { hide(); return; }
     const s = pick(G);
     if (!s) { hide(); return; }
+    // 1.3: 덜 급한 안내(opt)는 웨이브 중에 띄우지 않는다. 말풍선이 조리대를 가리지 않게 준비·쉬는 시간에만
+    if (s.opt && G.phase === 'wave') { hide(); return; }
+    if (st && s.dev) st.tutHint = s.dev;
     if (s !== cur) { cur = s; stepT = 0; }
     stepT += dt;
     if (s.done(G, stepT)) { markDone(s.id); cur = null; hide(); return; }
